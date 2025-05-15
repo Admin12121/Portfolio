@@ -1,9 +1,20 @@
+import { useMemo } from "react";
+import { Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
+import Blog from "./pages/blog";
 
 function App() {
-  return <main className="h-min mx-auto overflow-x-hidden">
-    <Home/>
-  </main>;
+  const routes = useMemo(
+    () => (
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path="/blog" element={<Blog />} />
+      </Routes>
+    ),
+    []
+  );
+
+  return <>{routes}</>;
 }
 
 export default App;

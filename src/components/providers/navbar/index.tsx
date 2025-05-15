@@ -42,7 +42,7 @@ const Header = () => {
                   </NavLink>
                 ))}
                 <NavLink
-                  href="https://github.com/better-auth/better-auth"
+                  href="https://github.com/Admin12121"
                   className=" bg-muted/20"
                   external
                 >
@@ -80,7 +80,7 @@ export const navMenu = [
 
   {
     name: "blog",
-    path: "/changelogs",
+    path: "/blog",
   },
 ];
 

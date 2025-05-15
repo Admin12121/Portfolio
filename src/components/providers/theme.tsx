@@ -2,18 +2,18 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { type ThemeProviderProps } from "next-themes";
 import ClickSpark from "@/components/global/cursor-sparklin";
 import Navbar from "@/components/providers/navbar/index";
-import { ReactLenis } from "lenis/react";
-// import Footer from "../Navbar/footer";
+import ManagementBar from "../global/management-bar";
+import Footer from "./footer/footer";
 
 export const ThemeProvider = ({ children, ...props }: ThemeProviderProps) => {
   return (
-    <ReactLenis root>
       <NextThemesProvider {...props}>
         <Navbar />
         <ClickSpark />
         {children}
-        {/* <Footer /> */}
+        <Footer />
+        <ManagementBar/>
       </NextThemesProvider>
-    </ReactLenis>
+
   );
 };
