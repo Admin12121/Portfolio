@@ -102,7 +102,7 @@ const Project = () => {
                 <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-full w-full bg-gradient-to-t from-background dark:from-background z-10 from-10%"></div>
               </div>
               <div className="flex items-center gap-2 my-1">
-                <item.icons className="w-4 h-4"/>
+                <item.icons className="w-4 h-4" />
                 <p className="text-gray-600 dark:text-gray-400">
                   {item.type}
                 </p>

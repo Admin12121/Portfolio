@@ -8,7 +8,11 @@ import Hero from "./hero";
 
 const Home = () => {
   const [progress, setProgress] = useState(0);
-  const [showAnimation, setShowAnimation] = useState(true);
+  const getCookieValue = (name: string) => {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : undefined;
+  };
+  const [showAnimation, setShowAnimation] = useState(getCookieValue("showAnimation") !== "false");
   const [fadeOut, setFadeOut] = useState(false);
 
   useEffect(() => {
@@ -21,13 +25,17 @@ const Home = () => {
         clearInterval(interval);
         setTimeout(() => {
           setFadeOut(true);
-          setTimeout(() => setShowAnimation(false), 700);
+          setTimeout(() => {
+            setShowAnimation(false);
+            document.cookie = "showAnimation=false; path=/";
+          }, 700);
         }, 500);
       } else {
         setProgress(start);
       }
     }, 30);
   }, []);
+
   return (
     <main className="flex-grow">
       <AnimatePresence mode="wait">
