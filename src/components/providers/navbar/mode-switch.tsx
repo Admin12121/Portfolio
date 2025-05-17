@@ -74,16 +74,9 @@ export function ModeSwitcher({
       <MoonIcon className="absolute size-[1.5rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
       <span className="sr-only">Theme Toggle </span>
       {showLabel && (
-        <>
-          <span className="hidden group-hover:block border rounded-full px-2 absolute -top-10">
-            {" "}
-            variant = {variant}
-          </span>
-          <span className="hidden group-hover:block border rounded-full px-2 absolute -bottom-10">
-            {" "}
-            start = {start}
-          </span>
-        </>
+        <span className="hidden group-hover:block border rounded-full px-2 absolute -top-10">
+          Toggle Theme
+        </span>
       )}
     </Button>
   );

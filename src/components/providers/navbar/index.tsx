@@ -6,7 +6,7 @@ const Header = () => {
     <header className="w-full relative z-50 border-b backdrop-blur-sm flex items-center justify-center">
       <div className="container border-r-1 border-l-1">
         <div className="flex items-center justify-between">
-          <nav className="md:grid grid-cols-12 top-0 flex items-center justify-between ">
+          <nav className="md:grid grid-cols-12 top-0 flex items-center justify-between w-full">
             <Link
               to="/"
               className="md:border-r md:px-5 px-2.5 py-4 text-foreground md:col-span-2 shrink-0 transition-colors md:w-[268px] lg:w-[286px]"
@@ -34,7 +34,7 @@ const Header = () => {
                 </div>
               </div>
             </Link>
-            <div className="md:col-span-10 flex items-center justify-end relative">
+            <div className="md:col-span-10 flex items-center justify-end pr-5 md:pr-0 relative">
               <ul className="md:flex items-center divide-x w-max hidden shrink-0">
                 {navMenu.map((menu) => (
                   <NavLink key={menu.name} href={menu.path}>

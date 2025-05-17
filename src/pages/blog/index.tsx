@@ -2,7 +2,7 @@
 
 const Blog = () => {
   return (
-    <div>Blog</div>
+    <div className="container mx-auto border-l border-r min-h-[95dvh] border-b">Blog</div>
   )
 }
 

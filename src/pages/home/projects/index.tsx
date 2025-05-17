@@ -158,6 +158,7 @@ const Project = () => {
           </svg>
         </div>
       </div>
+      <div className="mx-auto px-5 text-muted-foreground-subtle container border-x border-t border-b py-4 text-sm tracking-[-0.28px] lg:py-8"></div>
     </section>
   );
 };

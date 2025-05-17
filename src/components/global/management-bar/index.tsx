@@ -8,7 +8,7 @@ import {
   Linkedin,
 } from "lucide-react";
 import { motion, type Variants, type Transition } from "motion/react";
-
+import { useNavigate } from "react-router-dom";
 
 const BUTTON_MOTION_CONFIG = {
   initial: "rest",
@@ -39,7 +39,7 @@ const LABEL_TRANSITION: Transition = {
 
 function ManagementBar() {
   const [isVisible, setIsVisible] = React.useState(false);
-
+  const Router = useNavigate();
   const lastScrollY = React.useRef(0);
 
   React.useEffect(() => {
@@ -66,7 +66,7 @@ function ManagementBar() {
       }}
       initial={{ bottom: "-100px" }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="fixed bottom-2.5 left-1/2 transform -translate-x-1/2 flex w-fit flex-wrap items-center gap-y-2 rounded-2xl border border-border bg-background p-2 shadow-lg z-50"
+      className="fixed hidden bottom-2.5 left-1/2 transform -translate-x-1/2 lg:flex w-fit flex-wrap items-center gap-y-2 rounded-2xl border border-border bg-background p-2 shadow-lg z-50"
     >
       {/* <div className="mx-auto flex shrink-0 items-center">
         <button
@@ -99,6 +99,7 @@ function ManagementBar() {
           {...BUTTON_MOTION_CONFIG}
           className="flex h-10 items-center space-x-2 overflow-hidden whitespace-nowrap rounded-lg bg-neutral-200/60 dark:bg-neutral-800/80 px-2.5 py-2 text-neutral-600 dark:text-neutral-200"
           aria-label="Blacklist"
+          onClick={() => Router("/")}
         >
           <Home size={20} className="shrink-0" />
           <motion.span
@@ -119,6 +120,7 @@ function ManagementBar() {
           <motion.span
             variants={LABEL_VARIANTS}
             transition={LABEL_TRANSITION}
+            onClick={() => Router("/blog")}
             className="invisible text-sm"
           >
             Blog
