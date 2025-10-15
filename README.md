@@ -1,54 +1,78 @@
-# React + TypeScript + Vite
+# My Blog - Built with Fumadocs & MDX
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A personal blog and portfolio built with Next.js 15, Fumadocs, and MDX support.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- ✅ **MDX Support** - Write content in MDX with full TypeScript support
+- ✅ **Type-Safe** - Zod schema validation for frontmatter
+- ✅ **Beautiful UI** - Pre-built components from Fumadocs UI
+- ✅ **Full-Text Search** - Built-in search functionality
+- ✅ **Code Highlighting** - Syntax highlighting with Shiki
+- ✅ **Dark Mode** - Built-in theme switching
+- ✅ **Table of Contents** - Auto-generated TOC for posts
 
-## Expanding the ESLint configuration
+## 📁 Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```
+blog/
+├── app/
+│   ├── api/search/route.ts      # Search API endpoint
+│   ├── blog/
+│   │   ├── [[...slug]]/page.tsx # Dynamic blog post pages
+│   │   └── layout.tsx           # Blog layout with sidebar
+│   └── page.tsx                 # Homepage
+├── content/blog/                # MDX blog posts go here
+│   ├── getting-started.mdx
+│   └── advanced-features.mdx
+├── lib/source.ts                # Fumadocs source configuration
+├── mdx-components.tsx           # MDX component mappings
+└── source.config.ts             # MDX collection configuration
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🛠️ Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm run dev
 ```
+
+Open [http://localhost:3000](http://localhost:3000) to see your blog.
+
+## 📝 Writing Content
+
+Create a new `.mdx` file in `content/blog/`:
+
+```mdx
+---
+title: My New Post
+description: A brief description
+author: Your Name
+date: 2025-10-14
+tags: [tutorial, guide]
+---
+
+# My New Post
+
+Your content here with **markdown** support!
+
+<Callout type="info">
+  Use Fumadocs components!
+</Callout>
+```
+
+## 🎨 Available Components
+
+- **Cards** - Display features or content cards
+- **Callouts** - Info, warning, error callouts
+- **Tabs** - Tabbed content
+- **Code Blocks** - Syntax highlighted code
+
+## 📚 Documentation
+
+- [Fumadocs Documentation](https://fumadocs.vercel.app)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [MDX Documentation](https://mdxjs.com)
+
+## 🚀 Deploy
+
+Deploy easily on [Vercel](https://vercel.com) or any platform that supports Next.js.
