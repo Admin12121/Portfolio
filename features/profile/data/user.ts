@@ -14,16 +14,16 @@ export const USER: User = {
     "Code Crafter",
   ],
   address: "Nepal",
-  phoneNumber: "", // (you haven’t given this publicly)
-  email: "", // (you haven’t given this publicly)
+  phoneNumber: "", 
+  email: "", 
   website: "https://biki.com.np",
-  jobTitle: "Founder & Full Stack Developer",
+  jobTitle: "Hacker & Developer",
   jobs: [
-    {
-      title: "Founder & Full Stack Developer",
-      company: "Biki",
-      website: "https://biki.com.np",
-    },
+    // {
+    //   title: "Founder & Full Stack Developer",
+    //   company: "Biki",
+    //   website: "https://biki.com.np",
+    // },
   ],
   about: `
 Hello, World! I am Vicky Tajpuriya — a Hacker and Developer passionate about ethical hacking, and building innovative solutions.
@@ -32,7 +32,7 @@ Currently studying at [Softwarica College](https://softwarica.edu.np/), I specia
 
 Let's connect and collaborate on something awesome!
   `,
-  avatar: "https://avatars.githubusercontent.com/u/131951081?v=4", // (you can supply a URL or placeholder)
+  avatar: "https://avatars.githubusercontent.com/u/131951081?v=4",
   ogImage: "https://avatars.githubusercontent.com/u/131951081?v=4",
   namePronunciationUrl: "",
   keywords: [
