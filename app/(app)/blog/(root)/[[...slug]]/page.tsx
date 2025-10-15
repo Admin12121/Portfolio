@@ -1,4 +1,4 @@
-import { source, type Page as PageType } from "@/lib/source";
+import { source } from "@/lib/source";
 import { DocsPage } from "fumadocs-ui/page";
 import defaultComponents from "fumadocs-ui/mdx";
 import { Card, Cards } from "fumadocs-ui/components/card";
@@ -11,9 +11,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Feedback } from "@/components/feedback";
-import { onRateAction, owner, repo } from "@/lib/github";
-import { getPageTreePeers } from "fumadocs-core/page-tree";
-import { cn } from "@/lib/utils";
+import { onRateAction } from "@/lib/github";
+// import { onRateAction, owner, repo } from "@/lib/github";
+// import { getPageTreePeers } from "fumadocs-core/page-tree";
+// import { cn } from "@/lib/utils";
 
 interface PageProps {
   params: Promise<{ slug?: string[] }>;
@@ -28,7 +29,7 @@ export default async function Page({ params }: PageProps) {
   }
 
   const MDX = page.data.body;
-  const { body: Mdx, toc, lastModified } = page.data;
+  const { lastModified } = page.data;
 
   return (
     <DocsPage
@@ -61,7 +62,7 @@ export default async function Page({ params }: PageProps) {
       <Feedback onRateAction={onRateAction} />
       <div className="text-sm text-fd-muted-foreground">
         Last updated on{" "}
-        {new Date((page.data as any).date || Date.now()).toLocaleDateString(
+        {new Date((page.data.date as string) || Date.now()).toLocaleDateString(
           "en-US",
           {
             month: "numeric",

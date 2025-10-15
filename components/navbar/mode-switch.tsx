@@ -60,7 +60,7 @@ export function ModeSwitcher({
     }
 
     document.startViewTransition(switchTheme);
-  }, [theme, setTheme]);
+  }, []);
 
   return (
     <Button
