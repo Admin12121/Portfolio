@@ -5,9 +5,10 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
+    "postinstall": "fumadocs-mdx",
     "start": "next start",
-    "lint": "eslint",
-    "postinstall": "fumadocs-mdx"
+    "start:server": "NODE_ENV=production node server.js",
+    "lint": "eslint"
   },
   "dependencies": {
     "@radix-ui/react-collapsible": "^1.1.12",
