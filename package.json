@@ -5,7 +5,6 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "postinstall": "fumadocs-mdx",
     "start": "next start",
     "start:server": "NODE_ENV=production node server.js",
     "lint": "eslint"
