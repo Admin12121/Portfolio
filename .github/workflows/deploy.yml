@@ -32,7 +32,7 @@ jobs:
         cp package-lock.json deploy/
         cp server.ts deploy/ 2>/dev/null || true
         cp next.config.ts deploy/ 2>/dev/null || true
-        cp node_modules deploy 2>/dev/null || true
+        cp node_modules deploy/ 2>/dev/null || true
 
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
