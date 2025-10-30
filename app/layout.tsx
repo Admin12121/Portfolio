@@ -112,6 +112,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta
+          name="dmca-site-verification"
+          content="ajBXWlZlcTc1dVh1czBpUVdxdXJuUT090"
+        />
+      </head>
       <body
         className={`${geistSansLight.variable} ${geistSansRegular.variable} ${geistSansMedium.variable} ${geistSansSemibold.variable} ${geistSansBold.variable}`}
       >
