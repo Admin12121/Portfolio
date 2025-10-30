@@ -2,6 +2,6 @@
   "title": "Blog Posts",
   "root": true,
   "pages": [
-    "v1"
+    "staticbuild"
   ]
 }

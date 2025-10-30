@@ -13,7 +13,7 @@ const Footer = () => {
           Built by{" "}
           <a
             className="link"
-            href="https://x.com/iamncdai"
+            href="https://github.com/admin12121"
             target="_blank"
             rel="noopener"
           >

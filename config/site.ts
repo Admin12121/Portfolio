@@ -2,7 +2,7 @@ import { USER } from "@/features/profile/data/user";
 
 export const SITE_INFO = {
   name: USER.displayName,
-  url: process.env.APP_URL || "https://vickytajpuriya.com",
+  url: process.env.APP_URL || "https://biki.com.np",
   ogImage: USER.ogImage,
   description: USER.bio,
   keywords: USER.keywords,
@@ -18,7 +18,7 @@ export const SOURCE_CODE_GITHUB_REPO = "admin12121/portfolio.com";
 export const SOURCE_CODE_GITHUB_URL = "https://github.com/admin12121/portfolio.com";
 
 export const UTM_PARAMS = {
-  utm_source: "vickytajpuriya.com",
+  utm_source: "biki.com.np",
   utm_medium: "portfolio_website",
   utm_campaign: "referral",
 };

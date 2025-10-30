@@ -60,17 +60,6 @@ export default async function Page({ params }: PageProps) {
         ></MDX>
       </div>
       <Feedback onRateAction={onRateAction} />
-      <div className="text-sm text-fd-muted-foreground">
-        Last updated on{" "}
-        {new Date((page.data.date as string) || Date.now()).toLocaleDateString(
-          "en-US",
-          {
-            month: "numeric",
-            day: "numeric",
-            year: "numeric",
-          }
-        )}
-      </div>
     </DocsPage>
   );
 }

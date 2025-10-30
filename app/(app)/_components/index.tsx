@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { ProfileHeader } from "@/features/profile/components/profile-header";
 import { About } from "@/features/profile/components/about";
 import { GitHubContributions } from "@/features/profile/components/github-contributions";
-// import { Projects } from "@/features/profile/components/projects";
+import { Projects } from "@/features/profile/components/projects";
 // import { Certifications } from "@/features/profile/components/certifications";
 import { ProfileCover } from "@/features/profile/components/profile-cover";
 import { Blogs } from "@/features/blog/components";
@@ -24,8 +24,8 @@ export default function Home() {
         <GitHubContributions />
         <Separator />
 
-        {/* <Projects />
-        <Separator /> */}
+         <Projects />
+        <Separator /> 
 
         {/* <Certifications />
         <Separator /> */}
