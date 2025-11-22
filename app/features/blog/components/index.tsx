@@ -1,0 +1,23 @@
+import { CollapsibleList } from "@/components/collapsible-list";
+import type { Blog } from "../types/blog";
+import {
+  Panel,
+  PanelHeader,
+  PanelTitle,
+} from "@/features/profile/components/panel";
+import { BlogItem } from "./blog-items";
+
+export function Blogs({ blogs }: { blogs: Blog[] }) {
+  return (
+    <Panel id="certs">
+      <PanelHeader>
+        <PanelTitle>Blog</PanelTitle>
+      </PanelHeader>
+      <CollapsibleList
+        items={blogs}
+        max={8}
+        renderItem={(item: Blog) => <BlogItem blog={item} />}
+      />
+    </Panel>
+  );
+}

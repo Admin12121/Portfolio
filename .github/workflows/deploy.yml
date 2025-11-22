@@ -1,0 +1,49 @@
+on:
+  push:
+    branches:
+      - react
+name: 🚀 Deploy website on push
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v3
+
+    - name: Use Node.js 22
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+      
+    - name: 🔨 Install dependencies and build (React)
+      run: |
+        npm ci || npm install
+        npm run build
+
+    - name: 📦 Prepare deployment files
+      run: |
+        rm -rf deploy
+        mkdir -p deploy
+        if [ -d build ]; then \
+          cp -r build/* deploy/; \
+        elif [ -d dist ]; then \
+          cp -r dist/* deploy/; \
+        else \
+          echo "❌ No build output directory ('build' or 'dist') found. Ensure your React build script outputs to one of these."; \
+          exit 1; \
+        fi
+        # Optional: include static assets if they exist outside build/dist
+        if [ -d public ]; then cp -r public deploy/public; fi
+        # package.json rarely needed for static hosting; uncomment if the server requires it
+        # cp package.json deploy/
+
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.GIT_CPANEL_REACT_SERVER }}
+        username: ${{ secrets.GIT_CPANEL_REACT_USER }}
+        password: ${{ secrets.GIT_CPANEL_REACT_PWD }}
+        protocol: ${{ secrets.GIT_CPANEL_REACT_PROTOCOL }}
+        local-dir: ./deploy/
