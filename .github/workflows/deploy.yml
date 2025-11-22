@@ -22,13 +22,18 @@ jobs:
         npm ci || npm install
         npm run build
 
-    - name: Prepare deploy (build dir + package.json)
+    - name: Prepare minimal deploy set
       run: |
-        test -d build || (echo "build directory missing" && exit 1)
         rm -rf deploy
         mkdir deploy
-        cp -r build deploy/build
         cp package.json deploy/
+        [ -f package-lock.json ] && cp package-lock.json deploy/
+        cp -r build deploy/build
+        cp -r public deploy/public
+        cp react-router.config.ts deploy/
+        cp source.config.ts deploy/
+        cp tsconfig.json deploy/
+        cp vite.config.ts deploy/
 
     - name: Deploy
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
