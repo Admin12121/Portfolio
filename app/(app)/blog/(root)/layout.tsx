@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       tree={source.pageTree}
       sidebar={{
         enabled: false,
-      }}
+      }}      
     >
       <main className="mx-auto md:max-w-3xl">{children}</main>
     </DocsLayout>

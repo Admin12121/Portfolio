@@ -31,7 +31,6 @@
   --color-code-highlight: var(--code-highlight);
   --color-selection: var(--selection);
   --color-selection-foreground: var(--selection-foreground);
-
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 
@@ -99,7 +98,6 @@
 }
 
 :root {
-  /* white */
   --background: oklch(1 0 0);
 
   /* zinc-950 */
@@ -430,4 +428,9 @@
 
 #nd-tocnav{
   top: 55px !important;
+}
+
+#nd-sidebar{
+    background: transparent;
+    padding-top: 50px;
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import Blog from "./_components";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const page = () => {
   return (

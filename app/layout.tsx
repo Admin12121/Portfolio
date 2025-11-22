@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { RootProvider } from "fumadocs-ui/provider";
+import { RootProvider } from "fumadocs-ui/provider/next";
 import "@/style/globals.css";
 import localFont from "next/font/local";
 

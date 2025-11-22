@@ -1,8 +1,8 @@
-import { source } from "@/lib/source";
+import { blog } from "@/lib/source";
 import { Blog } from "../types/blog";
 
 export function getAllBlogs(): Blog[] {
-    const pages = source.getPages();
+    const pages = blog.getPages();
     
     return pages.map((page) => {
         const data = page.data as any;
@@ -22,7 +22,7 @@ export function getAllBlogs(): Blog[] {
 }
 
 export function getBlogBySlug(slug: string) {
-    return source.getPage([slug]);
+    return blog.getPage([slug]);
 }
 
 export function getRecentBlogs(limit: number = 5): Blog[] {

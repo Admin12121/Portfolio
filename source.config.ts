@@ -9,6 +9,8 @@ import { z } from 'zod';
 import {
   rehypeCodeDefaultOptions,
 } from 'fumadocs-core/mdx-plugins';
+import lastModified from 'fumadocs-mdx/plugins/last-modified';
+import jsonSchema from 'fumadocs-mdx/plugins/json-schema';
 
 export const docs = defineDocs({
   docs: {
@@ -22,7 +24,9 @@ export const docs = defineDocs({
     }),
     postprocess: {
       includeProcessedMarkdown: true,
+      extractLinkReferences: true,
     },
+    async: true,
   },
   meta: {
     schema: metaSchema.extend({
@@ -38,10 +42,16 @@ export const blog = defineCollections({
     author: z.string(),
     date: z.string().or(z.date()),
   }),
+  async: true,
 });
 
 export default defineConfig({
-  lastModifiedTime: 'git',
+  plugins: [
+    jsonSchema({
+      insert: true,
+    }),
+    lastModified(),
+  ],
   mdxOptions: {
     rehypeCodeOptions: {
       themes: {

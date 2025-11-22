@@ -44,7 +44,7 @@ const Navbar = () => {
             ))}
             <NavLink
               href="https://github.com/Admin12121"
-              className=" bg-muted/20"
+              className=" bg-muted/20 border-r"
               external
             >
               <svg
@@ -60,7 +60,7 @@ const Navbar = () => {
               </svg>
             </NavLink>
           </ul>
-          <ModeSwitcher showLabel variant="circle" start="bottom-right" />
+          <ModeSwitcher className="ml-[20px] w-[35px] cursor-pointer opacity-50 hover:opacity-100 duration-200 transition-all ease-in-out"/>
         </div>
       </div>
     </SiteHeaderWrapper>
