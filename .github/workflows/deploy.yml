@@ -24,7 +24,11 @@ jobs:
 
     - name: 📦 Prepare deployment files
       run: |
-        cp package.json build/
+        test -d build/client || (echo "build/client not found" && exit 1)
+        rm -rf deploy
+        mkdir deploy
+        cp -r build/client/* deploy/
+        cp package.json deploy/
 
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
