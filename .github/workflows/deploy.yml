@@ -27,7 +27,7 @@ jobs:
         test -d build/client || (echo "build/client not found" && exit 1)
         rm -rf deploy
         mkdir deploy
-        cp -r build/client/* deploy/
+        cp -r build/* deploy/
         cp package.json deploy/
 
     - name: 📂 Sync files
