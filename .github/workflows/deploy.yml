@@ -2,35 +2,35 @@ on:
   push:
     branches:
       - react
-name: 🚀 Deploy website on push
+name: Setting portfolio
 
 jobs:
   web-deploy:
-    name: 🎉 Deploy
+    name: starting
     runs-on: ubuntu-latest
     steps:
-    - name: 🚚 Get latest code
+    - name: get code
       uses: actions/checkout@v3
 
-    - name: Use Node.js 22
+    - name: Node setup
       uses: actions/setup-node@v4
       with:
         node-version: '22'
       
-    - name: 🔨 Install dependencies and build (React)
+    - name: Install and build
       run: |
         npm ci || npm install
         npm run build
 
-    - name: 📦 Prepare deployment files
+    - name: Prepare deploy (build dir + package.json)
       run: |
-        test -d build/client || (echo "build/client not found" && exit 1)
+        test -d build || (echo "build directory missing" && exit 1)
         rm -rf deploy
         mkdir deploy
-        cp -r build/* deploy/
+        cp -r build deploy/build
         cp package.json deploy/
 
-    - name: 📂 Sync files
+    - name: Deploy
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
         server: ${{ secrets.GIT_CPANEL_REACT_SERVER }}
