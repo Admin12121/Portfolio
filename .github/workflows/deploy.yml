@@ -24,20 +24,7 @@ jobs:
 
     - name: 📦 Prepare deployment files
       run: |
-        rm -rf deploy
-        mkdir -p deploy
-        if [ -d build ]; then \
-          cp -r build/* deploy/; \
-        elif [ -d dist ]; then \
-          cp -r dist/* deploy/; \
-        else \
-          echo "❌ No build output directory ('build' or 'dist') found. Ensure your React build script outputs to one of these."; \
-          exit 1; \
-        fi
-        # Optional: include static assets if they exist outside build/dist
-        if [ -d public ]; then cp -r public deploy/public; fi
-        # package.json rarely needed for static hosting; uncomment if the server requires it
-        # cp package.json deploy/
+        cp package.json build/
 
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
