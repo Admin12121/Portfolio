@@ -4,21 +4,37 @@ import React from "react";
 import Link from "next/link";
 import { SiteHeaderWrapper } from "./site-header-wrapper";
 
+function computeOppositeDomain() {
+  const host = window.location.host;
+  const protocol = window.location.protocol;
+
+  if (host.startsWith("docs.")) {
+    return `${protocol}//${host.replace("docs.", "")}/`;
+  }
+  return `${protocol}//docs.${host}/`;
+}
+
 const Navbar = () => {
+  const [target, setTarget] = React.useState("/");
+
+  React.useEffect(() => {
+    setTarget(computeOppositeDomain());
+  }, []);
+  
   return (
     <SiteHeaderWrapper
       className={cn(
         "sticky top-0 z-50 max-w-screen overflow-x-hidden backdrop-blur-sm px-2",
         "data-[affix=true]:shadow-[0_0_16px_0_black]/8 dark:data-[affix=true]:shadow-[0_0_16px_0_black]/80",
         "not-dark:data-[affix=true]:**:data-header-container:after:bg-border",
-        "transition-shadow duration-300"
+        "transition-shadow duration-300",
       )}
     >
       <div
         className="screen-line-before screen-line-after mx-auto flex h-14 items-center justify-between gap-2 border-x border-edge px-2 after:z-1 after:transition-[background-color] sm:gap-4 md:max-w-3xl"
         data-header-container
       >
-        <div className="ml-4">
+        <Link href={target} className="ml-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -34,7 +50,7 @@ const Navbar = () => {
             <polyline points="4 17 10 11 4 5"></polyline>
             <line x1="12" x2="20" y1="19" y2="19"></line>
           </svg>
-        </div>
+        </Link>
         <div className="md:col-span-10 flex items-center justify-end pr-5 md:pr-0 relative">
           <ul className="md:flex items-center divide-x w-max shrink-0">
             {navMenu.map((menu) => (
@@ -60,7 +76,7 @@ const Navbar = () => {
               </svg>
             </NavLink>
           </ul>
-          <ModeSwitcher className="ml-[20px] w-[35px] cursor-pointer opacity-50 hover:opacity-100 duration-200 transition-all ease-in-out"/>
+          <ModeSwitcher className="ml-[20px] w-[35px] cursor-pointer opacity-50 hover:opacity-100 duration-200 transition-all ease-in-out" />
         </div>
       </div>
     </SiteHeaderWrapper>
@@ -107,7 +123,7 @@ export const NavLink = ({ href, children, className, external }: Props) => {
         className={clsx(
           "w-full h-full block py-4 px-5 transition-colors",
           "group-hover:text-foreground",
-          isActive ? "text-foreground" : "text-muted-foreground"
+          isActive ? "text-foreground" : "text-muted-foreground",
         )}
         target={external ? "_blank" : "_self"}
         rel={external ? "noopener noreferrer" : undefined}
@@ -118,7 +134,7 @@ export const NavLink = ({ href, children, className, external }: Props) => {
         className={clsx(
           "absolute bottom-0 h-0.5 bg-muted-foreground opacity-0 transition-all duration-500",
           "group-hover:opacity-100 group-hover:w-full",
-          isActive ? "!opacity-100 w-full" : "w-0"
+          isActive ? "opacity-100! w-full" : "w-0",
         )}
       />
     </li>

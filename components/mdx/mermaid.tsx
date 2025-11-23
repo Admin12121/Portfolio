@@ -1,17 +1,39 @@
 'use client';
 
-import { use, useEffect, useId, useState } from 'react';
+import React, {
+  use,
+  useEffect,
+  useId,
+  useState,
+  Children,
+  ReactNode,
+} from 'react';
 import { useTheme } from 'next-themes';
 
-export function Mermaid({ chart }: { chart: string }) {
+type MermaidProps = {
+  chart?: string;
+  children?: ReactNode;
+};
+
+export function Mermaid({ chart, children }: MermaidProps) {
   const [mounted, setMounted] = useState(false);
+
+  const effectiveChart =
+    chart ??
+    Children.toArray(children)
+      .map((c) => (typeof c === 'string' ? c : ''))
+      .join('')
+      .replace(/\r/g, '')
+      .trim();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return;
-  return <MermaidContent chart={chart} />;
+  if (!mounted) return null;
+  if (!effectiveChart) return null;
+
+  return <MermaidContent chart={effectiveChart} />;
 }
 
 const cache = new Map<string, Promise<unknown>>();
@@ -43,9 +65,15 @@ function MermaidContent({ chart }: { chart: string }) {
     theme: resolvedTheme === 'dark' ? 'dark' : 'default',
   });
 
+  const safeChart = String(chart);
+
   const { svg, bindFunctions } = use(
-    cachePromise(`${chart}-${resolvedTheme}`, () => {
-      return mermaid.render(id, chart.replaceAll('\\n', '\n'));
+    cachePromise(`${safeChart}-${resolvedTheme}`, () => {
+      const normalized = safeChart
+        .split('\\n')
+        .join('\n')
+        .trim();
+      return mermaid.render(id, normalized);
     }),
   );
 

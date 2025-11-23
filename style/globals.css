@@ -8,6 +8,10 @@ body {
   overflow-x: hidden;
 }
 
+::-webkit-scrollbar {
+  width: 0px !important;
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;

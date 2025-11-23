@@ -185,7 +185,7 @@
   --selection-foreground: oklch(0.985 0 0);
 
   --shadow-popover: 0 6px 24px rgba(0, 0, 0, 0.25);
-  --fd-layout-offset: max(calc(55vw - 10vw / 2), 0px);
+  --fd-layout-offset: max(calc(55.155dvw - 10vw / 2), 0px);
 }
 
 .dark {
@@ -300,20 +300,8 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Custom scrollbar styling. Thanks @shadcn-ui */
   ::-webkit-scrollbar {
-    width: 5px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 5px;
-  }
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
+    width: 0px !important;
   }
 
   [id] {
@@ -436,5 +424,5 @@
 }
 
 :root, #nd-docs-layout{
-    --fd-layout-offset: max(calc(55vw - var(--fd-layout-width) / 2), 0px) !important;
+    --fd-layout-offset: max(calc(55.155dvw - var(--fd-layout-width) / 2), 0px) !important;
 }

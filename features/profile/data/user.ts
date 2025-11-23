@@ -1,10 +1,10 @@
 import type { User } from "@/features/profile/types/user";
 
 export const USER: User = {
-  firstName: "Vicky",
-  lastName: "Tajpuriya",
+  firstName: "Admin",
+  lastName: "12121",
   displayName: "Admin12121",
-  username: "vickytajpuriya",
+  username: "admin12121",
   gender: "male",
   pronouns: "he/him",
   bio: "Developer. Building things, learning always.",
@@ -26,7 +26,7 @@ export const USER: User = {
     // },
   ],
   about: `
-Hello, World! I am Vicky Tajpuriya — a Hacker and Developer passionate about ethical hacking, and building innovative solutions.
+Hello, World! I’m known here as Admin12121 — a Hacker and Developer passionate about ethical hacking, and building innovative solutions.
 
 Currently studying at [Softwarica College](https://softwarica.edu.np/), I specialize in Python, Go, TypeScript, Django, Next.js, and React. I thrive on exploring security vulnerabilities, developing secure applications, and turning complex problems into elegant solutions.
 

@@ -26,6 +26,8 @@ import { DocsPage } from "fumadocs-ui/page";
 import { NotFound } from "@/components/not-found";
 // import { getSuggestions } from '@/app/docs/[...slug]/suggestions';
 import { PathUtils } from "fumadocs-core/source";
+import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
+import { AutoTypeTable } from "fumadocs-typescript/ui";
 
 function PreviewRenderer({ preview }: { preview: string }): ReactNode {
   if (preview && preview in Preview) {
@@ -49,16 +51,14 @@ export default async function Page(props: PageProps<"/docs/[...slug]">) {
     );
 
   const { body: Mdx, toc } = await page.data.load();
-  
+
   return (
     <DocsPage
       toc={toc}
       lastUpdate={page.data.date ? new Date(page.data.date) : undefined}
     >
-      <h1 className="text-[1.75em] font-semibold">{page.data.title}</h1>
-      <p className="text-lg text-fd-muted-foreground mb-2">
-        {page.data.description}
-      </p>
+      <title>{page.data.title}</title>
+      <meta name="description" content={page.data.description} />
       <div className="prose flex-1 text-fd-foreground/90">
         {page.data.preview && <PreviewRenderer preview={page.data.preview} />}
         <Mdx
@@ -96,6 +96,9 @@ export default async function Page(props: PageProps<"/docs/[...slug]">) {
             Mermaid,
             TypeTable,
             Wrapper,
+            CodeBlock,
+            Pre,
+            AutoTypeTable,
             blockquote: Callout as unknown as FC<ComponentProps<"blockquote">>,
             DocsCategory: ({ url }) => {
               return <DocsCategory url={url ?? page.url} />;
@@ -124,17 +127,17 @@ function DocsCategory({ url }: { url: string }) {
 }
 
 export async function generateMetadata(
-  props: PageProps<'/docs/[...slug]'>,
+  props: PageProps<"/docs/[...slug]">,
 ): Promise<Metadata> {
   const { slug = [] } = await props.params;
   const page = source.getPage(slug);
   if (!page)
     return createMetadata({
-      title: 'Not Found',
+      title: "Not Found",
     });
 
   const description =
-    page.data.description ?? 'The library for building documentation sites';
+    page.data.description ?? "The library for building documentation sites";
 
   const image = {
     url: getPageImage(page).url,
@@ -146,7 +149,7 @@ export async function generateMetadata(
     title: page.data.title,
     description,
     openGraph: {
-      url: `/docs/${page.slugs.join('/')}`,
+      url: `/docs/${page.slugs.join("/")}`,
       images: [image],
     },
     twitter: {
