@@ -6,7 +6,6 @@ export function proxy(req: NextRequest) {
   const host = req.headers.get("host") || "";
   const path = url.pathname;
 
-  // Skip static files
   if (
     path.startsWith("/_next") ||
     path.startsWith("/static") ||
@@ -16,32 +15,24 @@ export function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const isRoot = host === "localhost:3000";
-  const isDocs = host.startsWith("docs.localhost");
-
-  // ---------------------------------------------------------
-  // 1️⃣ ROOT DOMAIN → DOCS SUBDOMAIN
-  // ---------------------------------------------------------
-  if (isRoot && (path === "/docs" || path.startsWith("/docs/"))) {
+  const parts = host.split(".");
+  const isDocsSub = parts[0] === "docs";
+  const mainDomain = isDocsSub ? parts.slice(1).join(".") : host;
+  
+  if (isDocsSub  && (path === "/docs" || path.startsWith("/docs/"))) {
     const clean = path.replace(/^\/docs/, "") || "/";
-    url.hostname = "docs.localhost";
+    url.hostname = `docs.${mainDomain}`;
     url.pathname = clean;
     return NextResponse.redirect(url, 302);
   }
 
-  // ---------------------------------------------------------
-  // 2️⃣ DOCS SUBDOMAIN → CLEAN URL (NO /docs PREFIX IN URL)
-  // ---------------------------------------------------------
-  if (isDocs && path.startsWith("/docs")) {
+  if (isDocsSub  && path.startsWith("/docs")) {
     const clean = path.replace(/^\/docs/, "") || "/";
     url.pathname = clean;
-    return NextResponse.redirect(url, 302); // IMPORTANT: fixes your issue
+    return NextResponse.redirect(url, 302);
   }
 
-  // ---------------------------------------------------------
-  // 3️⃣ DOCS SUBDOMAIN → INTERNAL REWRITE TO /docs/*
-  // ---------------------------------------------------------
-  if (isDocs) {
+  if (isDocsSub) {
     const internal = `/docs${path === "/" ? "" : path}`;
     url.pathname = internal;
     return NextResponse.rewrite(url);
