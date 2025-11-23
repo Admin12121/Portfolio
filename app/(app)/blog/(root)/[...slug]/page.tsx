@@ -24,12 +24,12 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
       // <NotFound getSuggestions={() => getSuggestions(params.slug.join(' '))} />
     );
 
-  const { body: Mdx, toc, lastModified } = await page.data.load();
-
+  const { body: Mdx, toc } = await page.data.load();
+  console.log(page.data)
   return (
     <DocsPage
       toc={toc}
-      // lastUpdate={lastModified ? new Date(lastModified) : undefined}
+      lastUpdate={page.data.date ? new Date(page.data.date) : undefined}
       // full={page.data.full}
     >
       <title>{page.data.title}</title>

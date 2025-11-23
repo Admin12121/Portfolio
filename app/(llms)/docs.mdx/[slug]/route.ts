@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { getAllBlogs } from "@/features/blog/data";
 import { getLLMText } from "@/features/blog/lib/get-llm-text";
-import { blog as blogdata } from "@/lib/source";
+import { source } from "@/lib/source";
 import type { Post } from "@/features/blog/types/blog";
 
 export async function generateStaticParams() {
@@ -29,7 +29,7 @@ export async function GET(
 
   try {
     const pageSlug = blog.url.replace("/blog/", "");
-    const page = blogdata.getPage([pageSlug]);
+    const page = source.getPage([pageSlug]);
 
     if (!page) {
       return new Response(
@@ -42,10 +42,8 @@ export async function GET(
       );
     }
 
-    // Extract text content from structuredData if available
     let textContent = "";
     
-    // Defensive access; some plugins might add structuredData
     const structuredContents = (page as any)?.data?.structuredData?.contents;
     if (Array.isArray(structuredContents)) {
       textContent = structuredContents
@@ -58,12 +56,10 @@ export async function GET(
         .filter(Boolean)
         .join("\n\n");
     } else {
-      // Fallback: try processedMarkdown if you later enable it
       const processed = (page as any)?.data?.processedMarkdown;
       if (typeof processed === "string") {
         textContent = processed;
       } else {
-        // Final fallback: just combine title + description
         textContent = [blog.title, blog.description].filter(Boolean).join("\n\n");
       }
     }

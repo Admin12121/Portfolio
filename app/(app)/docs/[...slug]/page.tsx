@@ -48,12 +48,12 @@ export default async function Page(props: PageProps<"/docs/[...slug]">) {
       // <NotFound getSuggestions={() => getSuggestions(params.slug.join(' '))} />
     );
 
-  const { body: Mdx, toc, lastModified } = await page.data.load();
-
+  const { body: Mdx, toc } = await page.data.load();
+  
   return (
     <DocsPage
       toc={toc}
-      // lastUpdate={lastModified ? new Date(lastModified) : undefined}
+      lastUpdate={page.data.date ? new Date(page.data.date) : undefined}
     >
       <h1 className="text-[1.75em] font-semibold">{page.data.title}</h1>
       <p className="text-lg text-fd-muted-foreground mb-2">
