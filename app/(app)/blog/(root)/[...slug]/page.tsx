@@ -25,12 +25,10 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
     );
 
   const { body: Mdx, toc } = await page.data.load();
-  console.log(page.data)
   return (
     <DocsPage
       toc={toc}
       lastUpdate={page.data.date ? new Date(page.data.date) : undefined}
-      // full={page.data.full}
     >
       <title>{page.data.title}</title>
       <meta name="description" content={page.data.description} />

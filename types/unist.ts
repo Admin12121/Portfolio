@@ -1,4 +1,4 @@
-import type { Node } from "unist-builder";
+import type { Node, Parent } from "unist";
 
 export interface UnistNode extends Node {
   type: string;
@@ -17,7 +17,7 @@ export interface UnistNode extends Node {
   children?: UnistNode[];
 }
 
-export interface UnistTree extends Node {
+export interface UnistTree extends Parent {
   children: UnistNode[];
 }
 

@@ -15,16 +15,20 @@ import { getPageTreePeers } from "fumadocs-core/page-tree";
 export const revalidate = false;
 
 export default async function DocsIndexPage() {
-  // Attempt fallbacks to resolve the docs index page:
-  // 1. Explicit 'index' slug
-  // 2. Empty slug []
-  // 3. First root child in the docs tree (as a last resort)
+  const firstPageChild = source.pageTree.children.find(
+    (child: any) =>
+      child &&
+      typeof child === "object" &&
+      "url" in child &&
+      typeof (child as any).url === "string",
+  ) as { url: string } | undefined;
+
   const page =
     source.getPage(["index"]) ||
     source.getPage([]) ||
-    (source.pageTree.children.length
+    (firstPageChild
       ? source.getPage(
-          source.pageTree.children[0].url
+          (firstPageChild as { url: string }).url
             .replace(/^\/docs\/?/, "")
             .split("/")
             .filter(Boolean),

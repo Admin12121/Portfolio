@@ -1,19 +1,21 @@
 import { visit } from "unist-util-visit";
 
-import type { UnistNode, UnistTree } from "@/types/unist";
+import type { Plugin } from "unified";
 
-export function rehypeAddQueryParams(params: Record<string, string>) {
-  return (tree: UnistTree) => {
-    visit(tree, (node: UnistNode) => {
+export const rehypeAddQueryParams: Plugin<[Record<string, string>]> = (
+  params,
+) => {
+  return (tree) => {
+    visit(tree, (node: any) => {
       if (
-        node.type !== "element" ||
+        node?.type !== "element" ||
         node?.tagName !== "a" ||
         !node?.properties?.href
       ) {
         return;
       }
 
-      const href = node.properties?.href as string | undefined;
+      const href = node.properties.href as string;
 
       if (
         !href ||
@@ -28,8 +30,7 @@ export function rehypeAddQueryParams(params: Record<string, string>) {
       node.properties.href = addQueryParams(href, params);
     });
   };
-}
-
+};
 
 export function urlToName(url: string) {
   return url.replace(/(^\w+:|^)\/\//, "");
@@ -37,7 +38,7 @@ export function urlToName(url: string) {
 
 export function addQueryParams(
   urlString: string,
-  query: Record<string, string>
+  query: Record<string, string>,
 ): string {
   try {
     const url = new URL(urlString);
