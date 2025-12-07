@@ -20,7 +20,7 @@ const Navbar = () => {
   React.useEffect(() => {
     setTarget(computeOppositeDomain());
   }, []);
-  
+
   return (
     <SiteHeaderWrapper
       className={cn(
@@ -53,11 +53,12 @@ const Navbar = () => {
         </Link>
         <div className="md:col-span-10 flex items-center justify-end pr-5 md:pr-0 relative">
           <ul className="md:flex items-center divide-x w-max shrink-0">
-            {navMenu.map((menu) => (
-              <NavLink key={menu.name} href={menu.path}>
-                {menu.name}
-              </NavLink>
-            ))}
+            {target.includes("docs") &&
+              navMenu.map((menu) => (
+                <NavLink key={menu.name} href={menu.path}>
+                  {menu.name}
+                </NavLink>
+              ))}
             <NavLink
               href="https://github.com/Admin12121"
               className=" bg-muted/20 border-r"

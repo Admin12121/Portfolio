@@ -1,0 +1,88 @@
+---
+title: Networking
+description: Deep dive into networking concepts, protocols, and technologies.
+author: admin12121
+date: 2025-11-23
+---
+
+## Introduction
+
+Networking is the practice of connecting computers and other digital devices so they can share information, resources, and services. It allows data to move from one device to another through physical or wireless communication paths.
+A network can be as small as two devices linked together or as large as the global internet. Devices in a network communicate using agreed-upon rules called protocols (like TCP/IP). Networking enables tasks such as accessing websites, sending emails, sharing files, streaming videos, and connecting servers, phones, routers, and more.
+
+## Network Types
+
+Network types differ based on their size, topology, and connectivity. They are important because they enable communication and data sharing across various devices and locations. Networks can be classified into several types based on their size, topology, and connectivity. 
+
+**Local Area Network (LAN) / Wireless Local Area Network (WLAN)**: 
+LAN and WLAN are networks that cover a small area, such as a home or office. they are typically wired and use Ethernet cables or wireless and use Wi-Fi connections.  There's nothing different between a LAN or WLAN, other than WLAN's introduce the ability to transmit data without cables. It is mainly a security designation. 
+
+**Wide Area Network (WAN)**: 
+The Wide Area Network (WAN) describes networks that span large geographic areas and interconnect multiple LANs (Local Area Networks). The public Internet is the most visible example of a WAN, but the term also applies to privately managed long‑distance networks that connect branch offices, data centers, and cloud regions. WAN links can be built from many different transport technologies, including leased lines (E1/T1, T3, EoMPLS), DWDM/fiber, broadband (DSL, cable, fiber to the home), cellular (4G/5G), and carrier MPLS fabrics, and are characterized by longer latency, lower bandwidth (relative to LAN), and higher cost per bit than local networks.
+
+### VPN (Virtual Private Network)
+
+A VPN is a secure network that allows users to connect to a private network over the internet. VPNs are commonly used to access company resources remotely, protect sensitive data, and bypass internet censorship. They work by creating a secure tunnel between the user's device and the VPN server, encrypting all data transmitted through the tunnel.
+
+There are three main types of VPNs:
+
+**Remote Access VPN** 
+lets an individual user securely connect to a company’s private network from anywhere, like from home or a café. It creates an encrypted tunnel between the user’s device and the VPN server so that no one can spy on the data. This is commonly used by employees to safely access internal files, apps, or systems when they are not in the office.
+
+**Site-to-Site VPN**
+connects two entire networks together, such as a company’s head office and branch office. Instead of connecting one device at a time, it links whole networks through a secure, encrypted tunnel over the internet. This allows devices in both locations to communicate as if they were in the same building, making it useful for large companies or organizations with multiple offices.
+
+**SSL VPN**
+allows remote users to access a private network using just a web browser—no special VPN app needed. It uses the same secure technology that protects HTTPS websites, creating an encrypted tunnel between the user and the server. This makes it simple to use while still keeping data protected, and it's helpful for accessing internal systems safely from any device with a browser.
+
+### Networking Topologies
+
+A Networking topologies describe how devices (like computers, switches, and routers) are arranged and connected in a network. The layout affects the network’s performance, reliability, and how easily it can be expanded or fixed. 
+
+**Connections**
+Connections are the physical or wireless links that join devices in a network. These can be cables (like Ethernet or fiber) or wireless signals (like Wi-Fi). The type and number of connections decide how data travels between devices and how fast or reliable the network is.
+
+**Nodes**
+Nodes are any active devices in a network—such as computers, servers, routers, switches, or printers. A node can send, receive, or forward data. In simple terms, every device on a network that communicates is a node.
+
+#### Classifications
+
+**Point-to-Point Topology**
+This is the simplest form: one device is directly connected to another. Data travels in a straight path between the two. This setup is fast and secure because only two nodes are involved, but it doesn't scale well for larger networks.
+
+**Bus Topology**
+All devices are connected to a single central cable called a "bus." Data travels along this cable, and each device checks whether the data is meant for it. It's simple and cheap but can become slow or fail completely if the main cable breaks.
+
+**Star Topology**
+All devices connect to a central device like a switch or hub. If one computer fails, the rest keep working, but if the central device fails, the entire network goes down. This is one of the most common and efficient topologies.
+
+**Ring Topology**
+Devices are arranged in a closed loop. Data travels in one direction (or both, in dual-ring systems) around the ring. If one link breaks, the entire network can be affected, though modern rings often include fault-tolerant features.
+
+**Mesh Topology**
+Every device is connected to every other device. This creates many paths for data, making the network very reliable. Even if one link fails, data can take another route. However, it is expensive and complex to set up due to the many cables required.
+
+**Tree Topology**
+This combines characteristics of star and bus topologies. Devices are grouped in star-like structures, and these groups connect through a main cable like a bus. It supports easy expansion and is commonly used in large networks.
+
+**Hybrid Topology**
+A hybrid topology mixes two or more different topologies (like star-ring or star-bus). Companies use hybrids to balance cost, performance, and reliability. Because it blends multiple designs, it can be customized to fit any network’s needs.
+
+## Proxy (Overview)
+A proxy is a server that sits between a user and the internet. Instead of connecting directly to a website, the user’s request goes to the proxy first. The proxy then forwards the request, receives the response, and sends it back to the user. This setup can provide benefits like privacy, security, caching, filtering, and load management. Proxies can operate in different roles depending on where they are placed and how transparent they are to users.
+
+### Dedicated Proxy / Forward Proxy
+A Dedicated Proxy, also called a Forward Proxy, is a proxy used by clients (users or devices) to access external websites or services. It represents the client. When a user sends a request, the forward proxy hides the user’s real IP address and replaces it with its own. It can filter traffic, block certain sites, cache frequently visited pages, or enforce company browsing policies. Dedicated forward proxies are commonly used for privacy, bypassing geo-restrictions, controlling employee internet usage, or analyzing outbound traffic. Only the internal network knows about this proxy; external servers see the proxy as the client.
+
+### Reverse Proxy
+A Reverse Proxy sits in front of servers instead of users. It represents the server. When clients send requests to a website, the reverse proxy receives them first and then decides which backend server should handle the request. This setup hides the real servers’ IP addresses, improves performance through caching, balances traffic across multiple servers, and adds security by filtering malicious requests. Reverse proxies are commonly used by large websites and cloud platforms to protect their servers and handle heavy traffic efficiently.
+
+### Transparent Proxy
+A Transparent Proxy intercepts traffic without requiring users to configure anything. Users may not even know a proxy is being used. Because it is "transparent," it does not modify the request or hide the client’s IP address. Organizations use transparent proxies to enforce rules like content filtering or bandwidth control. ISPs may use them for caching or monitoring. While convenient, transparent proxies raise privacy concerns because they inspect traffic without user awareness.
+
+### Non-Transparent Proxy
+A Non-Transparent Proxy requires explicit configuration on the client device or browser. It does change traffic—such as hiding the user’s IP, applying authentication, or rewriting requests. It is commonly used when users need anonymity, content filtering, security checks, or manual control. Non-transparent proxies give more privacy and flexibility than transparent ones because the user knowingly configures them and understands the behavior.
+
+## Networking models
+Networking models (OSI and TCP/IP) are layered abstractions that break complex network communication into smaller, well-defined functions. They exist to standardize how devices talk, enable interoperability between vendors, simplify design and troubleshooting, and allow independent development of technologies at each layer. By separating concerns (e.g., "how do I send bytes on a wire?" vs "how do I present data to an application?"), models make it possible to mix and match protocols and hardware and to reason about failures and performance.
+

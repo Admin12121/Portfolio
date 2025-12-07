@@ -18,7 +18,7 @@ export default function Layout({ children }: LayoutProps<"/docs">) {
         enabled: false
       }}
     >
-      <main className="md:max-w-3xl">{children}</main>
+      <main className="mx-auto md:max-w-3xl">{children}</main>
     </DocsLayout>
   );
 }
