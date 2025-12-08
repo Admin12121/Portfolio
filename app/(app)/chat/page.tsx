@@ -35,7 +35,7 @@ function Lobby() {
   });
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
+    <main className="flex h-[calc(100dvh-160px)] border-x md:max-w-3xl mx-auto w-full flex-col items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
         {wasDestroyed && (
           <div className="bg-red-950/50 border border-red-900 p-4 text-center">
@@ -64,7 +64,7 @@ function Lobby() {
 
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold tracking-tight text-green-500">
-            {">"}private_chat
+            {">_ "}private_chat
           </h1>
           <p className="text-zinc-500 text-sm">
             A private, self-destructing chat room.

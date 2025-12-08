@@ -13,8 +13,7 @@ export async function proxy(req: NextRequest) {
     path.startsWith("/_next") ||
     path.startsWith("/static") ||
     path === "/favicon.ico" ||
-    path.startsWith("/assets") ||
-    path.startsWith("/api")
+    path.startsWith("/assets")
   ) {
     return NextResponse.next();
   }
@@ -62,23 +61,31 @@ export async function proxy(req: NextRequest) {
   }
 
   if (isChatSub) {
-    // ============= AUTH LOGIC FOR CHAT ROOMS =============
-    // Check if the path matches a room pattern: /roomid or /roomid/...
-    const roomMatch = path.match(/^\/([^/]+)/);
+    // Let API calls through unchanged on chat subdomain
+    if (path.startsWith("/api")) {
+      return NextResponse.next();
+    }
 
-    // If it's a room path (not just chat.domain/ or chat.domain/create etc.)
-    if (roomMatch && path !== "/" && !path.startsWith("/create")) {
-      const roomId = roomMatch[1];
+    // ============= AUTH LOGIC FOR CHAT ROOMS =============
+    const firstSegment = path.split("/")[1] || "";
+
+    // Only treat as a room when it's not the chat home, create, or api
+    const isPotentialRoom =
+      path !== "/" &&
+      firstSegment !== "chat" &&
+      firstSegment !== "create" &&
+      firstSegment !== "api";
+
+    if (isPotentialRoom) {
+      const roomId = firstSegment;
 
       try {
-        // Check if room exists in Redis
         const meta = await redis.hgetall<{
           connected: string[];
           createdAt: number;
         }>(`meta:${roomId}`);
 
         if (!meta || !meta.connected) {
-          // Room doesn't exist - redirect to main chat page with error
           url.hostname = `chat.${mainDomainForChat}`;
           url.pathname = "/";
           url.searchParams.set("error", "room-not-found");
@@ -87,14 +94,12 @@ export async function proxy(req: NextRequest) {
 
         const existingToken = req.cookies.get("x-auth-token")?.value;
 
-        // USER IS ALLOWED TO JOIN ROOM (already has token and is connected)
         if (existingToken && meta.connected.includes(existingToken)) {
           const internal = `/chat${path === "/" ? "" : path}`;
           url.pathname = internal;
           return NextResponse.rewrite(url);
         }
 
-        // USER IS NOT ALLOWED TO JOIN (room is full)
         if (meta.connected.length >= 2) {
           url.hostname = `chat.${mainDomainForChat}`;
           url.pathname = "/";
@@ -102,7 +107,6 @@ export async function proxy(req: NextRequest) {
           return NextResponse.redirect(url, 302);
         }
 
-        // USER IS NEW - create token and add to room
         const response = NextResponse.rewrite(
           new URL(`/chat${path === "/" ? "" : path}`, req.url),
         );
@@ -115,7 +119,6 @@ export async function proxy(req: NextRequest) {
           sameSite: "strict",
         });
 
-        // Add token to connected users
         await redis.hset(`meta:${roomId}`, {
           connected: [...meta.connected, token],
         });
@@ -123,14 +126,12 @@ export async function proxy(req: NextRequest) {
         return response;
       } catch (error) {
         console.error("Redis error in middleware:", error);
-        // On error, allow the request through
         const internal = `/chat${path === "/" ? "" : path}`;
         url.pathname = internal;
         return NextResponse.rewrite(url);
       }
     }
 
-    // For non-room paths on chat subdomain (like home, create, etc.)
     const internal = `/chat${path === "/" ? "" : path}`;
     url.pathname = internal;
     return NextResponse.rewrite(url);

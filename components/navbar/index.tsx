@@ -4,15 +4,27 @@ import React from "react";
 import Link from "next/link";
 import { SiteHeaderWrapper } from "./site-header-wrapper";
 
-function computeOppositeDomain() {
-  const host = window.location.host;
-  const protocol = window.location.protocol;
+export function computeOppositeDomain(): string {
+  const { protocol, host } = window.location;
+  const [hostname, port] = host.split(":");
+  const withPort = (h: string) => (port ? `${h}:${port}` : h);
 
-  if (host.startsWith("docs.")) {
-    return `${protocol}//${host.replace("docs.", "")}/`;
+  const baseDomain = (() => {
+    if (hostname === "localhost" || hostname.endsWith(".localhost")) {
+      return "localhost";
+    }
+    const parts = hostname.split(".");
+    if (parts.length >= 2) {
+      return parts.slice(-2).join(".");
+    }
+    return hostname;
+  })();
+  if (hostname.startsWith("docs.")) {
+    return `${protocol}//${withPort(baseDomain)}/`;
   }
-  return `${protocol}//docs.${host}/`;
+  return `${protocol}//${withPort(`docs.${baseDomain}`)}/`;
 }
+
 
 const Navbar = () => {
   const [target, setTarget] = React.useState("/");
@@ -77,7 +89,7 @@ const Navbar = () => {
               </svg>
             </NavLink>
           </ul>
-          <ModeSwitcher className="ml-[20px] w-[35px] cursor-pointer opacity-50 hover:opacity-100 duration-200 transition-all ease-in-out" />
+          <ModeSwitcher className="ml-5 w-[35px] cursor-pointer opacity-50 hover:opacity-100 duration-200 transition-all ease-in-out" />
         </div>
       </div>
     </SiteHeaderWrapper>
