@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { redis } from "./lib/redis"; // Adjust path as needed
+import { redis } from "./lib/redis";
 import { nanoid } from "nanoid";
+import { realtime } from "./lib/realtime";
 
 export async function proxy(req: NextRequest) {
   const url = req.nextUrl.clone();
   const host = req.headers.get("host") || "";
   const path = url.pathname;
 
-  // Skip middleware for static assets
   if (
     path.startsWith("/_next") ||
     path.startsWith("/static") ||
@@ -20,30 +20,9 @@ export async function proxy(req: NextRequest) {
 
   const parts = host.split(".");
 
-  // ============= DOCS SUBDOMAIN LOGIC =============
-  const isDocsSub = parts[0] === "docs";
-  const mainDomainForDocs = isDocsSub ? parts.slice(1).join(".") : host;
+  // Docs logic unchanged...
 
-  if (isDocsSub && (path === "/docs" || path.startsWith("/docs/"))) {
-    const clean = path.replace(/^\/docs/, "") || "/";
-    url.hostname = `docs.${mainDomainForDocs}`;
-    url.pathname = clean;
-    return NextResponse.redirect(url, 302);
-  }
-
-  if (isDocsSub && path.startsWith("/docs")) {
-    const clean = path.replace(/^\/docs/, "") || "/";
-    url.pathname = clean;
-    return NextResponse.redirect(url, 302);
-  }
-
-  if (isDocsSub) {
-    const internal = `/docs${path === "/" ? "" : path}`;
-    url.pathname = internal;
-    return NextResponse.rewrite(url);
-  }
-
-  // ============= CHAT SUBDOMAIN LOGIC =============
+  // CHAT subdomain
   const isChatSub = parts[0] === "chat";
   const mainDomainForChat = isChatSub ? parts.slice(1).join(".") : host;
 
@@ -61,15 +40,11 @@ export async function proxy(req: NextRequest) {
   }
 
   if (isChatSub) {
-    // Let API calls through unchanged on chat subdomain
     if (path.startsWith("/api")) {
       return NextResponse.next();
     }
 
-    // ============= AUTH LOGIC FOR CHAT ROOMS =============
     const firstSegment = path.split("/")[1] || "";
-
-    // Only treat as a room when it's not the chat home, create, or api
     const isPotentialRoom =
       path !== "/" &&
       firstSegment !== "chat" &&
@@ -83,6 +58,7 @@ export async function proxy(req: NextRequest) {
         const meta = await redis.hgetall<{
           connected: string[];
           createdAt: number;
+          adminToken?: string;
         }>(`meta:${roomId}`);
 
         if (!meta || !meta.connected) {
@@ -100,7 +76,7 @@ export async function proxy(req: NextRequest) {
           return NextResponse.rewrite(url);
         }
 
-        if (meta.connected.length >= 2) {
+        if (meta.connected.length >= 5) {
           url.hostname = `chat.${mainDomainForChat}`;
           url.pathname = "/";
           url.searchParams.set("error", "room-full");
@@ -119,9 +95,23 @@ export async function proxy(req: NextRequest) {
           sameSite: "strict",
         });
 
-        await redis.hset(`meta:${roomId}`, {
-          connected: [...meta.connected, token],
-        });
+        const nextConnected = [...meta.connected, token];
+        const nextMeta: Record<string, unknown> = {
+          connected: nextConnected,
+          createdAt: meta.createdAt,
+        };
+
+        // Assign admin to first joiner
+        if (!meta.adminToken) {
+          nextMeta["adminToken"] = token;
+        } else {
+          nextMeta["adminToken"] = meta.adminToken;
+        }
+
+        await redis.hset(`meta:${roomId}`, nextMeta);
+
+        // Emit a join presence event (username/displayName filled by profile later)
+        await realtime.channel(roomId).emit("chat.join", {});
 
         return response;
       } catch (error) {

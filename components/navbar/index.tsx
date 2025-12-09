@@ -3,35 +3,61 @@
 import React from "react";
 import Link from "next/link";
 import { SiteHeaderWrapper } from "./site-header-wrapper";
+import clsx from "clsx";
+import { ModeSwitcher } from "./mode-switch";
+import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
-export function computeOppositeDomain(): string {
+function getRegistrableBase(hostname: string): string {
+  if (hostname === "localhost" || hostname.endsWith(".localhost")) {
+    return "localhost";
+  }
+
+  const parts = hostname.split(".");
+
+  const multiPartSuffixes = new Set(["com.np"]);
+
+  if (parts.length <= 2) {
+    return hostname;
+  }
+
+  const last2 = parts.slice(-2).join(".");
+  const last3 = parts.slice(-3).join(".");
+  if (multiPartSuffixes.has(last2)) {
+    return last3;
+  }
+  return last2;
+}
+
+function getOrigins() {
   const { protocol, host } = window.location;
   const [hostname, port] = host.split(":");
   const withPort = (h: string) => (port ? `${h}:${port}` : h);
 
-  const baseDomain = (() => {
-    if (hostname === "localhost" || hostname.endsWith(".localhost")) {
-      return "localhost";
-    }
-    const parts = hostname.split(".");
-    if (parts.length >= 2) {
-      return parts.slice(-2).join(".");
-    }
-    return hostname;
-  })();
-  if (hostname.startsWith("docs.")) {
-    return `${protocol}//${withPort(baseDomain)}/`;
-  }
-  return `${protocol}//${withPort(`docs.${baseDomain}`)}/`;
+  const base = getRegistrableBase(hostname);
+
+  const mainOrigin = `${protocol}//${withPort(base)}`;
+  const docsOrigin = `${protocol}//${withPort(`docs.${base}`)}`;
+
+  return { mainOrigin, docsOrigin };
 }
 
+function buildMainHref(path: string, origins: { mainOrigin: string }): string {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  if (typeof window !== "undefined" && window.location.origin === origins.mainOrigin) {
+    return normalized;
+  }
+  return `${origins.mainOrigin}${normalized}`;
+}
 
 const Navbar = () => {
-  const [target, setTarget] = React.useState("/");
+  const [origins, setOrigins] = React.useState({ mainOrigin: "", docsOrigin: "" });
 
   React.useEffect(() => {
-    setTarget(computeOppositeDomain());
+    setOrigins(getOrigins());
   }, []);
+
+  const docsHomeHref = origins.docsOrigin ? `${origins.docsOrigin}/` : "/";
 
   return (
     <SiteHeaderWrapper
@@ -46,7 +72,7 @@ const Navbar = () => {
         className="screen-line-before screen-line-after mx-auto flex h-14 items-center justify-between gap-2 border-x border-edge px-2 after:z-1 after:transition-[background-color] sm:gap-4 md:max-w-3xl"
         data-header-container
       >
-        <Link href={target} className="ml-4">
+        <Link href={docsHomeHref} className="ml-4">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -63,14 +89,19 @@ const Navbar = () => {
             <line x1="12" x2="20" y1="19" y2="19"></line>
           </svg>
         </Link>
+
         <div className="md:col-span-10 flex items-center justify-end pr-5 md:pr-0 relative">
           <ul className="md:flex items-center divide-x w-max shrink-0">
-            {target.includes("docs") &&
-              navMenu.map((menu) => (
-                <NavLink key={menu.name} href={menu.path}>
-                  {menu.name}
-                </NavLink>
-              ))}
+            {navMenu.map((menu) => (
+              <NavLink
+                key={menu.name}
+                href={origins.mainOrigin ? buildMainHref(menu.path, origins) : menu.path}
+                activePath={menu.path}
+              >
+                {menu.name}
+              </NavLink>
+            ))}
+
             <NavLink
               href="https://github.com/Admin12121"
               className=" bg-muted/20 border-r"
@@ -107,27 +138,23 @@ export const navMenu = [
   },
 ];
 
-import { usePathname } from "next/navigation";
-
-const useLocation = () => {
-  const pathname = usePathname();
-  return { pathname: pathname ?? "/" };
-};
-import clsx from "clsx";
-import { ModeSwitcher } from "./mode-switch";
-import { cn } from "@/lib/utils";
-
 type Props = {
   href: string;
   children: React.ReactNode;
   className?: string;
   external?: boolean;
+  activePath?: string;
 };
 
-export const NavLink = ({ href, children, className, external }: Props) => {
+const useLocation = () => {
+  const pathname = usePathname();
+  return { pathname: pathname ?? "/" };
+};
+
+export const NavLink = ({ href, children, className, external, activePath }: Props) => {
   const location = useLocation();
   const currentPath = location.pathname;
-  const isActive = currentPath === href;
+  const isActive = activePath ? currentPath === activePath : currentPath === href;
 
   return (
     <li className={clsx("relative group h-full", className)}>
@@ -140,6 +167,7 @@ export const NavLink = ({ href, children, className, external }: Props) => {
         )}
         target={external ? "_blank" : "_self"}
         rel={external ? "noopener noreferrer" : undefined}
+        prefetch={false}
       >
         {children}
       </Link>

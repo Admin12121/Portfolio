@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@base-ui-components/react": "^1.0.0-rc.0",
     "@elysiajs/cors": "^1.4.0",
     "@elysiajs/eden": "^1.4.5",
     "@radix-ui/react-collapsible": "^1.1.12",
