@@ -13,6 +13,8 @@ import Link from "next/link";
 import { Feedback } from "@/components/feedback";
 import { onRateAction } from "@/lib/github";
 import { NotFound } from "@/components/not-found";
+import { Mermaid } from "@/components/mdx/mermaid";
+import { FramedImage, YouTubeEmbed } from "@/components/embed";
 
 export default async function Page(props: PageProps<"/blog/[...slug]">) {
   const params = await props.params;
@@ -49,8 +51,11 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
             Accordions,
             CodeBlock,
             Pre,
+            Mermaid,
             AutoTypeTable,
             Link,
+            YouTubeEmbed,
+            FramedImage,
           }}
         ></Mdx>
       </div>
@@ -63,19 +68,18 @@ export async function generateStaticParams() {
   return source.generateParams();
 }
 
-
 export async function generateMetadata(
-  props: PageProps<'/docs/[...slug]'>,
+  props: PageProps<"/docs/[...slug]">,
 ): Promise<Metadata> {
   const { slug = [] } = await props.params;
   const page = source.getPage(slug);
   if (!page)
     return createMetadata({
-      title: 'Not Found',
+      title: "Not Found",
     });
 
   const description =
-    page.data.description ?? 'The library for building documentation sites';
+    page.data.description ?? "The library for building documentation sites";
 
   const image = {
     url: getPageImage(page).url,
@@ -87,7 +91,7 @@ export async function generateMetadata(
     title: page.data.title,
     description,
     openGraph: {
-      url: `/docs/${page.slugs.join('/')}`,
+      url: `/docs/${page.slugs.join("/")}`,
       images: [image],
     },
     twitter: {

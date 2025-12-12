@@ -40,6 +40,12 @@ const geistSansBold = localFont({
   weight: "700",
 });
 
+const FiraCodeNerd = localFont({
+  src: "./fonts/FiraCodeNerdFont-Regular.ttf",
+  variable: "--font-nerd",
+  weight: "700",
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_INFO.url),
   alternates: {
@@ -120,7 +126,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSansLight.variable} ${geistSansRegular.variable} ${geistSansMedium.variable} ${geistSansSemibold.variable} ${geistSansBold.variable}`}
+        className={`${FiraCodeNerd.variable} ${geistSansLight.variable} ${geistSansRegular.variable} ${geistSansMedium.variable} ${geistSansSemibold.variable} ${geistSansBold.variable}`}
       >
         <RootProvider>
           <Providers>

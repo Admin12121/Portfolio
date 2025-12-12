@@ -28,6 +28,7 @@ import { NotFound } from "@/components/not-found";
 import { PathUtils } from "fumadocs-core/source";
 import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
 import { AutoTypeTable } from "fumadocs-typescript/ui";
+import { FramedImage, YouTubeEmbed } from "@/components/embed";
 
 function PreviewRenderer({ preview }: { preview: string }): ReactNode {
   if (preview && preview in Preview) {
@@ -105,6 +106,8 @@ export default async function Page(props: PageProps<"/docs/[...slug]">) {
             },
             Installation,
             Customisation,
+            YouTubeEmbed,
+            FramedImage,
           })}
         />
         {page.data.index ? <DocsCategory url={page.url} /> : null}
