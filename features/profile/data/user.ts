@@ -7,17 +7,13 @@ export const USER: User = {
   username: "admin12121",
   gender: "male",
   pronouns: "he/him",
-  bio: "Developer. Building things, learning always.",
-  flipSentences: [
-    "Developer",
-    "Hacker",
-    "Code Crafter",
-  ],
+  bio: "Hacker &amp; Developer",
+  flipSentences: ["Developer", "Hacker", "Code Crafter"],
   address: "Nepal",
-  phoneNumber: "", 
-  email: "", 
+  phoneNumber: "",
+  email: "",
   website: "https://biki.com.np",
-  jobTitle: "Hacker & Developer",
+  jobTitle: "Hard core Red Teaming",
   jobs: [
     // {
     //   title: "Founder & Full Stack Developer",
@@ -33,7 +29,7 @@ Currently studying at [Softwarica College](https://softwarica.edu.np/), I specia
 Let's connect and collaborate on something awesome!
   `,
   avatar: "https://avatars.githubusercontent.com/u/131951081?v=4",
-  ogImage: "https://avatars.githubusercontent.com/u/131951081?v=4",
+  ogImage: "/images/og.webp",
   namePronunciationUrl: "",
   keywords: [
     "hacker",

@@ -44,14 +44,20 @@ function getOrigins() {
 
 function buildMainHref(path: string, origins: { mainOrigin: string }): string {
   const normalized = path.startsWith("/") ? path : `/${path}`;
-  if (typeof window !== "undefined" && window.location.origin === origins.mainOrigin) {
+  if (
+    typeof window !== "undefined" &&
+    window.location.origin === origins.mainOrigin
+  ) {
     return normalized;
   }
   return `${origins.mainOrigin}${normalized}`;
 }
 
 const Navbar = () => {
-  const [origins, setOrigins] = React.useState({ mainOrigin: "", docsOrigin: "" });
+  const [origins, setOrigins] = React.useState({
+    mainOrigin: "",
+    docsOrigin: "",
+  });
 
   React.useEffect(() => {
     setOrigins(getOrigins());
@@ -90,12 +96,16 @@ const Navbar = () => {
           </svg>
         </Link>
 
-        <div className="md:col-span-10 flex items-center justify-end pr-5 md:pr-0 relative">
-          <ul className="md:flex items-center divide-x w-max shrink-0">
+        <div className="md:col-span-10 flex items-center justify-end pr-0 relative">
+          <ul className="flex items-center divide-x w-max shrink-0">
             {navMenu.map((menu) => (
               <NavLink
                 key={menu.name}
-                href={origins.mainOrigin ? buildMainHref(menu.path, origins) : menu.path}
+                href={
+                  origins.mainOrigin
+                    ? buildMainHref(menu.path, origins)
+                    : menu.path
+                }
                 activePath={menu.path}
               >
                 {menu.name}
@@ -104,7 +114,7 @@ const Navbar = () => {
 
             <NavLink
               href="https://github.com/Admin12121"
-              className=" bg-muted/20 border-r"
+              className="bg-muted/20 border-r"
               external
             >
               <svg
@@ -151,10 +161,18 @@ const useLocation = () => {
   return { pathname: pathname ?? "/" };
 };
 
-export const NavLink = ({ href, children, className, external, activePath }: Props) => {
+export const NavLink = ({
+  href,
+  children,
+  className,
+  external,
+  activePath,
+}: Props) => {
   const location = useLocation();
   const currentPath = location.pathname;
-  const isActive = activePath ? currentPath === activePath : currentPath === href;
+  const isActive = activePath
+    ? currentPath === activePath
+    : currentPath === href;
 
   return (
     <li className={clsx("relative group h-full", className)}>

@@ -15,6 +15,8 @@ import { onRateAction } from "@/lib/github";
 import { NotFound } from "@/components/not-found";
 import { Mermaid } from "@/components/mdx/mermaid";
 import { FramedImage, YouTubeEmbed } from "@/components/embed";
+import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 export default async function Page(props: PageProps<"/blog/[...slug]">) {
   const params = await props.params;
@@ -30,6 +32,9 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
   return (
     <DocsPage
       toc={toc}
+      article={{
+        className: "pt-[15px]!",
+      }}
       lastUpdate={page.data.date ? new Date(page.data.date) : undefined}
     >
       <title>{page.data.title}</title>

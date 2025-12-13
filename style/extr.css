@@ -298,11 +298,12 @@
         var(--fd-layout-offset),
         calc(50vw - 10vw / 2 - var(--fd-page-width) / 2)
     ) !important;
-    transform: translateX(50%);
+    transform: translateX(30%);
 }
 
 #nd-page {
     padding-right: 0;
+    padding-top: 0;
 }
 
 #nd-tocnav {
