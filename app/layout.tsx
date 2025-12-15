@@ -6,7 +6,7 @@ import localFont from "next/font/local";
 import { META_THEME_COLORS, SITE_INFO } from "@/config/site";
 import { USER } from "@/features/profile/data/user";
 
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/siteheader";
 import Footer from "@/components/footer";
 import { Providers } from "@/components/provider";
 import { LayoutProvider } from "@/hooks/use-layout";

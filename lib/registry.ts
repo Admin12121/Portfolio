@@ -32,38 +32,46 @@ export function getRegistryComponent(name: string) {
 export async function getRegistryItems(
   filter?: (item: RegistryItem) => boolean,
 ) {
-  const rawIndex = Index as Record<string, any> | undefined;
-
-  if (!rawIndex) return [];
-
-  const entries = Object.values(rawIndex);
+  const entries = collectRegistryEntries(Index as Record<string, any>);
 
   const filtered = filter
-    ? entries.filter((e) => {
-        const name = (e as any)?.name;
-        if (typeof name !== "string") return false;
-        const parsed = registryItemSchema.safeParse(e);
+    ? entries.filter(({ entry }) => {
+        const parsed = registryItemSchema.safeParse(entry);
         if (!parsed.success) return false;
         return filter(parsed.data as any as RegistryItem);
       })
     : entries;
 
   const items = await Promise.all(
-    filtered.map(async (entry) => {
-      const name = (entry as any)?.name;
-      if (typeof name !== "string") return null;
-      return getRegistryItem(name);
+    filtered.map(async ({ name, entry }) => {
+      return getRegistryItem(name, entry);
     }),
   );
 
   return items.filter(Boolean) as RegistryItem[];
 }
 
-export async function getRegistryItem(name: string) {
-  const rawEntry = (Index as Record<string, any>)[name];
-  if (!rawEntry) return null;
+export async function getRegistryCatalog() {
+  const entries = collectRegistryEntries(Index as Record<string, any>);
+  const catalog = await Promise.all(
+    entries.map(async ({ name, entry, categoryPath }) => {
+      const item = await getRegistryItem(name, entry);
+      if (!item) return null;
+      return { item, categoryPath };
+    }),
+  );
+  return catalog.filter(Boolean) as Array<{
+    item: RegistryItem;
+    categoryPath: string[];
+  }>;
+}
 
-  const normalized = normalizeRawRegistryEntry(rawEntry);
+export async function getRegistryItem(name: string, rawEntry?: any) {
+  const foundEntry =
+    rawEntry ?? findRegistryEntryByName(name, Index as Record<string, any>);
+  if (!foundEntry) return null;
+
+  const normalized = normalizeRawRegistryEntry(foundEntry);
 
   const result = registryItemSchema.safeParse(normalized);
   if (!result.success) {
@@ -255,4 +263,48 @@ function normalizeRawRegistryEntry(raw: unknown) {
     ...asAny,
     files: normalizedFiles,
   };
+}
+
+function collectRegistryEntries(
+  indexNode: Record<string, any>,
+  categoryPath: string[] = [],
+) {
+  const entries: Array<{
+    name: string;
+    entry: any;
+    categoryPath: string[];
+  }> = [];
+
+  for (const [key, value] of Object.entries(indexNode ?? {})) {
+    if (!value || typeof value !== "object") continue;
+
+    const looksLikeItem =
+      typeof (value as any).type === "string" ||
+      Array.isArray((value as any).files) ||
+      typeof (value as any).description === "string";
+
+    if (looksLikeItem) {
+      const name = (value as any).name ?? key;
+      entries.push({ name, entry: { ...value, name }, categoryPath });
+      continue;
+    }
+
+    entries.push(
+      ...collectRegistryEntries(value as Record<string, any>, [
+        ...categoryPath,
+        key,
+      ]),
+    );
+  }
+
+  return entries;
+}
+
+function findRegistryEntryByName(
+  name: string,
+  indexNode: Record<string, any>,
+): any | null {
+  const entries = collectRegistryEntries(indexNode);
+  const found = entries.find((e) => e.name === name);
+  return found?.entry ?? null;
 }
