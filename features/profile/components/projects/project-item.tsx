@@ -1,6 +1,5 @@
 import { InfinityIcon, LinkIcon } from "lucide-react";
 import Image from "next/image";
-import React from "react";
 
 import { Icons } from "@/components/icons";
 import { Markdown } from "@/components/markdown";
@@ -38,7 +37,6 @@ export function ProjectItem({
               alt={project.title}
               width={32}
               height={32}
-              quality={100}
               className="mx-4 flex size-6 shrink-0 select-none"
               unoptimized
               aria-hidden="true"

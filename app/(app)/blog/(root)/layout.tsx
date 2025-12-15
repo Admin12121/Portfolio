@@ -1,3 +1,4 @@
+import { Separator } from "@/components/separator";
 import { Button } from "@/components/ui/button";
 import { source } from "@/lib/source";
 import { cn } from "@/lib/utils";
@@ -32,23 +33,5 @@ export default function Layout({ children }: { children: ReactNode }) {
         {children}
       </main>
     </DocsLayout>
-  );
-}
-
-function Separator({ className }: { className?: string }) {
-  return (
-    <div className="w-full flex justify-center">
-      <div
-        className={cn(
-          "relative flex h-8 w-full max-w-3xl",
-          "before:absolute before:left-1/2 before:-translate-x-1/2 before:-z-1",
-          "before:h-8 before:w-full before:max-w-3xl before:content-[''] before:flex",
-          "before:bg-[repeating-linear-gradient(315deg,var(--pattern-foreground)_0,var(--pattern-foreground)_1px,transparent_0,transparent_50%)]",
-          "before:bg-size-[10px_10px] before:[--pattern-foreground:var(--color-edge)]/56 border-t border-b",
-          className,
-          className,
-        )}
-      />
-    </div>
   );
 }

@@ -6,9 +6,9 @@ import { Icons } from "./icons";
 
 const Footer = () => {
   return (
-    <footer className="max-w-screen overflow-x-hidden px-2">
-      <div className="screen-line-before mx-auto border-x border-edge pt-4 md:max-w-3xl">
-
+    <footer className="relative container-wrapper max-w-screen! overflow-x-hidden px-2">
+      <div className="screen-line-before mx-auto border-x border-edge pt-4 container md:fixed:max-w-3xl">
+        <SeparatorH />
         <p className="mb-4 px-4 text-center font-mono text-sm text-balance text-muted-foreground">
           Built by{" "}
           <a
@@ -34,7 +34,7 @@ const Footer = () => {
         <div
           className={cn(
             "screen-line-before screen-line-after flex w-full before:z-1 after:z-1",
-            "bg-[repeating-linear-gradient(315deg,var(--pattern-foreground)_0,var(--pattern-foreground)_1px,transparent_0,transparent_50%)] bg-size-[10px_10px] [--pattern-foreground:var(--color-edge)]/56"
+            "bg-[repeating-linear-gradient(315deg,var(--pattern-foreground)_0,var(--pattern-foreground)_1px,transparent_0,transparent_50%)] bg-size-[10px_10px] [--pattern-foreground:var(--color-edge)]/56",
           )}
         >
           <div className="mx-auto flex items-center justify-center gap-3 border-x border-edge bg-background px-4">
@@ -87,4 +87,23 @@ export default Footer;
 
 function Separator() {
   return <div className="flex h-11 w-px bg-edge" />;
+}
+
+function SeparatorH({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn(
+        "absolute inset-y-0 left-0 right-0 pointer-events-none",
+        "before:absolute before:inset-y-0 before:-right-8 before:w-8 before:border-r",
+        "before:bg-[repeating-linear-gradient(315deg,var(--pattern-foreground)_0,var(--pattern-foreground)_1px,transparent_0,transparent_50%)]",
+        "before:bg-size-[10px_10px] before:[--pattern-foreground:var(--color-edge)]/56",
+
+        "after:absolute after:inset-y-0 after:-left-8 after:w-8 after:border-l",
+        "after:bg-[repeating-linear-gradient(315deg,var(--pattern-foreground)_0,var(--pattern-foreground)_1px,transparent_0,transparent_50%)]",
+        "after:bg-size-[10px_10px] after:[--pattern-foreground:var(--color-edge)]/56",
+
+        className,
+      )}
+    />
+  );
 }

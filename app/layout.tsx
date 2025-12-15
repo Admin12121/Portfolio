@@ -9,6 +9,7 @@ import { USER } from "@/features/profile/data/user";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { Providers } from "@/components/provider";
+import { LayoutProvider } from "@/hooks/use-layout";
 
 const geistSansLight = localFont({
   src: "./fonts/AtAero-Light.woff2",
@@ -129,11 +130,13 @@ export default function RootLayout({
         className={`${FiraCodeNerd.variable} ${geistSansLight.variable} ${geistSansRegular.variable} ${geistSansMedium.variable} ${geistSansSemibold.variable} ${geistSansBold.variable}`}
       >
         <RootProvider>
-          <Providers>
-            <Navbar />
-            {children}
-            <Footer />
-          </Providers>
+          <LayoutProvider>
+            <Providers>
+              <Navbar />
+              {children}
+              <Footer />
+            </Providers>
+          </LayoutProvider>
         </RootProvider>
       </body>
     </html>

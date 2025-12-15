@@ -9,11 +9,12 @@ import { Projects } from "@/features/profile/components/projects";
 // import { Certifications } from "@/features/profile/components/certifications";
 import { ProfileCover } from "@/features/profile/components/profile-cover";
 import { Blogs } from "@/features/blog/components";
+import { Separator } from "@/components/separator";
 
 export default function Home() {
   return (
-    <main className="max-w-screen overflow-x-hidden px-2">
-      <div className="mx-auto md:max-w-3xl">
+    <main className="container-wrapper max-w-screen! overflow-x-hidden">
+      <div className="relative mx-auto px-0! container md:fixed:max-w-3xl">
         <ProfileCover />
         <ProfileHeader />
         <Separator />
@@ -24,8 +25,8 @@ export default function Home() {
         <GitHubContributions />
         <Separator />
 
-         <Projects />
-        <Separator /> 
+        <Projects />
+        <Separator />
 
         {/* <Certifications />
         <Separator /> */}
@@ -37,15 +38,3 @@ export default function Home() {
   );
 }
 
-function Separator({ className }: { className?: string }) {
-  return (
-    <div
-      className={cn(
-        "relative flex h-8 w-full border-x border-edge",
-        "before:absolute before:-left-[100vw] before:-z-1 before:h-8 before:w-[200vw]",
-        "before:bg-[repeating-linear-gradient(315deg,var(--pattern-foreground)_0,var(--pattern-foreground)_1px,transparent_0,transparent_50%)] before:bg-size-[10px_10px] before:[--pattern-foreground:var(--color-edge)]/56",
-        className
-      )}
-    />
-  );
-}

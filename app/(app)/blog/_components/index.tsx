@@ -3,7 +3,7 @@ import React from 'react'
 
 const Blog = () => {
   return (
-    <Blogs banner={true}/>
+    <Blogs banner={true} className="h-[calc(100dvh-160px)]"/>
   )
 }
 

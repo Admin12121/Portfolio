@@ -1,8 +1,13 @@
 import type { NextConfig } from "next";
 import { createMDX } from 'fumadocs-mdx/next';
+import path from "path";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  turbopack: {
+    root: path.join(__dirname, "."),
+  },
+  devIndicators: false,
   images: {
     remotePatterns: [
       {
@@ -11,6 +16,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  
 };
 
 const withMDX = createMDX();
