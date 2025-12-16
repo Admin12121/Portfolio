@@ -8,12 +8,22 @@ import Link from 'fumadocs-core/link';
 
 const HoverCard = HoverCardPrimitive.Root;
 
-function HoverCardTrigger(
-  props: ComponentProps<typeof HoverCardPrimitive.Trigger>,
-) {
+type HoverCardTriggerProps = ComponentProps<typeof HoverCardPrimitive.Trigger> & {
+  children?: React.ReactNode;
+};
+
+function HoverCardTrigger({ children, ...props }: HoverCardTriggerProps) {
+  const { asChild, ...rest } = props;
+
+  // If children are provided, use them directly as the trigger.
+  // Otherwise, render a Link trigger (without forwarding asChild to the DOM).
   return (
     <HoverCardPrimitive.Trigger asChild>
-      <Link {...props} />
+      {children ? (
+        children
+      ) : (
+        <Link {...rest} />
+      )}
     </HoverCardPrimitive.Trigger>
   );
 }

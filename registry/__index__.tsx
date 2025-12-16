@@ -36,6 +36,11 @@ export const Index: Record<string, Record<string, any>> = {
           type: "registry:page",
           target: "README.md",
         },
+        {
+          path: "registry/bases/malware/index.json",
+          type: "registry:document",
+          target: "index.json",
+        },
       ],
       categories: ["Malware"],
       meta: { iframeHeight: "1000px" },

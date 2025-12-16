@@ -1,8 +1,10 @@
 "use client";
 
 import * as React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
+  ArrowUpRight,
   Check,
   ChevronRight,
   Clipboard,
@@ -164,7 +166,7 @@ function BlockViewerProvider({
         className="group/block-view-wrapper flex min-w-0 scroll-mt-24 flex-col-reverse items-stretch gap-4 overflow-hidden md:flex-col"
         style={
           {
-            "--height": item?.meta?.iframeHeight ?? "930px",
+            "--height": "930px",
           } as React.CSSProperties
         }
       >
@@ -195,6 +197,7 @@ function BlockViewerToolbar() {
 
 function BlockViewerCode() {
   const { activeFile, highlightedFiles, selectedProject } = useBlockViewer();
+  const [isFullscreen, setIsFullscreen] = React.useState(false);
 
   const file = React.useMemo(() => {
     return highlightedFiles?.find((file) => file.target === activeFile);
@@ -202,90 +205,122 @@ function BlockViewerCode() {
 
   const language = file?.path.split(".").pop() ?? "tsx";
 
-  if (!selectedProject) {
-    return (
-      <div className="bg-code text-code-foreground mr-3.5 flex overflow-hidden rounded-xl border md:h-(--height)">
-        <div className="w-72">
-          <BlockViewerFileTree />
-        </div>
-      </div>
-    );
-  }
-
-  if (!file) {
-    return (
-      <div className="bg-code text-code-foreground mr-3.5 flex overflow-hidden rounded-xl border  md:h-(--height)">
-        <div className="w-72">
-          <BlockViewerFileTree />
-        </div>
-      </div>
-    );
-  }
-
   const isMarkdown =
-    typeof file.path === "string" && file.path.toLowerCase().endsWith(".md");
+    !!file &&
+    typeof file.path === "string" &&
+    file.path.toLowerCase().endsWith(".md");
+
+  const hasContent = !!(selectedProject && file);
 
   return (
-    <div className="relative bg-code text-code-foreground mr-3.5 flex overflow-hidden rounded-xl border  md:h-(--height)">
+    <motion.div
+      className={cn(
+        "relative bg-code text-code-foreground flex overflow-hidden rounded-xl border md:h-(--height)",
+        "group",
+      )}
+      layout
+      transition={{ type: "spring", stiffness: 220, damping: 26 }}
+      style={{
+        position: isFullscreen ? "absolute" : "relative",
+        width: isFullscreen ? "calc(100vw - 10px)" : "auto",
+        left: isFullscreen ? "5px" : "0px",
+        top: isFullscreen ? "5px" : "0px",
+        height: isFullscreen ? "calc(100vh - 10px)" : "var(--height)",
+        zIndex: isFullscreen ? 9999 : "auto",
+      }}
+    >
       <div className="w-72">
         <BlockViewerFileTree />
       </div>
-      {isMarkdown ? (
-        <figure
-          data-rehype-pretty-code-figure=""
-          className="m-0! mt-0 flex min-w-0 flex-1 flex-col rounded-xl border-none"
-        >
-          <figcaption
-            className="text-code-foreground [&_svg]:text-code-foreground flex h-12 shrink-0 items-center gap-2 border-b px-4 py-2 [&_svg]:size-4 [&_svg]:opacity-70"
-            data-language={language}
+      {hasContent ? (
+        isMarkdown ? (
+          <figure
+            data-rehype-pretty-code-figure=""
+            className="m-0! mt-0 flex min-w-0 flex-1 flex-col rounded-xl border-none"
           >
-            {getIconForLanguageExtension(language)}
-            {file.target}
-            <div className="ml-auto flex items-center gap-2">
-              <BlockCopyCodeButton />
+            <figcaption
+              className="text-code-foreground [&_svg]:text-code-foreground flex h-12 shrink-0 items-center gap-2 border-b px-4 py-2 [&_svg]:size-4 [&_svg]:opacity-70"
+              data-language={language}
+            >
+              {getIconForLanguageExtension(language)}
+              {file!.target}
+              <div className="ml-auto flex items-center gap-2">
+                <BlockCopyCodeButton />
+              </div>
+            </figcaption>
+            <div className="m-0! flex min-w-0 flex-1 flex-col overflow-y-auto rounded-br-xl border-none bg-background px-6 py-4">
+              <Prose>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {(selectedProject?.item.files ?? []).find(
+                    (f) => f.target === file!.target,
+                  )?.content ?? ""}
+                </ReactMarkdown>
+              </Prose>
             </div>
-          </figcaption>
-          <div className="m-0! flex min-w-0 flex-1 flex-col overflow-y-auto rounded-br-xl border-none bg-background px-6 py-4">
-            <Prose>
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {(selectedProject?.item.files ?? []).find(
-                  (f) => f.target === file.target,
-                )?.content ?? ""}
-              </ReactMarkdown>
-            </Prose>
-          </div>
-        </figure>
+          </figure>
+        ) : (
+          <figure
+            data-rehype-pretty-code-figure=""
+            className="relative mx-0! mt-0 flex min-w-0 flex-1 flex-col rounded-xl border-none"
+          >
+            <figcaption
+              className="text-code-foreground [&_svg]:text-code-foreground flex h-12 shrink-0 items-center gap-2 border-b px-4 py-2 [&_svg]:size-4 [&_svg]:opacity-70"
+              data-language={language}
+            >
+              {getIconForLanguageExtension(language)}
+              {file!.target}
+              <div className="ml-auto flex items-center gap-2">
+                <BlockCopyCodeButton />
+              </div>
+            </figcaption>
+            <div
+              key={file?.path}
+              dangerouslySetInnerHTML={{
+                __html: file?.highlightedContent ?? "",
+              }}
+              className="no-scrollbar overflow-y-auto"
+            />
+          </figure>
+        )
       ) : (
-        <figure
-          data-rehype-pretty-code-figure=""
-          className="mx-0! mt-0 flex min-w-0 flex-1 flex-col rounded-xl border-none"
-        >
-          <figcaption
-            className="text-code-foreground [&_svg]:text-code-foreground flex h-12 shrink-0 items-center gap-2 border-b px-4 py-2 [&_svg]:size-4 [&_svg]:opacity-70"
-            data-language={language}
-          >
-            {getIconForLanguageExtension(language)}
-            {file.target}
-            <div className="ml-auto flex items-center gap-2">
-              <BlockCopyCodeButton />
-            </div>
-          </figcaption>
-          <div
-            key={file?.path}
-            dangerouslySetInnerHTML={{
-              __html: file?.highlightedContent ?? "",
-            }}
-            className="no-scrollbar overflow-y-auto"
-          />
-        </figure>
+        <BlockViewerEmptyState />
       )}
       <Button
         size={"icon"}
-        className="absolute bottom-1 right-1 rounded-xl cursor-pointer"
+        className={cn(
+          "absolute bottom-1 right-1 rounded-xl cursor-pointer",
+          "opacity-0 group-hover:opacity-100 transition-opacity",
+        )}
         variant={"outline"}
+        onClick={() => setIsFullscreen((prev) => !prev)}
       >
-        <Maximize2 />
+        {isFullscreen ? <Minimize2 /> : <Maximize2 />}
       </Button>
+    </motion.div>
+  );
+}
+
+function BlockViewerEmptyState() {
+  return (
+    <div className="flex min-w-0 flex-1 items-center justify-center px-6 py-10">
+      <div className="flex max-w-md flex-col items-center gap-4 text-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+          <Folder className="h-6 w-6" />
+        </div>
+        <div className="space-y-1">
+          <p className="text-sm font-medium">No project selected</p>
+          <p className="text-xs text-muted-foreground">
+            Choose a project from the sidebar to explore its files and preview the
+            code.
+          </p>
+        </div>
+        <Button variant="outline" size="sm" className="gap-1" asChild>
+          <a href="#block-viewer">
+            Learn more
+            <ArrowUpRight className="h-3 w-3" />
+          </a>
+        </Button>
+      </div>
     </div>
   );
 }
@@ -293,6 +328,28 @@ function BlockViewerCode() {
 export function BlockViewerFileTree() {
   const { tree, projectTree, selectedProject, setSelectedProjectName } =
     useBlockViewer();
+  const [isClient, setIsClient] = React.useState(false);
+
+  React.useEffect(() => setIsClient(true), []);
+
+  const filteredTree = React.useMemo(() => {
+    const filterNode = (node: FileTree | ProjectTreeNode | null): any => {
+      if (!node) return null;
+      if ("name" in node && node.name === "index.json") return null;
+      if ((node as any)?.path?.toLowerCase?.().endsWith?.("index.json")) {
+        return null;
+      }
+      if ("children" in node && node.children) {
+        const kids = node.children
+          .map((child: any) => filterNode(child))
+          .filter(Boolean);
+        return { ...node, children: kids };
+      }
+      return node;
+    };
+
+    return tree?.map((f) => filterNode(f)).filter(Boolean) ?? [];
+  }, [tree]);
 
   return (
     <SidebarProvider className="flex min-h-full! flex-col border-r">
@@ -321,13 +378,37 @@ export function BlockViewerFileTree() {
         <SidebarGroup className="p-0">
           <SidebarGroupContent>
             <SidebarMenu className="translate-x-0 gap-1.5">
-              {selectedProject
-                ? tree?.map((file, index) => (
-                    <Tree key={index} item={file} index={1} />
-                  ))
-                : projectTree.map((project, index) => (
-                    <ProjectTreeNodeItem key={index} node={project} depth={1} />
-                  ))}
+              {isClient ? (
+                <AnimatePresence mode="wait">
+                  {selectedProject ? (
+                    <motion.div
+                      key={`files-${selectedProject.item.name}`}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {filteredTree?.map((file, index) => (
+                        <Tree key={index} item={file as any} index={1} />
+                      ))}
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="projects"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {projectTree.map((project, index) => (
+                        <ProjectTreeNodeItem key={index} node={project} depth={1} />
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              ) : (
+                <div className="p-3 text-xs text-muted-foreground">Loading navigation…</div>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -400,7 +481,25 @@ function ProjectTreeNodeItem({
   node: ProjectTreeNode;
   depth: number;
 }) {
-  const { setSelectedProjectName } = useBlockViewer();
+  const { setSelectedProjectName, projects } = useBlockViewer();
+
+  const projectIcon =
+    node.kind === "project"
+      ? (() => {
+          const projectData = projects.find(
+            (p) => p.item.name === node.projectName,
+          );
+          const firstFile =
+            projectData?.item.files && projectData.item.files.length > 0
+              ? projectData.item.files[0]
+              : undefined;
+          const path =
+            (firstFile as any)?.path ??
+            (typeof firstFile?.target === "string" ? firstFile.target : null);
+          const ext = path ? path.split(".").pop() ?? "file" : "file";
+          return getIconForLanguageExtension(ext);
+        })()
+      : null;
 
   if (node.kind === "project") {
     return (
@@ -417,6 +516,7 @@ function ProjectTreeNodeItem({
           }
         >
           <ChevronRight className="invisible" />
+          {projectIcon}
           {node.name}
         </SidebarMenuButton>
       </SidebarMenuItem>

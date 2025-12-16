@@ -71,7 +71,7 @@ export async function getRegistryItem(name: string, rawEntry?: any) {
     rawEntry ?? findRegistryEntryByName(name, Index as Record<string, any>);
   if (!foundEntry) return null;
 
-  const normalized = normalizeRawRegistryEntry(foundEntry);
+  const normalized = coerceRegistryDocument(normalizeRawRegistryEntry(foundEntry));
 
   const result = registryItemSchema.safeParse(normalized);
   if (!result.success) {
@@ -263,6 +263,21 @@ function normalizeRawRegistryEntry(raw: unknown) {
     ...asAny,
     files: normalizedFiles,
   };
+}
+
+// Allow registry:document as an alias for registry:page to satisfy schema validation.
+function coerceRegistryDocument(raw: any) {
+  if (!raw) return raw;
+  const next: any = { ...raw };
+  if (Array.isArray(next.files)) {
+    next.files = next.files.map((f: any) =>
+      f && f.type === "registry:document" ? { ...f, type: "registry:page" } : f,
+    );
+  }
+  if (next.type === "registry:document") {
+    next.type = "registry:page";
+  }
+  return next;
 }
 
 function collectRegistryEntries(
