@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { source, blog } from "@/lib/source";
+import { blog } from "@/lib/source";
 import { DocsPage } from "fumadocs-ui/page";
 import defaultComponents from "fumadocs-ui/mdx";
 import { Card, Cards } from "fumadocs-ui/components/card";
@@ -20,7 +20,7 @@ import { InlineTOC } from "@/components/inline-toc";
 import { Separator } from "@/components/separator";
 import { Button } from "@/components/ui/button";
 
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
 
 export default async function Page(props: PageProps<"/blog/[...slug]">) {
   const params = await props.params;
@@ -90,14 +90,15 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
 }
 
 export async function generateStaticParams() {
-  return source.generateParams();
+  return blog.generateParams();
 }
 
 export async function generateMetadata(
   props: PageProps<"/blog/[...slug]">,
 ): Promise<Metadata> {
   const { slug = [] } = await props.params;
-  const page = source.getPage(slug);
+  const page = blog.getPage(slug);
+
   if (!page)
     return createMetadata({
       title: "Not Found",
@@ -108,8 +109,8 @@ export async function generateMetadata(
 
   const image = {
     url: getPageImage(page).url,
-    width: 1200,
-    height: 630,
+    width: 1920,
+    height: 1080,
   };
 
   return createMetadata({

@@ -14,8 +14,9 @@ export const META_THEME_COLORS = {
 };
 
 export const GITHUB_USERNAME = "admin12121";
-export const SOURCE_CODE_GITHUB_REPO = "admin12121/portfolio.com";
-export const SOURCE_CODE_GITHUB_URL = "https://github.com/admin12121/portfolio.com";
+export const SOURCE_CODE_GITHUB_REPO = "admin12121/portfolio";
+export const SOURCE_CODE_GITHUB_URL =
+  "https://github.com/admin12121/portfolio.com";
 
 export const UTM_PARAMS = {
   utm_source: "biki.com.np",
