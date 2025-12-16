@@ -16,6 +16,12 @@ import { NotFound } from "@/components/not-found";
 import { Mermaid } from "@/components/mdx/mermaid";
 import { FramedImage, YouTubeEmbed } from "@/components/embed";
 
+import { InlineTOC } from "@/components/inline-toc";
+import { Separator } from "@/components/separator";
+import { Button } from "@/components/ui/button";
+
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
+
 export default async function Page(props: PageProps<"/blog/[...slug]">) {
   const params = await props.params;
   const page = blog.getPage(params.slug);
@@ -28,42 +34,58 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
 
   const { body: Mdx, toc } = await page.data.load();
   return (
-    <DocsPage
-      toc={toc}
-      article={{
-        className: "pt-[15px]!",
-      }}
-      lastUpdate={page.data.date ? new Date(page.data.date) : undefined}
-    >
-      <title>{page.data.title}</title>
-      <meta name="description" content={page.data.description} />
-      <h1 className="text-[1.75em] font-semibold">{page.data.title}</h1>
-      <p className="text-lg text-fd-muted-foreground mb-2">
-        {page.data.description}
-      </p>
-      <div className="prose flex-1 text-fd-foreground/90 border-t pt-5">
-        <Mdx
-          components={{
-            ...defaultComponents,
-            Card,
-            Cards,
-            Callout,
-            Tab,
-            Tabs,
-            Accordion,
-            Accordions,
-            CodeBlock,
-            Pre,
-            Mermaid,
-            AutoTypeTable,
-            Link,
-            YouTubeEmbed,
-            FramedImage,
-          }}
-        ></Mdx>
+    <main className="mx-auto md:max-w-3xl border-x ">
+      <Separator className="border-t-0" />
+      <div className="flex items-center justify-between p-2 pl-4">
+        <Button
+          className="h-7 gap-2 rounded-lg px-0 font-mono text-muted-foreground"
+          variant="link"
+          asChild
+        >
+          <Link href="/blog">
+            <ArrowLeftIcon />
+            Blog
+          </Link>
+        </Button>
       </div>
-      <Feedback onRateAction={onRateAction} />
-    </DocsPage>
+      <Separator />
+      <DocsPage
+        article={{
+          className: "pt-[15px]!",
+        }}
+        lastUpdate={page.data.date ? new Date(page.data.date) : undefined}
+      >
+        <title>{page.data.title}</title>
+        <meta name="description" content={page.data.description} />
+        <h1 className="text-[1.75em] font-semibold">{page.data.title}</h1>
+        <p className="text-lg text-fd-muted-foreground mb-2">
+          {page.data.description}
+        </p>
+        <InlineTOC items={toc} />
+        <div className="prose flex-1 text-fd-foreground/90 pt-5">
+          <Mdx
+            components={{
+              ...defaultComponents,
+              Card,
+              Cards,
+              Callout,
+              Tab,
+              Tabs,
+              Accordion,
+              Accordions,
+              CodeBlock,
+              Pre,
+              Mermaid,
+              AutoTypeTable,
+              Link,
+              YouTubeEmbed,
+              FramedImage,
+            }}
+          ></Mdx>
+        </div>
+        <Feedback onRateAction={onRateAction} />
+      </DocsPage>
+    </main>
   );
 }
 
@@ -72,7 +94,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata(
-  props: PageProps<"/docs/[...slug]">,
+  props: PageProps<"/blog/[...slug]">,
 ): Promise<Metadata> {
   const { slug = [] } = await props.params;
   const page = source.getPage(slug);
@@ -94,7 +116,7 @@ export async function generateMetadata(
     title: page.data.title,
     description,
     openGraph: {
-      url: `/docs/${page.slugs.join("/")}`,
+      url: `/blog/${page.slugs.join("/")}`,
       images: [image],
     },
     twitter: {

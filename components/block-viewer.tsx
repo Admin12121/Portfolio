@@ -7,6 +7,8 @@ import {
   ChevronRight,
   Clipboard,
   Folder,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 import { type ImperativePanelHandle } from "react-resizable-panels";
 import { type registryItemFileSchema } from "shadcn/schema";
@@ -117,7 +119,6 @@ function BlockViewerProvider({
 
     const files = selectedProject.item.files;
 
-    // prefer explicit docs / README markdown as default
     const readme =
       files.find(
         (f) =>
@@ -225,7 +226,7 @@ function BlockViewerCode() {
     typeof file.path === "string" && file.path.toLowerCase().endsWith(".md");
 
   return (
-    <div className="bg-code text-code-foreground mr-3.5 flex overflow-hidden rounded-xl border  md:h-(--height)">
+    <div className="relative bg-code text-code-foreground mr-3.5 flex overflow-hidden rounded-xl border  md:h-(--height)">
       <div className="w-72">
         <BlockViewerFileTree />
       </div>
@@ -278,6 +279,13 @@ function BlockViewerCode() {
           />
         </figure>
       )}
+      <Button
+        size={"icon"}
+        className="absolute bottom-1 right-1 rounded-xl cursor-pointer"
+        variant={"outline"}
+      >
+        <Maximize2 />
+      </Button>
     </div>
   );
 }
