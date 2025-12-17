@@ -1,16 +1,19 @@
 import { App, Octokit } from 'octokit';
 import type { ActionResponse, Feedback } from '@/components/feedback';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
-export const repo = 'fumadocs';
-export const owner = 'fuma-nama';
-export const DocsCategory = 'Docs Feedback';
+export const repo = 'Portfolio';
+export const owner = 'Admin12121';
+export const DocsCategory = 'Blog Feedback';
 
 let instance: Octokit | undefined;
 
 async function getOctokit(): Promise<Octokit> {
   if (instance) return instance;
   const appId = process.env.GITHUB_APP_ID;
-  const privateKey = process.env.GITHUB_APP_PRIVATE_KEY;
+  const privateKey = process.env.GITHUB_APP_PRIVATE_KEY?.replace(/\\n/g, '\n');
+
 
   if (!appId || !privateKey) {
     throw new Error(

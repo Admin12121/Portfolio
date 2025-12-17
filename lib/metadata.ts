@@ -8,7 +8,7 @@ export function createMetadata(override: Metadata): Metadata {
       description: override.description ?? undefined,
       url: "https://biki.com.np/",
       images: "https://biki.com.np/banner.png",
-      siteName: "Better Fetch",
+      siteName: "Admin12121's Portfolio",
       ...override.openGraph,
     },
     twitter: {

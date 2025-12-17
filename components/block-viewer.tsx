@@ -430,7 +430,7 @@ function Tree({ item, index }: { item: FileTree; index: number }) {
           data-index={index}
           style={
             {
-              paddingLeft: `${index * (index === 2 ? 1.2 : 1.3)}rem`,
+              paddingLeft: `${index * 1.2}rem`,
             } as React.CSSProperties
           }
         >
@@ -450,10 +450,10 @@ function Tree({ item, index }: { item: FileTree; index: number }) {
       >
         <CollapsibleTrigger asChild>
           <SidebarMenuButton
-            className="hover:bg-muted-foreground/15 focus:bg-muted-foreground/15 focus-visible:bg-muted-foreground/15 active:bg-muted-foreground/15 data-[active=true]:bg-muted-foreground/15 rounded-none pl-(--index) whitespace-nowrap"
+            className="hover:bg-muted-foreground/15 focus:bg-muted-foreground/15 focus-visible:bg-muted-foreground/15 active:bg-muted-foreground/15 data-[active=true]:bg-muted-foreground/15 rounded-none whitespace-nowrap"
             style={
               {
-                "--index": `${index * (index === 1 ? 1 : 1.2)}rem`,
+                paddingLeft: `${index * 1.2}rem`,
               } as React.CSSProperties
             }
           >
@@ -531,10 +531,10 @@ function ProjectTreeNodeItem({
       >
         <CollapsibleTrigger asChild>
           <SidebarMenuButton
-            className="hover:bg-muted-foreground/15 focus:bg-muted-foreground/15 focus-visible:bg-muted-foreground/15 active:bg-muted-foreground/15 rounded-none pl-(--index) whitespace-nowrap"
+            className="hover:bg-muted-foreground/15 focus:bg-muted-foreground/15 focus-visible:bg-muted-foreground/15 active:bg-muted-foreground/15 rounded-none whitespace-nowrap"
             style={
               {
-                "--index": `${depth * (depth === 1 ? 1 : 1.2)}rem`,
+                paddingLeft: `${depth * 1.2}rem`,
               } as React.CSSProperties
             }
           >

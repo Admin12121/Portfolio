@@ -201,6 +201,40 @@ export function fixImport(content: string) {
   return content.replace(regex, replacer);
 }
 
+export type ProjectTreeNode = {
+  name: string;
+  kind: "category" | "project";
+  projectName?: string;
+  children?: ProjectTreeNode[];
+};
+
+export function createProjectTreeFromIndex(index: Record<string, any>) {
+  const looksLikeProject = (val: any) =>
+    val &&
+    typeof val === "object" &&
+    (typeof (val as any).name === "string" ||
+      Array.isArray((val as any).files) ||
+      typeof (val as any).type === "string" ||
+      typeof (val as any).title === "string");
+
+  function walk(node: any): ProjectTreeNode[] {
+    if (!node || typeof node !== "object") return [];
+    const entries = Object.entries(node) as [string, any][];
+    return entries.map(([key, val]) => {
+      const v: any = val;
+      if (looksLikeProject(v)) {
+        const projectName = (v && v.name) ?? key;
+        const label = key;
+        return { name: label, kind: "project", projectName };
+      }
+      const children = walk(v);
+      return { name: key, kind: "category", children };
+    });
+  }
+
+  return walk(index);
+}
+
 export type FileTree = {
   name: string;
   path?: string;
@@ -265,7 +299,6 @@ function normalizeRawRegistryEntry(raw: unknown) {
   };
 }
 
-// Allow registry:document as an alias for registry:page to satisfy schema validation.
 function coerceRegistryDocument(raw: any) {
   if (!raw) return raw;
   const next: any = { ...raw };
@@ -282,7 +315,7 @@ function coerceRegistryDocument(raw: any) {
 
 function collectRegistryEntries(
   indexNode: Record<string, any>,
-  categoryPath: string[] = [],
+  categoryPath: string[] = []
 ) {
   const entries: Array<{
     name: string;
@@ -290,26 +323,22 @@ function collectRegistryEntries(
     categoryPath: string[];
   }> = [];
 
-  for (const [key, value] of Object.entries(indexNode ?? {})) {
-    if (!value || typeof value !== "object") continue;
-
+  const kv = Object.entries(indexNode ?? {}) as [string, any][];
+  for (const [key, value] of kv) {
+    const v: any = value;
+    if (!v || typeof v !== "object") continue;
     const looksLikeItem =
-      typeof (value as any).type === "string" ||
-      Array.isArray((value as any).files) ||
-      typeof (value as any).description === "string";
+      typeof v.name === "string" ||
+      typeof v.type === "string" ||
+      Array.isArray(v.files) ||
+      typeof v.description === "string";
 
     if (looksLikeItem) {
-      const name = (value as any).name ?? key;
-      entries.push({ name, entry: { ...value, name }, categoryPath });
-      continue;
+      const name = v.name ?? key;
+      entries.push({ name, entry: { ...v, name }, categoryPath });
+    } else {
+      entries.push(...collectRegistryEntries(v, [...categoryPath, key]));
     }
-
-    entries.push(
-      ...collectRegistryEntries(value as Record<string, any>, [
-        ...categoryPath,
-        key,
-      ]),
-    );
   }
 
   return entries;
