@@ -1,32 +1,31 @@
 import dayjs from "dayjs";
-import { ArrowUpRightIcon, FileText } from "lucide-react";
+import { FileText, PinIcon, ArrowUpRightIcon } from "lucide-react";
 import Image from "next/image";
-import React from "react";
 import Link from "next/link";
 
 import { getIcon } from "@/components/icons";
-import { Separator } from "@/components/ui/separator";
+import type { Post } from "@/features/blog/types/blog";
 import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
-import type { Blog } from "../types/blog";
-
-export function BlogItem({
+export function PostItem({
+  post,
+  shouldPreloadImage,
   className,
-  blog,
 }: {
+  post: Post;
+  shouldPreloadImage?: boolean;
   className?: string;
-  blog: Blog;
 }) {
   return (
     <Link
+      href={`/blog/${post.slug}`}
       className={cn("group/cert flex items-center pr-2", className)}
-      href={`${blog.url}`}
-      rel="noopener"
     >
-      {blog.image ? (
+      {post.metadata.image ? (
         <Image
-          src={blog.image}
-          alt={blog.title}
+          src={post.metadata.image}
+          alt={post.metadata.title}
           width={64}
           height={64}
           quality={100}
@@ -43,13 +42,20 @@ export function BlogItem({
           )}
           aria-hidden
         >
-          {blog.icon ? getIcon(blog.icon) : <FileText />}
+          {post.metadata.icon ? getIcon(post.metadata.icon) : <FileText />}
+          
+          {post.metadata.pinned && (
+            <span className="absolute top-1.5 right-1.5 flex size-6 items-center justify-center rounded-md bg-secondary">
+              <PinIcon className="size-4 rotate-45 text-secondary-foreground" />
+              <span className="sr-only">Pinned</span>
+            </span>
+          )}
         </div>
       )}
 
       <div className="flex-1 space-y-1 border-l border-dashed border-edge p-4 pr-2">
         <h3 className="leading-snug font-medium text-balance underline-offset-4 group-hover/blog:underline">
-          {blog.title}
+          {post.metadata.title}
         </h3>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
           <dl>
@@ -69,7 +75,7 @@ export function BlogItem({
             <dt className="sr-only">Issued on</dt>
             <dd>
               <span>
-                {dayjs(blog.createdAt).format("DD.MM.YYYY")}
+                {dayjs(post.metadata.createdAt).format("DD.MM.YYYY")}
               </span>
             </dd>
           </dl>

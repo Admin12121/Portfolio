@@ -1,4 +1,4 @@
-export type Blog = {
+export type PostMetadata = {
   title: string;
   description: string;
   /**
@@ -20,6 +20,10 @@ export type Blog = {
    */
   new?: boolean;
   /**
+   * Flag to pin the post to the top of the list.
+   */
+  pinned?: boolean;
+  /**
    * Post creation date as an ISO date string (e.g. YYYY-MM-DD). Used for sorting.
    */
   createdAt: string;
@@ -27,15 +31,13 @@ export type Blog = {
    * Last updated date as an ISO date string (e.g. YYYY-MM-DD).
    */
   updatedAt: string;
-  url: string;
 };
-
 
 export type Post = {
   /** Parsed frontmatter metadata from the MDX file. */
-  metadata: Blog;
+  metadata: PostMetadata;
   /** Slug derived from the MDX filename (without extension). */
-  url: string;
+  slug: string;
   /** MDX content body without frontmatter. */
   content: string;
 };

@@ -76,7 +76,7 @@ const Navbar = () => {
         "transition-shadow duration-300",
       )}
     >
-      <div className="container-wrapper 3xl:fixed:px-0 px-6">
+      <div className="container-wrapper 3xl:fixed:px-0 md:px-6 px-0">
         <div
           className="screen-line-before screen-line-after mx-auto flex h-14 items-center justify-between gap-2 border-x border-edge after:z-1 after:transition-[background-color] sm:gap-4 container md:fixed:max-w-3xl px-0!"
           data-header-container
@@ -132,13 +132,10 @@ const Navbar = () => {
                   ></path>
                 </svg>
               </NavLink>
-              {/*<li className={"relative group h-full border-r flex hide"}>
-                <SiteConfig className="px-5 py-4 w-full cursor-pointer opacity-50 hover:opacity-100 duration-200 transition-all ease-in-out" />
-              </li>*/}
-              <li className={"relative group h-full border-r flex hide"}>
+              <li className={"relative group h-full border-r flex"}>
                 <ModeSwitcher className="px-5 py-4 w-full cursor-pointer opacity-50 hover:opacity-100 duration-200 transition-all ease-in-out" />
               </li>
-              <li className={"relative group h-full border-r flex hide"}>
+              <li className={"relative group h-full border-r blackout lg:flex"}>
                 <Button
                   asChild
                   className="w-full h-full py-4! rounded-none bg-indigo-600 hover:bg-indigo-700"

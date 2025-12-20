@@ -1,17 +1,17 @@
 import { CollapsibleList } from "@/components/collapsible-list";
-import type { Blog } from "../types/blog";
-import { getAllBlogs } from "@/features/blog/data";
+import type { Post } from "../types/blog";
+import { getAllPosts  } from "@/features/blog/data";
 import {
   Panel,
   PanelHeader,
   PanelTitle,
 } from "@/features/profile/components/panel";
-import { BlogItem } from "./blog-items";
+import { PostItem } from "./post-item";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 export function Blogs({ banner, className }: { banner?: boolean; className?: string }) {
-  const blogs = getAllBlogs();
+  const blogs = getAllPosts ();
   return (
     <Panel id="certs" className={cn(className)}>
       <PanelHeader>
@@ -30,9 +30,8 @@ export function Blogs({ banner, className }: { banner?: boolean; className?: str
       <CollapsibleList
         items={blogs}
         max={8}
-        renderItem={(item: Blog) => <BlogItem blog={item} />}
+        renderItem={(item: Post) => <PostItem post={item} />}
       />
-
     </Panel>
   );
 }

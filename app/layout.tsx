@@ -1,6 +1,8 @@
-import type { Metadata, Viewport } from "next";
-import { RootProvider } from "fumadocs-ui/provider/next";
 import "@/style/globals.css";
+
+import type { Metadata, Viewport } from "next";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { RootProvider } from "fumadocs-ui/provider/next";
 import localFont from "next/font/local";
 
 import { META_THEME_COLORS, SITE_INFO } from "@/config/site";
@@ -131,11 +133,13 @@ export default function RootLayout({
       >
         <RootProvider>
           <LayoutProvider>
+            <NuqsAdapter>
             <Providers>
               <Navbar />
               {children}
               <Footer />
             </Providers>
+            </NuqsAdapter>
           </LayoutProvider>
         </RootProvider>
       </body>

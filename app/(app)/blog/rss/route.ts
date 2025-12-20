@@ -1,20 +1,20 @@
 import { SITE_INFO } from "@/config/site";
-import { getAllBlogs } from "@/features/blog/data";
+import { getAllPosts  } from "@/features/blog/data";
 
 export const dynamic = "force-static";
 
 export function GET() {
-  const allPosts = getAllBlogs();
+  const allPosts = getAllPosts ();
 
   const itemsXml = allPosts
     .map(
       (post) =>
         `<item>
-          <title>${post.title}</title>
-          <link>${SITE_INFO.url}/blog/${post.url}</link>
-          <description>${post.description || ""}</description>
-          <pubDate>${new Date(post.createdAt).toISOString()}</pubDate>
-        </item>`,
+          <title>${post.metadata.title}</title>
+          <link>${SITE_INFO.url}/blog/${post.slug}</link>
+          <description>${post.metadata.description || ""}</description>
+          <pubDate>${new Date(post.metadata.createdAt).toISOString()}</pubDate>
+        </item>`
     )
     .join("\n");
 

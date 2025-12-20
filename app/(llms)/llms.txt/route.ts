@@ -1,11 +1,11 @@
 import { SITE_INFO } from "@/config/site";
-import { getAllBlogs } from "@/features/blog/data";
+import { getAllPosts } from "@/features/blog/data";
 
-const allPosts = getAllBlogs();
+const allPosts = getAllPosts();
 
 const content = `# biki.com.np
 
-> A minimal dev portfolio, component registry, and blog to showcase my work as a Ethical Hacker.
+> A minimal dev portfolio and blog to showcase my work as a Ethical Hacker.
 
 - [About](${SITE_INFO.url}/about.md): A quick intro to me, my tech stack, and how to connect.
 - [Projects](${SITE_INFO.url}/projects.md): Selected projects that show my skills and creativity.
@@ -14,7 +14,7 @@ const content = `# biki.com.np
 
 ## Blog
 
-${allPosts.map((item) => `- [${item.title}](${SITE_INFO.url}/blog/${item.url}.mdx): ${item.description}`).join("\n")}
+${allPosts.map((item) => `- [${item.metadata.title}](${SITE_INFO.url}/blog/${item.slug}.mdx): ${item.metadata.description}`).join("\n")}
 `;
 
 export const dynamic = "force-static";

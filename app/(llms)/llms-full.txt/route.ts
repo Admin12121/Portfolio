@@ -1,4 +1,4 @@
-import { getAllBlogs } from "@/features/blog/data";
+import { getAllPosts } from "@/features/blog/data";
 import { PROJECTS } from "@/features/profile/data/projects";
 import { USER } from "@/features/profile/data/user";
 
@@ -25,16 +25,16 @@ ${PROJECTS.map((item) => {
 `;
 
 function getBlogContent() {
-  const allBlogs = getAllBlogs();
+  const allBlogs = getAllPosts();
   const blogTexts = allBlogs.map((blog) => {
-    return `### ${blog.title}
+    return `### ${blog.metadata.title}
 
-${blog.description}
+${blog.metadata.description}
 
-Published: ${new Date(blog.createdAt).toLocaleDateString()}
-Last Updated: ${new Date(blog.updatedAt).toLocaleDateString()}
-URL: ${blog.url}
-${blog.category ? `Category: ${blog.category}` : ""}`;
+Published: ${new Date(blog.metadata.createdAt).toLocaleDateString()}
+Last Updated: ${new Date(blog.metadata.updatedAt).toLocaleDateString()}
+URL: ${blog.slug}
+${blog.metadata.category ? `Category: ${blog.metadata.category}` : ""}`;
   });
   return blogTexts.join("\n\n");
 }

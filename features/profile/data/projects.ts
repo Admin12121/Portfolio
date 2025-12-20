@@ -53,7 +53,7 @@ export const PROJECTS: Project[] = [
       "Security",
       "Privacy"
     ],
-    description: `Lightweight and powerful steganography cli tool made using TypeScript. Easy access using \`npx encapsula\``,
+    description: `Lightweight and powerful steganography cli tool made using TypeScript. Easy access using <br/> \`npx encapsula\``,
     logo: "/icons/logo.svg",
     isExpanded: true,
   },

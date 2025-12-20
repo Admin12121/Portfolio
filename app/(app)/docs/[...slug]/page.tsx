@@ -143,7 +143,7 @@ export async function generateMetadata(
     page.data.description ?? "The library for building documentation sites";
 
   const image = {
-    url: getPageImage(page).url,
+    url: getPageImage(page.url).url,
     width: 1200,
     height: 630,
   };

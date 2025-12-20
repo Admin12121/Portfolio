@@ -1,33 +1,76 @@
-import { blog } from "@/lib/source";
-import { Blog } from "../types/blog";
+import fs from "fs";
+import matter from "gray-matter";
+import path from "path";
 
-export function getAllBlogs(): Blog[] {
-    const pages = blog.getPages();
-    
-    return pages.map((page) => {
-        const data = page.data as any;
-        
-        return {
-            title: data.title || "",
-            description: data.description || "",
-            image: data.image,
-            category: data.category,
-            icon: data.icon,
-            new: data.new || false,
-            createdAt: data.date || data.createdAt || new Date().toISOString(),
-            updatedAt: data.updatedAt || data.date || new Date().toISOString(),
-            url: page.url,
-        };
-    });
+import type { Post, PostMetadata } from "@/features/blog/types/blog";
+
+function parseFrontmatter(fileContent: string) {
+  const file = matter(fileContent);
+
+  return {
+    metadata: file.data as PostMetadata,
+    content: file.content,
+  };
 }
 
-export function getBlogBySlug(slug: string) {
-    return blog.getPage([slug]);
+function getMDXFiles(dir: string) {
+  return fs.readdirSync(dir).filter((file) => path.extname(file) === ".mdx");
 }
 
-export function getRecentBlogs(limit: number = 5): Blog[] {
-    const blogs = getAllBlogs();
-    return blogs
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-        .slice(0, limit);
+function readMDXFile(filePath: string) {
+  const rawContent = fs.readFileSync(filePath, "utf-8");
+  return parseFrontmatter(rawContent);
+}
+
+function getMDXData(dir: string) {
+  const mdxFiles = getMDXFiles(dir);
+
+  return mdxFiles.map<Post>((file) => {
+    const { metadata, content } = readMDXFile(path.join(dir, file));
+
+    const slug = path.basename(file, path.extname(file));
+
+    return {
+      metadata,
+      slug,
+      content,
+    };
+  });
+}
+
+export function getAllPosts() {
+  return getMDXData(path.join(process.cwd(), "/features/blog/content")).sort(
+    (a, b) => {
+      if (a.metadata.pinned && !b.metadata.pinned) return -1;
+      if (!a.metadata.pinned && b.metadata.pinned) return 1;
+
+      return (
+        new Date(b.metadata.createdAt).getTime() -
+        new Date(a.metadata.createdAt).getTime()
+      );
+    }
+  );
+}
+
+export function getPostBySlug(slug: string) {
+  return getAllPosts().find((post) => post.slug === slug);
+}
+
+export function getPostsByCategory(category: string) {
+  return getAllPosts().filter((post) => post.metadata?.category === category);
+}
+
+export function findNeighbour(posts: Post[], slug: string) {
+  const len = posts.length;
+
+  for (let i = 0; i < len; ++i) {
+    if (posts[i].slug === slug) {
+      return {
+        previous: i > 0 ? posts[i - 1] : null,
+        next: i < len - 1 ? posts[i + 1] : null,
+      };
+    }
+  }
+
+  return { previous: null, next: null };
 }

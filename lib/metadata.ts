@@ -22,11 +22,11 @@ export function createMetadata(override: Metadata): Metadata {
   };
 }
 
-export function getPageImage(page: { slugs: string[] | readonly string[] }) {
-  const segments = [...page.slugs, "image.webp"];
+export function getPageImage(slugs: string) {
+  const segments = [...slugs,"og","image.webp"];
   return {
     segments,
-    url: `/images/og/${segments.join("/")}`,
+    url: `/images/${segments.join("/")}`,
   };
 }
 

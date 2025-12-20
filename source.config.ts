@@ -18,9 +18,6 @@ export const docs = defineDocs({
       preview: z.string().optional(),
       index: z.boolean().default(false),
       date: z.string().or(z.date()),
-      /**
-       * API routes only
-       */
       method: z.string().optional(),
     }),
     postprocess: {
@@ -38,7 +35,7 @@ export const docs = defineDocs({
 
 export const blog = defineCollections({
   type: 'doc',
-  dir: 'content/blog',
+  dir: 'features/blog/content',
   schema: frontmatterSchema.extend({
     author: z.string(),
     date: z.string().or(z.date()),

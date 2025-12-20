@@ -16,7 +16,21 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  
+  async rewrites() {
+    return [
+            {
+        source: "/blog/:slug.mdx",
+        destination: "/blog.mdx/:slug",
+      },
+      {
+        source: "/components/:slug.mdx",
+        destination: "/blog.mdx/:slug",
+      },
+      {
+        source: "/rss",
+        destination: "/blog/rss",
+      },
+    ]}
 };
 
 const withMDX = createMDX();
