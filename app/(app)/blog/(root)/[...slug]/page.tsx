@@ -1,7 +1,6 @@
-import { type ComponentProps, type FC, type ReactNode } from "react";
+import { type ComponentProps, type FC } from "react";
 import type { Metadata } from "next";
 import { blog } from "@/lib/source";
-import { DocsPage } from "fumadocs-ui/page";
 import defaultComponents from "fumadocs-ui/mdx";
 import { Card, Cards } from "fumadocs-ui/components/card";
 import { Callout } from "fumadocs-ui/components/callout";
@@ -28,41 +27,33 @@ import {
 import { InlineTOC } from "@/components/inline-toc";
 import { Separator } from "@/components/separator";
 import { Button } from "@/components/ui/button";
-
 import { Kbd } from "@/components/ui/kbd";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
-
 import {
   findNeighbour,
   getAllPosts,
   getPostBySlug,
 } from "@/features/blog/data";
 import { LLMCopyButtonWithViewOptions } from "@/features/blog/components/post-page-actions";
-
 import { PostShareMenu } from "@/features/blog/components/post-share-menu";
 
 export default async function Page(props: PageProps<"/blog/[...slug]">) {
   const params = await props.params;
   const page = blog.getPage(params.slug);
 
-  if (!page)
-    return (
-      <NotFound />
-      // <NotFound getSuggestions={() => getSuggestions(params.slug.join(' '))} />
-    );
+  if (!page) return <NotFound />;
 
   const { body: Mdx, toc } = await page.data.load();
   const allPosts = getAllPosts();
   const { previous, next } = findNeighbour(allPosts, params.slug[0]);
 
   return (
-    <main className="mx-auto md:max-w-3xl border-x ">
+    <main className="mx-auto md:max-w-3xl border-x">
       <Separator className="border-t-0" />
       <div className="flex items-center justify-between p-2 pl-4">
         <Button
@@ -127,17 +118,17 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
         </div>
       </div>
       <Separator />
-      <DocsPage
-        lastUpdate={page.data.date ? new Date(page.data.date) : undefined}
-      >
-        <title>{page.data.title}</title>
-        <meta name="description" content={page.data.description} />
-        <h1 className="text-[1.75em] font-semibold">{page.data.title}</h1>
-        <p className="text-lg text-fd-muted-foreground mb-2">
-          {page.data.description}
-        </p>
-        <InlineTOC items={toc} />
-        <div className="prose flex-1 text-fd-foreground/90 pt-5">
+
+      <article className="p-6 max-w-3xl mx-auto">
+        <header className="mb-8">
+          <h1 className="text-4xl font-bold mb-4">{page.data.title}</h1>
+          <p className="text-lg text-muted-foreground mb-4">
+            {page.data.description}
+          </p>
+          <InlineTOC items={toc} />
+        </header>
+
+        <div className="prose prose-invert max-w-none">
           <Mdx
             components={{
               ...defaultComponents,
@@ -167,7 +158,7 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
                     </HoverCardTrigger>
                     <HoverCardContent className="text-sm">
                       <p className="font-medium">{found.page.data.title}</p>
-                      <p className="text-fd-muted-foreground">
+                      <p className="text-muted-foreground">
                         {found.page.data.description}
                       </p>
                     </HoverCardContent>
@@ -190,10 +181,12 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
               YouTubeEmbed,
               FramedImage,
             }}
-          ></Mdx>
+          />
         </div>
+
+        <Separator className="my-8" />
         <Feedback onRateAction={onRateAction} />
-      </DocsPage>
+      </article>
     </main>
   );
 }
