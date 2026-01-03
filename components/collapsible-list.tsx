@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from "lucide-react";
-import { Slot as SlotPrimitive } from "radix-ui";
+import { Slot } from "@radix-ui/react-slot";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,6 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-const Slot = SlotPrimitive.Slot;
 
 export function CollapsibleList<T>({
   items,

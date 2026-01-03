@@ -39,7 +39,7 @@ function getOrigins() {
   const base = getRegistrableBase(hostname);
 
   const mainOrigin = `${protocol}//${withPort(base)}`;
-  const docsOrigin = `${protocol}//${withPort(`docs.${base}`)}`;
+  const docsOrigin = `${protocol}//${withPort(`chat.${base}`)}`;
 
   return { mainOrigin, docsOrigin };
 }
@@ -65,8 +65,6 @@ const Navbar = () => {
     setOrigins(getOrigins());
   }, []);
 
-  const docsHomeHref = origins.docsOrigin ? `${origins.docsOrigin}/` : "/";
-
   return (
     <SiteHeaderWrapper
       className={cn(
@@ -81,7 +79,7 @@ const Navbar = () => {
           className="screen-line-before screen-line-after mx-auto flex h-14 items-center justify-between gap-2 border-x border-edge after:z-1 after:transition-[background-color] sm:gap-4 container md:fixed:max-w-3xl px-0!"
           data-header-container
         >
-          <Link href={docsHomeHref} className="ml-4">
+          <Link href="/" className="ml-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"

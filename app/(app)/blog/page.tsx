@@ -41,6 +41,7 @@ export default function page() {
             alt="Blog Cover"
             fill
             className="object-cover"
+            priority
           />
         </div>
 

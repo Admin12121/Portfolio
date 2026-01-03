@@ -1,7 +1,7 @@
 import { type ComponentProps, type FC, type ReactNode } from "react";
 import type { Metadata } from "next";
 import { blog } from "@/lib/source";
-import { DocsPage } from "fumadocs-ui/page";
+import { DocsPage, DocsBody } from "fumadocs-ui/page";
 import defaultComponents from "fumadocs-ui/mdx";
 import { Card, Cards } from "fumadocs-ui/components/card";
 import { Callout } from "fumadocs-ui/components/callout";
@@ -128,12 +128,7 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
         </div>
       </div>
       <Separator />
-      <DocsPage
-        article={{
-          className: "pt-[15px]!",
-        }}
-        lastUpdate={page.data.date ? new Date(page.data.date) : undefined}
-      >
+      <DocsPage toc={toc}>
         <title>{page.data.title}</title>
         <meta name="description" content={page.data.description} />
         <h1 className="text-[1.75em] font-semibold">{page.data.title}</h1>
@@ -141,7 +136,7 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
           {page.data.description}
         </p>
         <InlineTOC items={toc} />
-        <div className="prose flex-1 text-fd-foreground/90 pt-5">
+        <div className="pt-[15px]">
           <Mdx
             components={{
               ...defaultComponents,

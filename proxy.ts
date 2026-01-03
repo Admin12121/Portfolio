@@ -120,7 +120,6 @@ export async function proxy(req: NextRequest) {
           createdAt: meta.createdAt,
         };
 
-        // Assign admin to first joiner
         if (!meta.adminToken) {
           nextMeta["adminToken"] = token;
         } else {
@@ -128,13 +127,10 @@ export async function proxy(req: NextRequest) {
         }
 
         await redis.hset(`meta:${roomId}`, nextMeta);
-
-        // Emit a join presence event (username/displayName filled by profile later)
         await realtime.channel(roomId).emit("chat.join", {});
 
         return response;
       } catch (error) {
-        console.error("Redis error in middleware:", error);
         const internal = `/chat${path === "/" ? "" : path}`;
         url.pathname = internal;
         return NextResponse.rewrite(url);

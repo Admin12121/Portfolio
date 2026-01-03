@@ -134,11 +134,11 @@ export default function RootLayout({
         <RootProvider>
           <LayoutProvider>
             <NuqsAdapter>
-            <Providers>
-              <Navbar />
-              {children}
-              <Footer />
-            </Providers>
+              <Providers>
+                <Navbar />
+                {children}
+                <Footer />
+              </Providers>
             </NuqsAdapter>
           </LayoutProvider>
         </RootProvider>
