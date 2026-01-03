@@ -211,7 +211,7 @@ export async function generateMetadata({
   const { title, description, createdAt, updatedAt } = post.metadata;
 
   const image = {
-    url: getPageImage(slug[0]).url,
+    url: getPageImage(["blog"].concat(slug)).url,
     width: 1920,
     height: 1080,
     alt: title,

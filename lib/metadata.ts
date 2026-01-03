@@ -22,7 +22,7 @@ export function createMetadata(override: Metadata): Metadata {
   };
 }
 
-export function getPageImage(slugs: string) {
+export function getPageImage(slugs: string[]) {
   const segments = [...slugs,"og","image.webp"];
   return {
     segments,
