@@ -20,28 +20,6 @@ export async function proxy(req: NextRequest) {
 
   const parts = host.split(".");
 
-  const isDocsSub = parts[0] === "docs";
-  const mainDomainForDocs = isDocsSub ? parts.slice(1).join(".") : host;
-
-  if (isDocsSub && (path === "/docs" || path.startsWith("/docs/"))) {
-    const clean = path.replace(/^\/docs/, "") || "/";
-    url.hostname = `docs.${mainDomainForDocs}`;
-    url.pathname = clean;
-    return NextResponse.redirect(url, 302);
-  }
-
-  if (isDocsSub && path.startsWith("/docs")) {
-    const clean = path.replace(/^\/docs/, "") || "/";
-    url.pathname = clean;
-    return NextResponse.redirect(url, 302);
-  }
-
-  if (isDocsSub) {
-    const internal = `/docs${path === "/" ? "" : path}`;
-    url.pathname = internal;
-    return NextResponse.rewrite(url);
-  }
-
   const isChatSub = parts[0] === "chat";
   const mainDomainForChat = isChatSub ? parts.slice(1).join(".") : host;
 

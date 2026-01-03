@@ -371,6 +371,10 @@
     ) !important;
 }
 
+#nd-docs-layout{
+    display: block !important;
+}
+
 .bottom-progressive-blur {
     -webkit-mask-image: linear-gradient(0deg, #000 30%, transparent);
     -webkit-backdrop-filter: blur(6px);
@@ -382,3 +386,4 @@
     pointer-events: none;
     position: fixed;
 }
+

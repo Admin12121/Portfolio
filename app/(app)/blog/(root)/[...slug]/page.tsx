@@ -1,7 +1,7 @@
 import { type ComponentProps, type FC, type ReactNode } from "react";
 import type { Metadata } from "next";
 import { blog } from "@/lib/source";
-import { DocsPage, DocsBody } from "fumadocs-ui/page";
+import { DocsPage } from "fumadocs-ui/page";
 import defaultComponents from "fumadocs-ui/mdx";
 import { Card, Cards } from "fumadocs-ui/components/card";
 import { Callout } from "fumadocs-ui/components/callout";
@@ -11,7 +11,6 @@ import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
 import { AutoTypeTable } from "fumadocs-typescript/ui";
 import { createMetadata, getPageImage } from "@/lib/metadata";
 import { Banner } from "fumadocs-ui/components/banner";
-import { source } from "@/lib/source";
 import { PathUtils } from "fumadocs-core/source";
 import { Wrapper } from "@/components/preview/wrapper";
 import Link from "next/link";
@@ -128,7 +127,9 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
         </div>
       </div>
       <Separator />
-      <DocsPage toc={toc}>
+      <DocsPage
+        lastUpdate={page.data.date ? new Date(page.data.date) : undefined}
+      >
         <title>{page.data.title}</title>
         <meta name="description" content={page.data.description} />
         <h1 className="text-[1.75em] font-semibold">{page.data.title}</h1>
@@ -136,7 +137,7 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
           {page.data.description}
         </p>
         <InlineTOC items={toc} />
-        <div className="pt-[15px]">
+        <div className="prose flex-1 text-fd-foreground/90 pt-5">
           <Mdx
             components={{
               ...defaultComponents,
@@ -146,7 +147,7 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
               Tab,
               Tabs,
               a: ({ href, ...props }) => {
-                const found = source.getPageByHref(href ?? "", {
+                const found = blog.getPageByHref(href ?? "", {
                   dir: PathUtils.dirname(page.path),
                 });
 
