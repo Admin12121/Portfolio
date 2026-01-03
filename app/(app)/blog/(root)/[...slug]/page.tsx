@@ -198,7 +198,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string[] }>;
 }): Promise<Metadata> {
   const slug = (await params).slug;
   const post = getPostBySlug(slug);
@@ -211,7 +211,7 @@ export async function generateMetadata({
   const { title, description, createdAt, updatedAt } = post.metadata;
 
   const image = {
-    url: getPageImage(slug).url,
+    url: getPageImage(slug[0]).url,
     width: 1920,
     height: 1080,
     alt: title,

@@ -52,8 +52,8 @@ export function getAllPosts() {
   );
 }
 
-export function getPostBySlug(slug: string) {
-  return getAllPosts().find((post) => post.slug === slug);
+export function getPostBySlug(slug: string[]) {
+  return getAllPosts().find((post) => post.slug === slug[0]);
 }
 
 export function getPostsByCategory(category: string) {
