@@ -47,7 +47,7 @@ export default function page() {
 
 export async function generateMetadata(): Promise<Metadata> {
   const image = {
-    url: getPageImage("lab").url,
+    url: getPageImage(["lab"]).url,
     width: 1920,
     height: 1080,
     alt: "Lab Page",
