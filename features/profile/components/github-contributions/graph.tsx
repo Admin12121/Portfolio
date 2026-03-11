@@ -1,8 +1,8 @@
 "use client";
 
 import dayjs from "dayjs";
-import { ActivityIcon } from "lucide-react";
-import { use } from "react";
+import { ActivityIcon, LoaderIcon } from "lucide-react";
+import { use, useEffect, useState } from "react";
 
 import type { Activity } from "@/components/ui/contribution-graph";
 import {
@@ -19,6 +19,21 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { GITHUB_USERNAME } from "@/config/site";
+
+const GITHUB_CONTRIBUTIONS_STORAGE_KEY = "github-contributions";
+const GITHUB_CONTRIBUTIONS_URL = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`;
+
+type GitHubContributionsResponse = {
+  contributions?: Activity[];
+};
+
+function GitHubContributionLoadingState() {
+  return (
+    <div className="flex h-[162px] w-full items-center justify-center">
+      <LoaderIcon className="animate-spin text-muted-foreground" />
+    </div>
+  );
+}
 
 function GitHubContributionEmptyState() {
   return (
@@ -45,14 +60,94 @@ function GitHubContributionEmptyState() {
   );
 }
 
+function readStoredContributions() {
+  const cached = localStorage.getItem(GITHUB_CONTRIBUTIONS_STORAGE_KEY);
+
+  if (!cached) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(cached) as Activity[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    localStorage.removeItem(GITHUB_CONTRIBUTIONS_STORAGE_KEY);
+    return [];
+  }
+}
+
 export function GitHubContributionGraph({
   contributions,
 }: {
   contributions: Promise<Activity[]>;
 }) {
-  const data = use(contributions);
+  const initialData = use(contributions);
+  const [data, setData] = useState(initialData);
+  const [isRetrying, setIsRetrying] = useState(initialData.length === 0);
+
+  useEffect(() => {
+    if (initialData.length > 0) {
+      localStorage.setItem(
+        GITHUB_CONTRIBUTIONS_STORAGE_KEY,
+        JSON.stringify(initialData)
+      );
+      return;
+    }
+
+    const cachedData = readStoredContributions();
+    if (cachedData.length > 0) {
+      setData(cachedData);
+    }
+
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 10000);
+
+    async function refetchContributions() {
+      try {
+        const res = await fetch(GITHUB_CONTRIBUTIONS_URL, {
+          signal: controller.signal,
+        });
+
+        if (!res.ok) {
+          throw new Error(`Failed to fetch GitHub contributions: ${res.status}`);
+        }
+
+        const payload = (await res.json()) as GitHubContributionsResponse;
+        const nextData = Array.isArray(payload.contributions)
+          ? payload.contributions
+          : [];
+
+        if (nextData.length > 0) {
+          localStorage.setItem(
+            GITHUB_CONTRIBUTIONS_STORAGE_KEY,
+            JSON.stringify(nextData)
+          );
+          setData(nextData);
+        }
+      } catch (error) {
+        console.warn(
+          "Client-side GitHub contributions fetch failed:",
+          error instanceof Error ? error.message : String(error)
+        );
+      } finally {
+        window.clearTimeout(timeout);
+        setIsRetrying(false);
+      }
+    }
+
+    void refetchContributions();
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(timeout);
+    };
+  }, [initialData]);
 
   if (!data || data.length === 0) {
+    if (isRetrying) {
+      return <GitHubContributionLoadingState />;
+    }
+
     return <GitHubContributionEmptyState />;
   }
 
@@ -94,7 +189,7 @@ export function GitHubContributionGraph({
         <ContributionGraphTotalCount>
           {({ totalCount, year }) => (
             <div className="text-muted-foreground">
-              {totalCount.toLocaleString("en")} contributions in {year + 1} on{" "}
+              {totalCount.toLocaleString("en")} contributions in {year} on{" "}
               <a
                 className="font-medium underline underline-offset-4"
                 href={`https://github.com/${GITHUB_USERNAME}`}
@@ -115,5 +210,5 @@ export function GitHubContributionGraph({
 }
 
 export function GitHubContributionFallback() {
-  return <GitHubContributionEmptyState />;
+  return <GitHubContributionLoadingState />;
 }
