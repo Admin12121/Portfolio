@@ -18,7 +18,16 @@ interface FlickeringGridProps extends React.HTMLAttributes<HTMLDivElement> {
   height?: number;
   className?: string;
   maxOpacity?: number;
+  centerFadeRadius?: number;
+  centerFadeSoftness?: number;
 }
+
+type GridParams = {
+  cols: number;
+  rows: number;
+  squares: Float32Array;
+  dpr: number;
+};
 
 export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   squareSize = 4,
@@ -29,37 +38,49 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   height,
   className,
   maxOpacity = 0.3,
+  centerFadeRadius = 100,
+  centerFadeSoftness = 120,
   ...props
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const gridParamsRef = useRef<GridParams | null>(null);
+
   const [isInView, setIsInView] = useState(false);
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
 
   const memoizedColor = useMemo(() => {
-    const toRGBA = (color: string) => {
+    const toRGBA = (inputColor: string) => {
       if (typeof window === "undefined") {
-        return `rgba(0, 0, 0,`;
+        return "rgba(0, 0, 0,";
       }
+
       const canvas = document.createElement("canvas");
-      canvas.width = canvas.height = 1;
+      canvas.width = 1;
+      canvas.height = 1;
+
       const ctx = canvas.getContext("2d");
-      if (!ctx) return "rgba(255, 0, 0,";
-      ctx.fillStyle = color;
+      if (!ctx) return "rgba(0, 0, 0,";
+
+      ctx.fillStyle = inputColor;
       ctx.fillRect(0, 0, 1, 1);
+
       const [r, g, b] = Array.from(ctx.getImageData(0, 0, 1, 1).data);
       return `rgba(${r}, ${g}, ${b},`;
     };
+
     return toRGBA(color);
   }, [color]);
 
   const setupCanvas = useCallback(
-    (canvas: HTMLCanvasElement, width: number, height: number) => {
+    (canvas: HTMLCanvasElement, width: number, height: number): GridParams => {
       const dpr = window.devicePixelRatio || 1;
+
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
+
       const cols = Math.floor(width / (squareSize + gridGap));
       const rows = Math.floor(height / (squareSize + gridGap));
 
@@ -95,23 +116,55 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       dpr: number,
     ) => {
       ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "transparent";
-      ctx.fillRect(0, 0, width, height);
+
+      const step = (squareSize + gridGap) * dpr;
+      const squarePixelSize = squareSize * dpr;
+
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      const innerRadius = centerFadeRadius * dpr;
+      const outerRadius = (centerFadeRadius + centerFadeSoftness) * dpr;
+
+      const smoothstep = (edge0: number, edge1: number, x: number) => {
+        const t = Math.min(Math.max((x - edge0) / (edge1 - edge0), 0), 1);
+        return t * t * (3 - 2 * t);
+      };
 
       for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-          const opacity = squares[i * rows + j];
+          const x = i * step;
+          const y = j * step;
+
+          const cubeCenterX = x + squarePixelSize / 2;
+          const cubeCenterY = y + squarePixelSize / 2;
+
+          const dx = cubeCenterX - centerX;
+          const dy = cubeCenterY - centerY;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          const radialFade =
+            centerFadeSoftness <= 0
+              ? distance >= innerRadius
+                ? 1
+                : 0
+              : smoothstep(innerRadius, outerRadius, distance);
+
+          const opacity = squares[i * rows + j] * radialFade;
+          if (opacity <= 0.001) continue;
+
           ctx.fillStyle = `${memoizedColor}${opacity})`;
-          ctx.fillRect(
-            i * (squareSize + gridGap) * dpr,
-            j * (squareSize + gridGap) * dpr,
-            squareSize * dpr,
-            squareSize * dpr,
-          );
+          ctx.fillRect(x, y, squarePixelSize, squarePixelSize);
         }
       }
     },
-    [memoizedColor, squareSize, gridGap],
+    [
+      memoizedColor,
+      squareSize,
+      gridGap,
+      centerFadeRadius,
+      centerFadeSoftness,
+    ],
   );
 
   useEffect(() => {
@@ -122,26 +175,13 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let animationFrameId: number;
-    let gridParams: ReturnType<typeof setupCanvas>;
-
-    const updateCanvasSize = () => {
-      const newWidth = width || container.clientWidth;
-      const newHeight = height || container.clientHeight;
-      setCanvasSize({ width: newWidth, height: newHeight });
-      gridParams = setupCanvas(canvas, newWidth, newHeight);
-    };
-
-    updateCanvasSize();
-
+    let animationFrameId = 0;
     let lastTime = 0;
-    const animate = (time: number) => {
-      if (!isInView) return;
 
-      const deltaTime = (time - lastTime) / 1000;
-      lastTime = time;
+    const renderCurrentGrid = () => {
+      const gridParams = gridParamsRef.current;
+      if (!gridParams) return;
 
-      updateSquares(gridParams.squares, deltaTime);
       drawGrid(
         ctx,
         canvas.width,
@@ -151,8 +191,40 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
         gridParams.squares,
         gridParams.dpr,
       );
+    };
+
+    const updateCanvasSize = () => {
+      const newWidth = width ?? container.clientWidth;
+      const newHeight = height ?? container.clientHeight;
+
+      setCanvasSize({ width: newWidth, height: newHeight });
+      gridParamsRef.current = setupCanvas(canvas, newWidth, newHeight);
+      renderCurrentGrid();
+    };
+
+    const animate = (time: number) => {
+      const gridParams = gridParamsRef.current;
+      if (!isInView || !gridParams) return;
+
+      const deltaTime = lastTime === 0 ? 0 : (time - lastTime) / 1000;
+      lastTime = time;
+
+      updateSquares(gridParams.squares, deltaTime);
+
+      drawGrid(
+        ctx,
+        canvas.width,
+        canvas.height,
+        gridParams.cols,
+        gridParams.rows,
+        gridParams.squares,
+        gridParams.dpr,
+      );
+
       animationFrameId = requestAnimationFrame(animate);
     };
+
+    updateCanvasSize();
 
     const resizeObserver = new ResizeObserver(() => {
       updateCanvasSize();
@@ -167,7 +239,7 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       { threshold: 0 },
     );
 
-    intersectionObserver.observe(canvas);
+    intersectionObserver.observe(container);
 
     if (isInView) {
       animationFrameId = requestAnimationFrame(animate);
@@ -183,12 +255,12 @@ export const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   return (
     <div
       ref={containerRef}
-      className={cn(`h-full w-full ${className}`)}
+      className={cn("h-full w-full", className)}
       {...props}
     >
       <canvas
         ref={canvasRef}
-        className="pointer-events-none"
+        className="pointer-events-none block h-full w-full"
         style={{
           width: canvasSize.width,
           height: canvasSize.height,

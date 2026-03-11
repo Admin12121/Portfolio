@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default function page() {
   const allPosts = getAllPosts();
   return (
-    <main className="container-wrapper max-w-screen! overflow-x-hidden">
+    <main className="container-wrapper max-w-screen!">
       <div className="relative mx-auto px-0! container md:fixed:max-w-6xl">
         <Separator />
         <InnerNode className="w-full h-full" />

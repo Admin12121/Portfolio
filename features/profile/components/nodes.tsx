@@ -186,6 +186,22 @@ function ScreenNodeRail({
           />
         </>
       )}
+      {showOuterNodes && (
+        <>
+          <div
+            className={cn(
+              outerNodeClassName,
+              "top-[calc(-1*var(--node-vertical-offset))] outer-section-node-offset left-(--node-horizontal-offset)",
+            )}
+          />
+          <div
+            className={cn(
+              outerNodeClassName,
+              "top-[calc(-1*var(--node-vertical-offset))] outer-section-node-offset right-(--node-horizontal-offset)",
+            )}
+          />
+        </>
+      )}
 
       <span
         className={cn(

@@ -133,7 +133,6 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
             <p className="text-lg text-muted-foreground mb-4">
               {page.data.description}
             </p>
-            <InlineTOC items={toc} />
             <svg className="pointer-events-none absolute inset-0 [z-index:-1] size-full select-none text-offgray-200/70 dark:text-blue-400/10 mask-l-from-10% mask-l-to-90% opacity-40 dark:opacity-80">
               <defs>
                 <pattern
@@ -158,59 +157,65 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
           </div>
         </header>
         <SeparatorUI />
-        <div className="p-6 prose prose-invert max-w-none border-x">
-          <Mdx
-            components={{
-              ...defaultComponents,
-              Card,
-              Cards,
-              Callout,
-              Tab,
-              Tabs,
-              a: ({ href, ...props }) => {
-                const found = blog.getPageByHref(href ?? "", {
-                  dir: PathUtils.dirname(page.path),
-                });
+        <div className="flex gap-10 p-6 max-w-none border-x">
+          <div className="prose prose-invert ">
+            <Mdx
+              components={{
+                ...defaultComponents,
+                Card,
+                Cards,
+                Callout,
+                Tab,
+                Tabs,
+                a: ({ href, ...props }) => {
+                  const found = blog.getPageByHref(href ?? "", {
+                    dir: PathUtils.dirname(page.path),
+                  });
 
-                if (!found) return <Link href={href} {...props} />;
+                  if (!found) return <Link href={href} {...props} />;
 
-                return (
-                  <HoverCard>
-                    <HoverCardTrigger
-                      href={
-                        found.hash
-                          ? `${found.page.url}#${found.hash}`
-                          : found.page.url
-                      }
-                      {...props}
-                    >
-                      {props.children}
-                    </HoverCardTrigger>
-                    <HoverCardContent className="text-sm">
-                      <p className="font-medium">{found.page.data.title}</p>
-                      <p className="text-muted-foreground">
-                        {found.page.data.description}
-                      </p>
-                    </HoverCardContent>
-                  </HoverCard>
-                );
-              },
-              Accordion,
-              Accordions,
-              Banner,
-              TypeTable,
-              Wrapper,
-              blockquote: Callout as unknown as FC<
-                ComponentProps<"blockquote">
-              >,
-              CodeBlock,
-              Pre,
-              Mermaid,
-              AutoTypeTable,
-              Link,
-              YouTubeEmbed,
-              FramedImage,
-            }}
+                  return (
+                    <HoverCard>
+                      <HoverCardTrigger
+                        href={
+                          found.hash
+                            ? `${found.page.url}#${found.hash}`
+                            : found.page.url
+                        }
+                        {...props}
+                      >
+                        {props.children}
+                      </HoverCardTrigger>
+                      <HoverCardContent className="text-sm">
+                        <p className="font-medium">{found.page.data.title}</p>
+                        <p className="text-muted-foreground">
+                          {found.page.data.description}
+                        </p>
+                      </HoverCardContent>
+                    </HoverCard>
+                  );
+                },
+                Accordion,
+                Accordions,
+                Banner,
+                TypeTable,
+                Wrapper,
+                blockquote: Callout as unknown as FC<
+                  ComponentProps<"blockquote">
+                >,
+                CodeBlock,
+                Pre,
+                Mermaid,
+                AutoTypeTable,
+                Link,
+                YouTubeEmbed,
+                FramedImage,
+              }}
+            />
+          </div>
+          <InlineTOC
+            className="sticky max-w-xs w-full top-20 max-h-[calc(100dvh-6rem)] pr-1"
+            items={toc}
           />
         </div>
         <AfterNode />

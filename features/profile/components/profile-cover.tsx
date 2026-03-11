@@ -1,6 +1,8 @@
+"use client";
 import { FlickeringGrid } from "@/components/global/fliketgrid";
 import { cn } from "@/lib/utils";
 import { AfterNode, BeforeNode, InnerNode } from "./nodes";
+import Security from "./secutity";
 
 export function ProfileCover() {
   return (
@@ -12,17 +14,20 @@ export function ProfileCover() {
       )}
     >
       <BeforeNode />
-      <InnerNode className="w-full h-full">
-        <FlickeringGrid
-          className="absolute inset-0 z-0 size-full"
+      <InnerNode className="w-full h-full flex items-center justify-center">
+        <Security />
+        {/* <FlickeringGrid
+          className="absolute inset-0 z-0 size-full "
           squareSize={4}
           gridGap={3}
-          color="#6B7280"
+          color="#191b20"
           maxOpacity={0.5}
           flickerChance={0.1}
           height={385}
           width={1150}
-        />
+          centerFadeRadius={120}
+          centerFadeSoftness={160}
+        /> */}
       </InnerNode>
       <AfterNode />
     </div>
