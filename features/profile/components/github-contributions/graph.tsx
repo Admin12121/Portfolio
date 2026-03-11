@@ -1,7 +1,7 @@
 "use client";
 
 import dayjs from "dayjs";
-import { LoaderIcon } from "lucide-react";
+import { ActivityIcon } from "lucide-react";
 import { use } from "react";
 
 import type { Activity } from "@/components/ui/contribution-graph";
@@ -20,12 +20,41 @@ import {
 } from "@/components/ui/tooltip";
 import { GITHUB_USERNAME } from "@/config/site";
 
+function GitHubContributionEmptyState() {
+  return (
+    <div className="flex min-h-[162px] w-full flex-col items-center justify-center gap-2 px-4 py-6 text-center">
+      <ActivityIcon className="size-4 text-muted-foreground" />
+      <div className="space-y-1">
+        <p className="font-mono text-sm text-foreground">
+          GitHub contributions are unavailable right now.
+        </p>
+        <p className="text-xs text-muted-foreground">
+          This can happen in production when the remote GitHub activity service
+          is slow, rate-limited, or temporarily unreachable.
+        </p>
+      </div>
+      <a
+        className="font-mono text-xs underline underline-offset-4 text-muted-foreground hover:text-foreground"
+        href={`https://github.com/${GITHUB_USERNAME}`}
+        target="_blank"
+        rel="noopener"
+      >
+        View activity on GitHub
+      </a>
+    </div>
+  );
+}
+
 export function GitHubContributionGraph({
   contributions,
 }: {
   contributions: Promise<Activity[]>;
 }) {
   const data = use(contributions);
+
+  if (!data || data.length === 0) {
+    return <GitHubContributionEmptyState />;
+  }
 
   return (
     <ContributionGraph
@@ -86,9 +115,5 @@ export function GitHubContributionGraph({
 }
 
 export function GitHubContributionFallback() {
-  return (
-    <div className="flex h-[162px] w-full items-center justify-center">
-      <LoaderIcon className="animate-spin text-muted-foreground" />
-    </div>
-  );
+  return <GitHubContributionEmptyState />;
 }
