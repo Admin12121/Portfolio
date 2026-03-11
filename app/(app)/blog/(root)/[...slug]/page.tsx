@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/hover-card";
 import { InlineTOC } from "@/components/inline-toc";
 import { Separator } from "@/components/separator";
+import { Separator as SeparatorUI } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import {
@@ -41,6 +42,11 @@ import {
 } from "@/features/blog/data";
 import { LLMCopyButtonWithViewOptions } from "@/features/blog/components/post-page-actions";
 import { PostShareMenu } from "@/features/blog/components/post-share-menu";
+import {
+  AfterNode,
+  BeforeNode,
+  InnerNode,
+} from "@/features/profile/components/nodes";
 
 export default async function Page(props: PageProps<"/blog/[...slug]">) {
   const params = await props.params;
@@ -53,9 +59,8 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
   const { previous, next } = findNeighbour(allPosts, params.slug[0]);
 
   return (
-    <main className="mx-auto md:max-w-3xl border-x">
-      <Separator className="border-t-0" />
-      <div className="flex items-center justify-between p-2 pl-4">
+    <main className="mx-auto md:max-w-6xl ">
+      <div className="flex items-center justify-between p-2 pl-4 border-x">
         <Button
           className="h-7 gap-2 rounded-lg px-0 font-mono text-muted-foreground"
           variant="link"
@@ -117,18 +122,43 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
           )}
         </div>
       </div>
-      <Separator />
-
-      <article className="p-6 max-w-3xl mx-auto">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">{page.data.title}</h1>
-          <p className="text-lg text-muted-foreground mb-4">
-            {page.data.description}
-          </p>
-          <InlineTOC items={toc} />
+      <SeparatorUI />
+      <article className="relative max-w-6xl mx-auto ">
+        <BeforeNode />
+        <header className="relative border-x">
+          <InnerNode className="absolute w-full h-full" />
+          <InnerNode className="absolute w-full" />
+          <div className="p-6 isolate overflow-clip">
+            <h1 className="text-4xl font-bold mb-4">{page.data.title}</h1>
+            <p className="text-lg text-muted-foreground mb-4">
+              {page.data.description}
+            </p>
+            <InlineTOC items={toc} />
+            <svg className="pointer-events-none absolute inset-0 [z-index:-1] size-full select-none text-offgray-200/70 dark:text-blue-400/10 mask-l-from-10% mask-l-to-90% opacity-40 dark:opacity-80">
+              <defs>
+                <pattern
+                  id=":Sg:"
+                  width="4"
+                  height="4"
+                  patternUnits="userSpaceOnUse"
+                  patternTransform="rotate(45)"
+                >
+                  <line
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="4"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                  ></line>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#:Sg:)"></rect>
+            </svg>
+          </div>
         </header>
-
-        <div className="prose prose-invert max-w-none">
+        <SeparatorUI />
+        <div className="p-6 prose prose-invert max-w-none border-x">
           <Mdx
             components={{
               ...defaultComponents,
@@ -183,10 +213,18 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
             }}
           />
         </div>
-
-        <Separator className="my-8" />
-        <Feedback onRateAction={onRateAction} />
+        <AfterNode />
+        <InnerNode className="w-full h-full" />
       </article>
+      <Separator />
+      <div className="w-full h-full relative">
+        <BeforeNode />
+        <InnerNode className="w-full h-full">
+          <InnerNode className="absolute w-full" />
+          <Feedback onRateAction={onRateAction} />
+        </InnerNode>
+        <AfterNode />
+      </div>
     </main>
   );
 }

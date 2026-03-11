@@ -9,7 +9,7 @@ function Panel({ className, ...props }: React.ComponentProps<"section">) {
       data-slot="panel"
       className={cn(
         "screen-line-before screen-line-after border-x border-edge",
-        className
+        className,
       )}
       {...props}
     />
@@ -20,7 +20,7 @@ function PanelHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="panel-header"
-      className={cn("screen-line-after px-4", className)}
+      className={cn("border-b px-4", className)}
       {...props}
     />
   );

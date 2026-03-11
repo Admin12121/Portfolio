@@ -76,7 +76,7 @@ const Navbar = () => {
           className="screen-line-before screen-line-after mx-auto flex h-14 items-center justify-between gap-2 border-edge after:z-1 after:transition-[background-color] sm:gap-4 container md:fixed:max-w-6xl px-0!"
           data-header-container
         >
-          <Link href="/" className="ml-4">
+          <Link href="/" className="ml-4 flex gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -91,7 +91,8 @@ const Navbar = () => {
             >
               <polyline points="4 17 10 11 4 5"></polyline>
               <line x1="12" x2="20" y1="19" y2="19"></line>
-            </svg>
+            </svg>{" "}
+            <p>Admin12121</p>
           </Link>
 
           <div className="md:col-span-10 flex items-center justify-end pr-0 relative">
