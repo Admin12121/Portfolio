@@ -29,9 +29,9 @@ export function GitHubContributionGraph({
 
   return (
     <ContributionGraph
-      className="mx-auto py-2"
+      className="mx-auto py-4"
       data={data}
-      blockSize={11}
+      blockSize={18}
       blockMargin={3}
       blockRadius={0}
     >
@@ -65,7 +65,7 @@ export function GitHubContributionGraph({
         <ContributionGraphTotalCount>
           {({ totalCount, year }) => (
             <div className="text-muted-foreground">
-              {totalCount.toLocaleString("en")} contributions in {year} on{" "}
+              {totalCount.toLocaleString("en")} contributions in {year + 1} on{" "}
               <a
                 className="font-medium underline underline-offset-4"
                 href={`https://github.com/${GITHUB_USERNAME}`}

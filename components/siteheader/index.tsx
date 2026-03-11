@@ -66,17 +66,14 @@ const Navbar = () => {
   }, []);
 
   return (
-    <SiteHeaderWrapper
-      className={cn(
-        "sticky top-0 z-50 max-w-screen overflow-x-hidden backdrop-blur-sm px-2",
-        "data-[affix=true]:shadow-[0_0_16px_0_black]/8 dark:data-[affix=true]:shadow-[0_0_16px_0_black]/80",
-        "not-dark:data-[affix=true]:**:data-header-container:after:bg-border",
-        "transition-shadow duration-300",
-      )}
-    >
-      <div className="container-wrapper 3xl:fixed:px-0 md:px-6 px-0">
+    <header className="sticky top-0 z-100 h-14.25 shrink-0 bg-[#f5f3f4] dark:bg-[#121316] flex min-w-0 default-border-color border-t border-b sm:border-t-0 outer-section-node-offset">
+      <div className="absolute z-99 size-1.5 rotate-45 border border-offgray-100 dark:border-offgray-900 bg-white dark:bg-[hsl(219,92%,2%)] bottom-[calc(-1*var(--node-vertical-offset))] left-(--node-horizontal-offset) hide lg:block"></div>
+      <div className="absolute z-99 size-1.5 rotate-45 border border-offgray-100 dark:border-offgray-900 bg-white dark:bg-[hsl(219,92%,2%)] bottom-[calc(-1*var(--node-vertical-offset))] right-(--node-horizontal-offset) hide lg:block"></div>
+      <span className="sm:w-6 md:w-12 shrink-0 border-r lg:border-r-0 border-border"></span>
+      <span className="hide flex-1 border-x border-border lg:block"></span>
+      <div className="container-wrapper 3xl:fixed:px-0 md:px-6 px-0 md:fixed:max-w-6xl">
         <div
-          className="screen-line-before screen-line-after mx-auto flex h-14 items-center justify-between gap-2 border-x border-edge after:z-1 after:transition-[background-color] sm:gap-4 container md:fixed:max-w-3xl px-0!"
+          className="screen-line-before screen-line-after mx-auto flex h-14 items-center justify-between gap-2 border-edge after:z-1 after:transition-[background-color] sm:gap-4 container md:fixed:max-w-6xl px-0!"
           data-header-container
         >
           <Link href="/" className="ml-4">
@@ -176,9 +173,13 @@ const Navbar = () => {
               </li>
             </ul>
           </div>
+          <div className="absolute z-99 size-1.5 rotate-45 border border-offgray-100 dark:border-offgray-900 bg-white dark:bg-[hsl(219,_92%,_2%)] [bottom:calc(-1*var(--node-vertical-offset))] -left-[3px]"></div>
+          <div className="absolute z-99 size-1.5 rotate-45 border border-offgray-100 dark:border-offgray-900 bg-white dark:bg-[hsl(219,_92%,_2%)] [bottom:calc(-1*var(--node-vertical-offset))] -right-[3px]"></div>
         </div>
       </div>
-    </SiteHeaderWrapper>
+      <span className="hide flex-1 border-x default-border-color lg:block"></span>
+      <span className="sm:w-6 md:w-12 shrink-0 default-border-color"></span>
+    </header>
   );
 };
 

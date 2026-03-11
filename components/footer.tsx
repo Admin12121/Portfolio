@@ -6,8 +6,8 @@ import { Icons } from "./icons";
 
 const Footer = () => {
   return (
-    <footer className="relative container-wrapper max-w-screen! overflow-x-hidden px-2">
-      <div className="screen-line-before mx-auto border-x border-edge pt-4 container md:fixed:max-w-3xl">
+    <footer className="relative container-wrapper max-w-screen! overflow-x-hidden px-2 bg-[#f5f3f4] dark:bg-[#121316]">
+      <div className="screen-line-before mx-auto border-x border-edge pt-4 container md:fixed:max-w-6xl">
         <SeparatorH />
         <p className="mb-4 px-4 text-center font-mono text-sm text-balance text-muted-foreground">
           Built by{" "}

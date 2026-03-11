@@ -129,8 +129,14 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${FiraCodeNerd.variable} ${geistSansLight.variable} ${geistSansRegular.variable} ${geistSansMedium.variable} ${geistSansSemibold.variable} ${geistSansBold.variable}`}
+        className={`${FiraCodeNerd.variable} ${geistSansLight.variable} ${geistSansRegular.variable} ${geistSansMedium.variable} ${geistSansSemibold.variable} ${geistSansBold.variable} relative`}
       >
+        <div
+          style={{ backgroundImage: "url(/noise.webp)" }}
+          className="pointer-events-none [z-index:-1] absolute inset-0 bg-[size:180px] bg-repeat opacity-[0.035] dark:opacity-[0.012]"
+        ></div>
+        <div className="shrink-0 h-full sm:w-6 md:w-12 bg-[#f5f3f4] dark:bg-[#121316] absolute top-0 z-[-1] left-0"></div>
+        <div className="shrink-0 h-full sm:w-6 md:w-12 bg-[#f5f3f4] dark:bg-[#121316] absolute top-0 z-[-1] right-0"></div>
         <RootProvider>
           <LayoutProvider>
             <NuqsAdapter>

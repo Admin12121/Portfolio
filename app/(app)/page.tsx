@@ -10,8 +10,8 @@ import { Separator } from "@/components/separator";
 
 export default function page() {
   return (
-    <main className="container-wrapper max-w-screen! overflow-x-hidden">
-      <div className="relative mx-auto px-0! container md:fixed:max-w-3xl">
+    <main className="container-wrapper max-w-screen! overflow-x-hidden p-0">
+      <div className="relative mx-auto px-0! container md:fixed:max-w-6xl">
         <ProfileCover />
         <ProfileHeader />
         <Separator />
@@ -25,12 +25,15 @@ export default function page() {
         <Projects />
         <Separator />
 
-        {/* <Certifications />
-        <Separator /> */}
-
         <Blogs />
         <Separator />
       </div>
     </main>
   );
-};
+}
+{
+  /*<Certifications />*/
+}
+{
+  /*<Separator /> */
+}
