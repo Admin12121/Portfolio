@@ -6,7 +6,7 @@ import { ProfileCover } from "@/features/profile/components/profile-cover";
 import { Blogs } from "@/features/blog/components";
 import { Separator } from "@/components/separator";
 
-// import { Certifications } from "@/features/profile/components/certifications";
+import { Certifications } from "@/features/profile/components/certifications";
 
 export default function page() {
   return (
@@ -23,6 +23,9 @@ export default function page() {
         <Separator />
 
         <Projects />
+        <Separator />
+
+        <Certifications />
         <Separator />
 
         <Blogs />

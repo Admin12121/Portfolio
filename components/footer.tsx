@@ -50,6 +50,42 @@ const Footer = () => {
             <Separator />
 
             <a
+              className="flex items-center text-muted-foreground transition-[color] hover:text-foreground"
+              href="https://x.com/dmin12121?utm_source=admin12121.com"
+              target="_blank"
+              rel="noopener"
+            >
+              <Icons.x className="size-4" />
+              <span className="sr-only">X</span>
+            </a>
+
+            <Separator />
+
+            <a
+              className="flex items-center text-muted-foreground transition-[color] hover:text-foreground"
+              href="https://github.com/admin12121?utm_source=admin12121.com"
+              target="_blank"
+              rel="noopener"
+            >
+              <Icons.github className="size-4" />
+              <span className="sr-only">GitHub</span>
+            </a>
+
+            <Separator />
+
+            <a
+              className="flex items-center text-muted-foreground transition-[color] hover:text-foreground"
+              href="https://www.linkedin.com/in/vickytajpuriya?utm_source=admin12121.com"
+              target="_blank"
+              rel="noopener"
+            >
+              <Icons.linkedin className="size-4" />
+              <span className="sr-only">LinkedIn</span>
+            </a>
+
+            <Separator />
+
+            <a
               className="flex items-center text-muted-foreground transition-colors hover:text-foreground"
               href={`${SITE_INFO.url}/rss`}
               target="_blank"

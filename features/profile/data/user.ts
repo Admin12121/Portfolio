@@ -24,7 +24,7 @@ export const USER: User = {
   about: `
 Hello, World! I’m known here as Admin12121 — a Hacker and Developer passionate about ethical hacking, and building innovative solutions.
 
-Currently studying at [Softwarica College](https://softwarica.edu.np/), I specialize in Python, Go, TypeScript, Django, Next.js, and React. I thrive on exploring security vulnerabilities, developing secure applications, and turning complex problems into elegant solutions.
+Currently studying at [Softwarica College](https://softwarica.edu.np/), I specialize in Rust, Python, & TypeScript. I thrive on exploring security vulnerabilities, developing secure applications, and turning complex problems into elegant solutions.
 
 Let's connect and collaborate on something awesome!
   `,
