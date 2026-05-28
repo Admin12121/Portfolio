@@ -3,7 +3,7 @@ import { remark } from "remark";
 import remarkGfm from "remark-gfm";
 import remarkMdx from "remark-mdx";
 
-import type { Writeup } from "@/features/ctf-writeups/types/writeup";
+import type { Writeup } from "@/features/writeups/types/writeup";
 import remarkComponent from "@/lib/remark-component";
 
 const processor = remark().use(remarkMdx).use(remarkComponent).use(remarkGfm);

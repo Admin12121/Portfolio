@@ -2,7 +2,7 @@ import fs from "fs";
 import matter from "gray-matter";
 import path from "path";
 
-import type { Writeup, WriteupMetadata } from "@/features/ctf-writeups/types/writeup";
+import type { Writeup, WriteupMetadata } from "@/features/writeups/types/writeup";
 
 function parseFrontmatter(fileContent: string) {
   const file = matter(fileContent);
@@ -41,7 +41,7 @@ function getMDXData(dir: string) {
 }
 
 export function getAllWriteups() {
-  return getMDXData(path.join(process.cwd(), "/features/ctf-writeups/content")).sort(
+  return getMDXData(path.join(process.cwd(), "/features/writeups/content")).sort(
     (a, b) => {
       if (a.metadata.pinned && !b.metadata.pinned) return -1;
       if (!a.metadata.pinned && b.metadata.pinned) return 1;

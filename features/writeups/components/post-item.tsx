@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { getIcon } from "@/components/icons";
-import type { Writeup } from "@/features/ctf-writeups/types/writeup";
+import type { Writeup } from "@/features/writeups/types/writeup";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import ComesInGoesOutUnderline from "@/components/global/comes-in-goes-out-underline";
@@ -32,7 +32,7 @@ export function WriteupItem({
 
   return (
     <Link
-      href={`/ctf-writeups/${writeup.slug}`}
+      href={`/writeups/${writeup.slug}`}
       className={cn("group/cert flex items-center pr-2", className)}
     >
       {writeup.metadata.image ? (

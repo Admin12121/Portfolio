@@ -1,7 +1,7 @@
 "use client";
 
-import type { Writeup } from "@/features/ctf-writeups/types/writeup";
-import { useFilteredWriteups } from "@/features/ctf-writeups/hooks/use-filtered-writeups";
+import type { Writeup } from "@/features/writeups/types/writeup";
+import { useFilteredWriteups } from "@/features/writeups/hooks/use-filtered-writeups";
 import { WriteupList } from "./post-list";
 
 export function WriteupListWithSearch({ writeups }: { writeups: Writeup[] }) {

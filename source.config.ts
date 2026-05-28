@@ -20,9 +20,9 @@ export const blog = defineCollections({
   async: true,
 });
 
-export const ctfWriteups = defineCollections({
+export const writeups = defineCollections({
   type: 'doc',
-  dir: 'features/ctf-writeups/content',
+  dir: 'features/writeups/content',
   schema: frontmatterSchema.extend({
     author: z.string(),
     date: z.string().or(z.date()),

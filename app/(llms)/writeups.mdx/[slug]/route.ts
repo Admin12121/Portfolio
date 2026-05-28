@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
-import { getAllWriteups } from "@/features/ctf-writeups/data";
-import { getLLMText } from "@/features/ctf-writeups/lib/get-llm-text";
+import { getAllWriteups } from "@/features/writeups/data";
+import { getLLMText } from "@/features/writeups/lib/get-llm-text";
 
 export async function generateStaticParams() {
   const writeups = getAllWriteups();

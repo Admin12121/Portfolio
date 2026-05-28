@@ -35,21 +35,20 @@ import {
 } from "@/components/ui/tooltip";
 import { ArrowLeftIcon, ArrowRightIcon, LinkIcon } from "lucide-react";
 import ComesInGoesOutUnderline from "@/components/global/comes-in-goes-out-underline";
-// parse title: support `Left | Right` and Markdown link `Left [Right](url)`
 import {
   findNeighbour,
   getAllWriteups,
   getWriteupBySlug,
-} from "@/features/ctf-writeups/data";
+} from "@/features/writeups/data";
 import { LLMCopyButtonWithViewOptions } from "@/features/blog/components/post-page-actions";
 import { PostShareMenu } from "@/features/blog/components/post-share-menu";
-import { ctfWriteups } from "@/lib/source";
+import { writeups } from "@/lib/source";
 
 export default async function Page(
-  props: PageProps<"/ctf-writeups/[...slug]">,
+  props: PageProps<"/writeups/[...slug]">,
 ) {
   const params = await props.params;
-  const page = ctfWriteups.getPage(params.slug);
+  const page = writeups.getPage(params.slug);
 
   if (!page) return <NotFound />;
 
@@ -61,13 +60,10 @@ export default async function Page(
   let titleRight = "";
   let titleHref: string | undefined = undefined;
 
-  // Extract markdown link if present. Supports formats like:
-  // "Obfuscated - [Netanix Ctf](https://...)" or "Obfuscated [Netanix Ctf](...)"
   const mdLinkMatch = rawTitle.match(/\[([^\]]+)\]\(([^)]+)\)/);
   if (mdLinkMatch) {
     const linkText = mdLinkMatch[1].trim();
     const href = mdLinkMatch[2].trim();
-    // derive left by removing the link markdown and any trailing separators/dashes
     const left = rawTitle
       .replace(mdLinkMatch[0], "")
       .replace(/[-–—]\s*$/g, "")
@@ -85,9 +81,9 @@ export default async function Page(
           variant="link"
           asChild
         >
-          <Link href="/ctf-writeups">
+          <Link href="/writeups">
             <ArrowLeftIcon />
-            CTF Writeups
+            Writeups
           </Link>
         </Button>
 
@@ -102,7 +98,7 @@ export default async function Page(
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="secondary" size="icon-sm" asChild>
-                  <Link href={`/ctf-writeups/${previous.slug}`}>
+                  <Link href={`/writeups/${previous.slug}`}>
                     <ArrowLeftIcon />
                     <span className="sr-only">Previous</span>
                   </Link>
@@ -123,7 +119,7 @@ export default async function Page(
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="secondary" size="icon-sm" asChild>
-                  <Link href={`/ctf-writeups/${next.slug}`}>
+                  <Link href={`/writeups/${next.slug}`}>
                     <ArrowRightIcon />
                     <span className="sr-only">Next</span>
                   </Link>
@@ -157,9 +153,7 @@ export default async function Page(
                       rel="noopener noreferrer"
                       className="group inline-flex items-center gap-2"
                     >
-                      <span >
-                        {titleRight}
-                      </span>
+                      <span>{titleRight}</span>
                     </ComesInGoesOutUnderline>
                   ) : (
                     <span className="text-muted-foreground">{titleRight}</span>
@@ -208,7 +202,7 @@ export default async function Page(
                 Tab,
                 Tabs,
                 a: ({ href, ...props }) => {
-                  const found = ctfWriteups.getPageByHref(href ?? "", {
+                  const found = writeups.getPageByHref(href ?? "", {
                     dir: PathUtils.dirname(page.path),
                   });
 
@@ -268,7 +262,7 @@ export default async function Page(
 }
 
 export async function generateStaticParams() {
-  return ctfWriteups.generateParams();
+  return writeups.generateParams();
 }
 
 export async function generateMetadata({
@@ -287,7 +281,7 @@ export async function generateMetadata({
   const { title, description, createdAt, updatedAt } = writeup.metadata;
 
   const image = {
-    url: getPageImage(["ctf-writeups"].concat(slug)).url,
+    url: getPageImage(["writeups"].concat(slug)).url,
     width: 1920,
     height: 1080,
     alt: title,
@@ -297,7 +291,7 @@ export async function generateMetadata({
     title: title,
     description,
     openGraph: {
-      url: `/ctf-writeups/${slug}`,
+      url: `/writeups/${slug}`,
       type: "article",
       publishedTime: new Date(createdAt).toISOString(),
       modifiedTime: new Date(updatedAt).toISOString(),
@@ -311,5 +305,5 @@ export async function generateMetadata({
 }
 
 function getWriteupUrl(slug: string) {
-  return `/ctf-writeups/${slug}`;
+  return `/writeups/${slug}`;
 }

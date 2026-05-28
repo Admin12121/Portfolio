@@ -1,4 +1,4 @@
-import type { Writeup } from "@/features/ctf-writeups/types/writeup";
+import type { Writeup } from "@/features/writeups/types/writeup";
 import { CollapsibleList } from "@/components/collapsible-list";
 import { WriteupItem } from "./post-item";
 

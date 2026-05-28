@@ -1,5 +1,5 @@
-import type { Writeup } from "@/features/ctf-writeups/types/writeup";
-import { useSearchQuery } from "@/features/ctf-writeups/hooks/use-search-query";
+import type { Writeup } from "@/features/writeups/types/writeup";
+import { useSearchQuery } from "@/features/writeups/hooks/use-search-query";
 
 const normalize = (text: string) => text.toLowerCase().replaceAll(" ", "");
 

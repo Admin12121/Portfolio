@@ -23,8 +23,8 @@ const nextConfig: NextConfig = {
         destination: "/blog.mdx/:slug",
       },
       {
-        source: "/ctf-writeups/:slug.mdx",
-        destination: "/ctf-writeups.mdx/:slug",
+        source: "/writeups/:slug.mdx",
+        destination: "/writeups.mdx/:slug",
       },
       {
         source: "/components/:slug.mdx",

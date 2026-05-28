@@ -11,7 +11,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 
-import { useSearchQuery } from "@/features/ctf-writeups/hooks/use-search-query";
+import { useSearchQuery } from "@/features/writeups/hooks/use-search-query";
 
 export function WriteupSearchInput() {
   const { query, setQuery } = useSearchQuery();
@@ -25,7 +25,7 @@ export function WriteupSearchInput() {
       </InputGroupAddon>
 
       <InputGroupInput
-        placeholder="Search CTF Writeups"
+        placeholder="Search Writeups"
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);

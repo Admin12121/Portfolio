@@ -1,5 +1,5 @@
 import { getAllPosts } from "@/features/blog/data";
-import { getAllWriteups } from "@/features/ctf-writeups/data";
+import { getAllWriteups } from "@/features/writeups/data";
 import { PROJECTS } from "@/features/profile/data/projects";
 import { USER } from "@/features/profile/data/user";
 
@@ -67,7 +67,7 @@ ${projectsText}
 
 ${blogContent}
 
-## CTF Writeups
+## Writeups
 
 ${writeupsContent}`;
 }

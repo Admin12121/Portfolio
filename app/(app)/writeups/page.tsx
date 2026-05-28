@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { WriteupList } from "@/features/ctf-writeups/components/post-list";
-import { WriteupListWithSearch } from "@/features/ctf-writeups/components/post-list-with-search";
-import { WriteupSearchInput } from "@/features/ctf-writeups/components/post-search-input";
-import { getAllWriteups } from "@/features/ctf-writeups/data";
+import { WriteupList } from "@/features/writeups/components/post-list";
+import { WriteupListWithSearch } from "@/features/writeups/components/post-list-with-search";
+import { WriteupSearchInput } from "@/features/writeups/components/post-search-input";
+import { getAllWriteups } from "@/features/writeups/data";
 import { Separator } from "@/components/separator";
 import Image from "next/image";
 
@@ -15,8 +15,8 @@ import {
 } from "@/features/profile/components/panel";
 
 export const metadata: Metadata = {
-  title: "CTF Writeups",
-  description: "A collection of CTF writeups, notes, and exploit walkthroughs.",
+  title: "Writeups",
+  description: "A collection of writeups, notes, and exploit walkthroughs.",
 };
 
 export default function Page() {
@@ -29,7 +29,7 @@ export default function Page() {
 
         <Panel id="writeups" className="min-h-[calc(100dvh-192px)]">
           <PanelHeader>
-            <PanelTitle>CTF Writeups</PanelTitle>
+            <PanelTitle>Writeups</PanelTitle>
           </PanelHeader>
           <div className=" border-b p-2">
             <Suspense

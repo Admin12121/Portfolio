@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 
 import { SITE_INFO } from "@/config/site";
 import { getAllPosts } from "@/features/blog/data";
-import { getAllWriteups } from "@/features/ctf-writeups/data";
+import { getAllWriteups } from "@/features/writeups/data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const allPosts = getAllPosts();
@@ -15,11 +15,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const writeups = allWriteups.map((writeup) => ({
-    url: `${SITE_INFO.url}/ctf-writeups/${writeup.slug}`,
+    url: `${SITE_INFO.url}/writeups/${writeup.slug}`,
     lastModified: dayjs(writeup.metadata.updatedAt).toISOString(),
   }));
 
-  const routes = ["", "/blog", "/ctf-writeups"].map((route) => ({
+  const routes = ["", "/blog", "/writeups"].map((route) => ({
     url: `${SITE_INFO.url}${route}`,
     lastModified: dayjs().toISOString(),
   }));
