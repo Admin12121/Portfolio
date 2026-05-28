@@ -16,9 +16,11 @@ ${USER.about.trim()}
 - Website: ${USER.website}
 `;
 
+const allProjects = [...PROJECTS.tools, ...PROJECTS.external];
+
 const projectsText = `## Projects
 
-${PROJECTS.map((item) => {
+${allProjects.map((item) => {
   const skills = `\n\nSkills: ${item.skills.join(", ")}`;
   const description = item.description ? `\n\n${item.description.trim()}` : "";
   return `### ${item.title}\n\nProject URL: ${item.link}${skills}${description}`;

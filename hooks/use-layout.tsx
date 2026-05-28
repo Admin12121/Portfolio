@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-type Layout = "fixed";
+type Layout = "fixed" | "full";
 
 interface LayoutProviderState {
   layout: Layout;
@@ -19,7 +19,7 @@ const useLayout = () => {
 
   return React.useMemo(
     () => ({
-      layout: "fixed" as const,
+      layout: "fixed" as Layout,
       setLayout,
     }),
     [setLayout],
