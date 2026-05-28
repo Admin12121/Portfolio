@@ -17,7 +17,7 @@ The challenge provided an obfuscated encoded string and required recovering the 
 
 The given ciphertext was:
 
-```txt
+```txt title="txt"
 Mio9KDk1JicqLTo1Ois8Hjl1Pit-NzY7eDp1GiBoOnAjAAchAAAAAAAAZy4ReBE4MBErPCM6JWx6LTZxJWh9
 ```
 
@@ -35,7 +35,7 @@ By inspecting the decoded bytes, the data appeared to be rearranged in fixed-siz
 
 The final layer was a repeating XOR operation using the key:
 
-```txt
+```txt title="txt"
 NETANIX
 ```
 
@@ -51,7 +51,7 @@ So the complete decoding process was:
 
 The ciphertext first needed proper Base64 padding before decoding.
 
-```python
+```python title="python"
 import base64
 
 ciphertext = "Mio9KDk1JicqLTo1Ois8Hjl1Pit-NzY7eDp1GiBoOnAjAAchAAAAAAAAZy4ReBE4MBErPCM6JWx6LTZxJWh9"
@@ -68,7 +68,7 @@ This produced raw bytes, but the result was still not readable plaintext.
 
 The decoded bytes were arranged in blocks of 3. Each block had to be reversed to restore the original byte order.
 
-```python
+```python title="python"
 reordered = bytearray()
 
 for i in range(0, len(data), 3):
@@ -84,7 +84,7 @@ This corrected the byte ordering before the XOR stage.
 
 The final layer used XOR encryption with the repeating key `NETANIX`.
 
-```python
+```python title="python"
 key = b"NETANIX"
 
 flag = ""
@@ -101,7 +101,7 @@ After applying the XOR operation, the plaintext flag was recovered.
 
 ## Full Solver
 
-```python
+```python title="python"
 import base64
 
 ciphertext = "Mio9KDk1JicqLTo1Ois8Hjl1Pit-NzY7eDp1GiBoOnAjAAchAAAAAAAAZy4ReBE4MBErPCM6JWx6LTZxJWh9"
@@ -130,7 +130,7 @@ print(flag)
 
 Running the solver prints:
 
-```txt
+```txt title="txt"
 softwarica{cust0m_0bfusc4t10n_w1th_NETANIX_k3y_1s_unbr34k4bl3!}
 ```
 

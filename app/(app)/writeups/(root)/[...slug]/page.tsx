@@ -192,7 +192,7 @@ export default async function Page(
         </header>
         <SeparatorUI />
         <div className="flex gap-10 p-6 max-w-none border-x">
-          <div className="prose prose-invert ">
+          <div className="prose prose-invert max-w-[720px]!">
             <Mdx
               components={{
                 ...defaultComponents,
