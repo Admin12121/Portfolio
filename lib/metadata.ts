@@ -6,8 +6,8 @@ export function createMetadata(override: Metadata): Metadata {
     openGraph: {
       title: override.title ?? undefined,
       description: override.description ?? undefined,
-      url: "https://biki.com.np/",
-      images: "https://biki.com.np/banner.png",
+      url: "https://admin12121.com/",
+      images: "https://admin12121.com/banner.png",
       siteName: "Admin12121's Portfolio",
       ...override.openGraph,
     },
@@ -16,7 +16,7 @@ export function createMetadata(override: Metadata): Metadata {
       creator: "@admin12121",
       title: override.title ?? undefined,
       description: override.description ?? undefined,
-      images: "https://biki.com.np/images/og.webp",
+      images: "https://admin12121.com/images/og.webp",
       ...override.twitter,
     },
   };

@@ -9,11 +9,6 @@ import {
 import { PostItem } from "./post-item";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import {
-  AfterNode,
-  BeforeNode,
-  InnerNode,
-} from "@/features/profile/components/nodes";
 
 export function Blogs({
   banner,
@@ -25,9 +20,6 @@ export function Blogs({
   const blogs = getAllPosts();
   return (
     <Panel id="certs" className={cn(className)}>
-      <BeforeNode />
-      <InnerNode className="w-full h-full">
-        <InnerNode className="w-full h-full" />
         <PanelHeader>
           <PanelTitle>Blog</PanelTitle>
         </PanelHeader>
@@ -46,8 +38,6 @@ export function Blogs({
           max={8}
           renderItem={(item: Post) => <PostItem post={item} />}
         />
-      </InnerNode>
-      <AfterNode />
     </Panel>
   );
 }

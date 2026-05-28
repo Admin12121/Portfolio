@@ -5,7 +5,7 @@ export function Separator({ className }: { className?: string }) {
     <div
       className={cn(
         "relative flex h-3.5 w-full border-edge",
-        "before:absolute before:-left-[100vw] before:-z-1 before:h-3.5 before:w-[200vw]",
+        "before:-left-[100vw] before:-z-1 before:h-3.5 before:w-full",
         "before:bg-[repeating-linear-gradient(315deg,var(--pattern-foreground)_0,var(--pattern-foreground)_1px,transparent_0,transparent_50%)] before:bg-size-[5px_5px] before:[--pattern-foreground:var(--color-edge)]/56",
         className,
       )}

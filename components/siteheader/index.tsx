@@ -67,8 +67,6 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-100 h-14.25 shrink-0 bg-[#f5f3f4] dark:bg-[#121316] flex min-w-0 default-border-color border-t border-b sm:border-t-0 outer-section-node-offset">
-      <div className="absolute z-99 size-1.5 rotate-45 border border-offgray-100 dark:border-offgray-900 bg-white dark:bg-[hsl(219,92%,2%)] bottom-[calc(-1*var(--node-vertical-offset))] left-(--node-horizontal-offset) hide lg:block"></div>
-      <div className="absolute z-99 size-1.5 rotate-45 border border-offgray-100 dark:border-offgray-900 bg-white dark:bg-[hsl(219,92%,2%)] bottom-[calc(-1*var(--node-vertical-offset))] right-(--node-horizontal-offset) hide lg:block"></div>
       <span className="sm:w-6 md:w-12 shrink-0 border-r lg:border-r-0 border-border"></span>
       <span className="hide flex-1 border-x border-border lg:block"></span>
       <div className="container-wrapper 3xl:fixed:px-0 md:px-6 px-0 md:fixed:max-w-6xl">
@@ -130,47 +128,6 @@ const Navbar = () => {
               </NavLink>
               <li className={"relative group h-full border-r flex"}>
                 <ModeSwitcher className="px-5 py-4 w-full cursor-pointer opacity-50 hover:opacity-100 duration-200 transition-all ease-in-out" />
-              </li>
-              <li className={"relative group h-full border-r blackout lg:flex"}>
-                <Button
-                  asChild
-                  className="w-full h-full py-4! rounded-none bg-indigo-600 hover:bg-indigo-700"
-                >
-                  <Link href="/lab">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      color="currentColor"
-                      className="size-5"
-                    >
-                      <path
-                        d="M7 7L8.22654 8.05719C8.74218 8.50163 9 8.72386 9 9C9 9.27614 8.74218 9.49836 8.22654 9.94281L7 11"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.5"
-                      ></path>
-                      <path
-                        d="M11 11H14"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.5"
-                      ></path>
-                      <path
-                        d="M12 21C15.7497 21 17.6246 21 18.9389 20.0451C19.3634 19.7367 19.7367 19.3634 20.0451 18.9389C21 17.6246 21 15.7497 21 12C21 8.25027 21 6.3754 20.0451 5.06107C19.7367 4.6366 19.3634 4.26331 18.9389 3.95491C17.6246 3 15.7497 3 12 3C8.25027 3 6.3754 3 5.06107 3.95491C4.6366 4.26331 4.26331 4.6366 3.95491 5.06107C3 6.3754 3 8.25027 3 12C3 15.7497 3 17.6246 3.95491 18.9389C4.26331 19.3634 4.6366 19.7367 5.06107 20.0451C6.3754 21 8.25027 21 12 21Z"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="1.5"
-                      ></path>
-                    </svg>
-                    Lab
-                  </Link>
-                </Button>
               </li>
             </ul>
           </div>

@@ -300,7 +300,7 @@ const app = new Elysia({ prefix: "/api" })
       origin: (request) => {
         const origin = request.headers.get("origin");
         if (origin?.includes("localhost")) return true;
-        if (origin?.includes("biki.com.np")) return true;
+        if (origin?.includes("admin12121.com")) return true;
         return false;
       },
       credentials: true,

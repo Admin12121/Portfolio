@@ -12,13 +12,13 @@ export const USER: User = {
   address: "Nepal",
   phoneNumber: "",
   email: "",
-  website: "https://biki.com.np",
+  website: "https://admin12121.com",
   jobTitle: "Red Team Operator & Developer ",
   jobs: [
     // {
     //   title: "Red Team Operator & Developer ",
     //   company: "Biki",
-    //   website: "https://biki.com.np",
+    //   website: "https://admin12121.com",
     // },
   ],
   about: `

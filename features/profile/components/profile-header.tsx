@@ -5,13 +5,11 @@ import { USER } from "@/features/profile/data/user";
 import { cn } from "@/lib/utils";
 import { FlipSentences } from "@/registry/flip-sentences";
 
-import { AfterNode, BeforeNode, InnerNode } from "./nodes";
 import { VerifiedIcon } from "./verified-icon";
 
 export function ProfileHeader() {
   return (
-    <div className="relative screen-line-after flex border-x border-edge">
-      <BeforeNode pattern="full-line" />
+    <div className="relative border-b border-edge flex border-x border-edge">
       <div className="relative z-1 shrink-0 border-r border-edge">
         <div className="mx-0.5 my-0.75">
           <Image
@@ -25,7 +23,6 @@ export function ProfileHeader() {
           />
         </div>
       </div>
-      <InnerNode className="absolute w-full h-full" />
       <div className="relative z-1 flex flex-1 flex-col">
         <div
           className={cn(
@@ -56,7 +53,6 @@ export function ProfileHeader() {
         </div>
       </div>
 
-      <AfterNode pattern="full-dot" />
     </div>
   );
 }

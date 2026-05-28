@@ -2,7 +2,7 @@
 
 A modern, minimal portfolio and blog platform built with Next.js 15, showcasing projects, certifications, and technical writing.
 
-Check out the live site: [biki.com.np]
+Check out the live site: [admin12121.com]
 
 ## 🚀 Overview
 
