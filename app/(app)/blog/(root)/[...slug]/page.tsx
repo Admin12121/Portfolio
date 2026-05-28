@@ -124,16 +124,13 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
       </div>
       <SeparatorUI />
       <article className="relative max-w-6xl mx-auto ">
-        <BeforeNode />
         <header className="relative border-x">
-          <InnerNode className="absolute w-full h-full" />
-          <InnerNode className="absolute w-full" />
           <div className="p-6 isolate overflow-clip">
             <h1 className="text-4xl font-bold mb-4">{page.data.title}</h1>
             <p className="text-lg text-muted-foreground mb-4">
               {page.data.description}
             </p>
-            <svg className="pointer-events-none absolute inset-0 [z-index:-1] size-full select-none text-offgray-200/70 dark:text-blue-400/10 mask-l-from-10% mask-l-to-90% opacity-40 dark:opacity-80">
+            <svg className="pointer-events-none absolute inset-0 [z-index:-1] size-full select-none text-gray-500 dark:text-blue-400/10 mask-l-from-10% mask-l-to-90% opacity-40 dark:opacity-80">
               <defs>
                 <pattern
                   id=":Sg:"
@@ -218,17 +215,10 @@ export default async function Page(props: PageProps<"/blog/[...slug]">) {
             items={toc}
           />
         </div>
-        <AfterNode />
-        <InnerNode className="w-full h-full" />
       </article>
       <Separator />
       <div className="w-full h-full relative">
-        <BeforeNode />
-        <InnerNode className="w-full h-full">
-          <InnerNode className="absolute w-full" />
-          <Feedback onRateAction={onRateAction} />
-        </InnerNode>
-        <AfterNode />
+        <Feedback onRateAction={onRateAction} />
       </div>
     </main>
   );

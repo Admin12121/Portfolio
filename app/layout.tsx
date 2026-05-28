@@ -11,7 +11,6 @@ import { USER } from "@/features/profile/data/user";
 import Navbar from "@/components/siteheader";
 import Footer from "@/components/footer";
 import { Providers } from "@/components/provider";
-import { LayoutProvider } from "@/hooks/use-layout";
 
 const geistSansLight = localFont({
   src: "./fonts/AtAero-Light.woff2",
@@ -121,7 +120,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="layout-fixed" suppressHydrationWarning>
       <head>
         <meta name='dmca-site-verification' content='a2p0K1o2bmo1WFBia1ZjUnFKK2NhUT090' />
       </head>
@@ -130,18 +129,16 @@ export default function RootLayout({
       >
         <div
           style={{ backgroundImage: "url(/noise.webp)" }}
-          className="pointer-events-none [z-index:-1] absolute inset-0 bg-[size:180px] bg-repeat opacity-[0.035] dark:opacity-[0.012]"
+          className="pointer-events-none absolute inset-0 z-[-1] bg-size-[180px] bg-repeat opacity-[0.035] dark:opacity-[0.012]"
         ></div>
         <RootProvider>
-          <LayoutProvider>
-            <NuqsAdapter>
-              <Providers>
-                <Navbar />
-                {children}
-                <Footer />
-              </Providers>
-            </NuqsAdapter>
-          </LayoutProvider>
+          <NuqsAdapter>
+            <Providers>
+              <Navbar />
+              {children}
+              <Footer />
+            </Providers>
+          </NuqsAdapter>
         </RootProvider>
       </body>
     </html>
