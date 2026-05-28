@@ -1,0 +1,144 @@
+---
+title: Obfuscated - [Netanix Ctf](https://netanixctf.xyz/challenge/27)
+description: Solving a custom obfuscation challenge using Base64 URL-safe decoding, 3-byte block reversal, and repeating-key XOR.
+author: admin12121
+date: 2026-05-28
+createdAt: 2026-05-28
+updatedAt: 2026-05-28
+---
+
+## Challenge
+
+<p align="center">
+    <img src="/images/ctf-writeups/obfuscated/challenge.webp" alt="Obfuscated — Netanix CTF" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+The challenge provided an obfuscated encoded string and required recovering the hidden flag.
+
+The given ciphertext was:
+
+```txt
+Mio9KDk1JicqLTo1Ois8Hjl1Pit-NzY7eDp1GiBoOnAjAAchAAAAAAAAZy4ReBE4MBErPCM6JWx6LTZxJWh9
+```
+
+At first glance, the string looked like an encoded value rather than direct encrypted text. The goal was to identify each transformation layer and reverse it in the correct order.
+
+---
+
+## Analysis
+
+The ciphertext contained characters commonly seen in **Base64 URL-safe encoding**, especially the `-` character. It also had no visible padding, which is common when Base64 output is used in compact formats.
+
+After decoding the Base64 URL-safe layer, the output was still unreadable. This showed that another transformation had been applied before encoding.
+
+By inspecting the decoded bytes, the data appeared to be rearranged in fixed-size groups. Testing small block sizes showed that reversing every **3-byte block** produced a more structured byte sequence.
+
+The final layer was a repeating XOR operation using the key:
+
+```txt
+NETANIX
+```
+
+So the complete decoding process was:
+
+1. Decode the ciphertext using Base64 URL-safe decoding.
+2. Reverse every 3-byte block.
+3. XOR the result with the repeating key `NETANIX`.
+
+---
+
+## Step 1: Base64 URL-safe decoding
+
+The ciphertext first needed proper Base64 padding before decoding.
+
+```python
+import base64
+
+ciphertext = "Mio9KDk1JicqLTo1Ois8Hjl1Pit-NzY7eDp1GiBoOnAjAAchAAAAAAAAZy4ReBE4MBErPCM6JWx6LTZxJWh9"
+
+padding = "=" * ((4 - len(ciphertext) % 4) % 4)
+data = base64.urlsafe_b64decode(ciphertext + padding)
+```
+
+This produced raw bytes, but the result was still not readable plaintext.
+
+---
+
+## Step 2: Reverse each 3-byte block
+
+The decoded bytes were arranged in blocks of 3. Each block had to be reversed to restore the original byte order.
+
+```python
+reordered = bytearray()
+
+for i in range(0, len(data), 3):
+    block = data[i:i + 3]
+    reordered.extend(block[::-1])
+```
+
+This corrected the byte ordering before the XOR stage.
+
+---
+
+## Step 3: Apply repeating-key XOR
+
+The final layer used XOR encryption with the repeating key `NETANIX`.
+
+```python
+key = b"NETANIX"
+
+flag = ""
+
+for i, byte in enumerate(reordered):
+    flag += chr(byte ^ key[i % len(key)])
+
+print(flag)
+```
+
+After applying the XOR operation, the plaintext flag was recovered.
+
+---
+
+## Full Solver
+
+```python
+import base64
+
+ciphertext = "Mio9KDk1JicqLTo1Ois8Hjl1Pit-NzY7eDp1GiBoOnAjAAchAAAAAAAAZy4ReBE4MBErPCM6JWx6LTZxJWh9"
+key = b"NETANIX"
+
+padding = "=" * ((4 - len(ciphertext) % 4) % 4)
+data = base64.urlsafe_b64decode(ciphertext + padding)
+
+reordered = bytearray()
+
+for i in range(0, len(data), 3):
+    block = data[i:i + 3]
+    reordered.extend(block[::-1])
+
+flag = "".join(
+    chr(byte ^ key[i % len(key)])
+    for i, byte in enumerate(reordered)
+)
+
+print(flag)
+```
+
+---
+
+## Output | Flag
+
+Running the solver prints:
+
+```txt
+softwarica{cust0m_0bfusc4t10n_w1th_NETANIX_k3y_1s_unbr34k4bl3!}
+```
+
+
+---
+
+## Conclusion
+
+This challenge used multiple simple obfuscation layers together. The ciphertext was first Base64 URL-safe encoded, then the decoded bytes were arranged using 3-byte block reversal, and finally the result was protected with a repeating-key XOR operation.
+
+By reversing each layer in the correct order, the hidden flag was successfully recovered.

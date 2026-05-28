@@ -1,7 +1,9 @@
 import { SITE_INFO } from "@/config/site";
 import { getAllPosts } from "@/features/blog/data";
+import { getAllWriteups } from "@/features/ctf-writeups/data";
 
 const allPosts = getAllPosts();
+const allWriteups = getAllWriteups();
 
 const content = `# admin12121.com
 
@@ -15,6 +17,12 @@ const content = `# admin12121.com
 ## Blog
 
 ${allPosts.map((item) => `- [${item.metadata.title}](${SITE_INFO.url}/blog/${item.slug}.mdx): ${item.metadata.description}`).join("\n")}
+
+## CTF Writeups
+
+- [CTF Writeups](${SITE_INFO.url}/ctf-writeups): CTF writeups and exploit notes.
+
+${allWriteups.map((item) => `- [${item.metadata.title}](${SITE_INFO.url}/ctf-writeups/${item.slug}.mdx): ${item.metadata.description}`).join("\n")}
 `;
 
 export const dynamic = "force-static";

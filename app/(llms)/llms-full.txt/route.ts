@@ -1,4 +1,5 @@
 import { getAllPosts } from "@/features/blog/data";
+import { getAllWriteups } from "@/features/ctf-writeups/data";
 import { PROJECTS } from "@/features/profile/data/projects";
 import { USER } from "@/features/profile/data/user";
 
@@ -39,8 +40,24 @@ ${blog.metadata.category ? `Category: ${blog.metadata.category}` : ""}`;
   return blogTexts.join("\n\n");
 }
 
+function getWriteupsContent() {
+  const allWriteups = getAllWriteups();
+  const writeupTexts = allWriteups.map((writeup) => {
+    return `### ${writeup.metadata.title}
+
+${writeup.metadata.description}
+
+Published: ${new Date(writeup.metadata.createdAt).toLocaleDateString()}
+Last Updated: ${new Date(writeup.metadata.updatedAt).toLocaleDateString()}
+URL: ${writeup.slug}
+${writeup.metadata.category ? `Category: ${writeup.metadata.category}` : ""}`;
+  });
+  return writeupTexts.join("\n\n");
+}
+
 function getContent() {
   const blogContent = getBlogContent();
+  const writeupsContent = getWriteupsContent();
 
   return `${aboutText}
 
@@ -48,7 +65,11 @@ ${projectsText}
 
 ## Blog
 
-${blogContent}`;
+${blogContent}
+
+## CTF Writeups
+
+${writeupsContent}`;
 }
 
 export const dynamic = "force-static";

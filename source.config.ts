@@ -20,6 +20,16 @@ export const blog = defineCollections({
   async: true,
 });
 
+export const ctfWriteups = defineCollections({
+  type: 'doc',
+  dir: 'features/ctf-writeups/content',
+  schema: frontmatterSchema.extend({
+    author: z.string(),
+    date: z.string().or(z.date()),
+  }),
+  async: true,
+});
+
 export default defineConfig({
   plugins: [
     jsonSchema({

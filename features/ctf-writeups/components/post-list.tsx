@@ -1,18 +1,18 @@
-import type { Post } from "../types/blog";
-import { PostItem } from "./post-item";
+import type { Writeup } from "@/features/ctf-writeups/types/writeup";
 import { CollapsibleList } from "@/components/collapsible-list";
+import { WriteupItem } from "./post-item";
 
-export function PostList({ posts }: { posts: Post[] }) {
+export function WriteupList({ writeups }: { writeups: Writeup[] }) {
   return (
     <div className="relative">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <CollapsibleList
-          items={posts}
+          items={writeups}
           max={8}
-          renderItem={(item: Post) => <PostItem post={item} />}
+          renderItem={(item: Writeup) => <WriteupItem writeup={item} />}
         />
 
-        {posts.length === 0 && (
+        {writeups.length === 0 && (
           <div className="border-y border-edge p-4">
             <p className="font-mono text-sm">No posts found.</p>
           </div>
