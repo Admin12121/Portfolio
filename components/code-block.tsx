@@ -1,7 +1,8 @@
-import * as Base from 'fumadocs-ui/components/codeblock';
-import { getHighlighter, hastToJsx } from 'fumadocs-core/highlight';
-import { cn } from '@/lib/utils';
-import type { BundledLanguage } from 'shiki';
+import * as Base from "fumadocs-ui/components/codeblock";
+import { getHighlighter } from "fumadocs-core/highlight";
+import { toJsxRuntime } from "hast-util-to-jsx-runtime";
+import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+import { cn } from "@/lib/utils";
 
 export interface CodeBlockProps {
   code: string;
@@ -9,30 +10,43 @@ export interface CodeBlockProps {
   lang: string;
 }
 
-const highlighter = await getHighlighter('js', {
-  langs: ['js', 'ts', 'jsx', 'tsx'],
-  themes: ['vesper', 'github-light'],
+const langs = ["js", "ts", "jsx", "tsx"] as const;
+type SupportedLang = (typeof langs)[number];
+
+function getSafeLang(lang: string): SupportedLang {
+  return langs.includes(lang as SupportedLang)
+    ? (lang as SupportedLang)
+    : "js";
+}
+
+const highlighter = await getHighlighter("js", {
+  langs: [...langs],
+  themes: ["vesper", "github-light"],
 });
 
 export async function CodeBlock({ code, lang, wrapper }: CodeBlockProps) {
-  await highlighter.loadLanguage(lang as BundledLanguage);
+  const safeLang = getSafeLang(lang);
+
   const hast = highlighter.codeToHast(code, {
-    lang,
+    lang: safeLang,
     defaultColor: false,
     themes: {
-      light: 'github-light',
-      dark: 'vesper',
+      light: "github-light",
+      dark: "vesper",
     },
   });
 
-  const rendered = hastToJsx(hast, {
+  const rendered = toJsxRuntime(hast, {
+    Fragment,
+    jsx,
+    jsxs,
     components: {
       pre: Base.Pre,
     },
   });
 
   return (
-    <Base.CodeBlock {...wrapper} className={cn('my-0', wrapper?.className)}>
+    <Base.CodeBlock {...wrapper} className={cn("my-0", wrapper?.className)}>
       {rendered}
     </Base.CodeBlock>
   );

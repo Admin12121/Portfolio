@@ -10,7 +10,6 @@ import { USER } from "@/features/profile/data/user";
 
 import Navbar from "@/components/siteheader";
 import Footer from "@/components/footer";
-import { Providers } from "@/components/provider";
 
 const geistSansLight = localFont({
   src: "./fonts/AtAero-Light.woff2",
@@ -121,9 +120,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="layout-fixed" suppressHydrationWarning>
-      <head>
-        <meta name='dmca-site-verification' content='a2p0K1o2bmo1WFBia1ZjUnFKK2NhUT090' />
-      </head>
       <body
         className={`${FiraCodeNerd.variable} ${geistSansLight.variable} ${geistSansRegular.variable} ${geistSansMedium.variable} ${geistSansSemibold.variable} ${geistSansBold.variable} relative`}
       >
@@ -133,11 +129,9 @@ export default function RootLayout({
         ></div>
         <RootProvider>
           <NuqsAdapter>
-            <Providers>
-              <Navbar />
-              {children}
-              <Footer />
-            </Providers>
+            <Navbar />
+            {children}
+            <Footer />
           </NuqsAdapter>
         </RootProvider>
       </body>

@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { createMDX } from 'fumadocs-mdx/next';
+import { createMDX } from "fumadocs-mdx/next";
 import path from "path";
 
 const nextConfig: NextConfig = {
@@ -9,16 +9,17 @@ const nextConfig: NextConfig = {
   },
   devIndicators: false,
   images: {
+    qualities: [100, 75],
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'avatars.githubusercontent.com',
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
       },
     ],
   },
   async rewrites() {
     return [
-            {
+      {
         source: "/blog/:slug.mdx",
         destination: "/blog.mdx/:slug",
       },
@@ -34,7 +35,8 @@ const nextConfig: NextConfig = {
         source: "/rss",
         destination: "/blog/rss",
       },
-    ]}
+    ];
+  },
 };
 
 const withMDX = createMDX();

@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 // import { SiteConfig } from "./siteconfig";
 import { Button } from "../ui/button";
+import Image from "next/image";
 
 function getRegistrableBase(hostname: string): string {
   if (hostname === "localhost" || hostname.endsWith(".localhost")) {
@@ -72,23 +73,8 @@ const Navbar = () => {
           className="bg-[#f5f3f4] dark:bg-[#121316] mx-auto flex h-14 items-center justify-between gap-2 border-l border-b border-edge sm:gap-4 container md:fixed:max-w-6xl px-0!"
           data-header-container
         >
-          <Link href="/" className="ml-4 flex gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-6 w-6"
-            >
-              <polyline points="4 17 10 11 4 5"></polyline>
-              <line x1="12" x2="20" y1="19" y2="19"></line>
-            </svg>{" "}
-            <p>Admin12121</p>
+          <Link href="/" className="flex gap-2">
+            <Image src="/logo.webp" alt="logo" width={50} height={50} />
           </Link>
 
           <div className="md:col-span-10 flex items-center justify-end pr-0 relative">

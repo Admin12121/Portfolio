@@ -4,9 +4,8 @@ import remarkGfm from "remark-gfm";
 import remarkMdx from "remark-mdx";
 
 import type { Writeup } from "@/features/writeups/types/writeup";
-import remarkComponent from "@/lib/remark-component";
 
-const processor = remark().use(remarkMdx).use(remarkComponent).use(remarkGfm);
+const processor = remark().use(remarkMdx).use(remarkGfm);
 
 export async function getLLMText(writeup: Writeup) {
   const processed = await processor.process({

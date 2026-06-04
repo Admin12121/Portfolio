@@ -17,7 +17,7 @@ export const USER: User = {
   jobs: [
     // {
     //   title: "Red Team Operator & Developer ",
-    //   company: "Biki",
+    //   company: "Admin12121 Inc.",
     //   website: "https://admin12121.com",
     // },
   ],

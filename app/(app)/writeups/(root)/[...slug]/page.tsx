@@ -44,9 +44,7 @@ import { LLMCopyButtonWithViewOptions } from "@/features/blog/components/post-pa
 import { PostShareMenu } from "@/features/blog/components/post-share-menu";
 import { writeups } from "@/lib/source";
 
-export default async function Page(
-  props: PageProps<"/writeups/[...slug]">,
-) {
+export default async function Page(props: PageProps<"/writeups/[...slug]">) {
   const params = await props.params;
   const page = writeups.getPage(params.slug);
 
@@ -202,24 +200,30 @@ export default async function Page(
                 Tab,
                 Tabs,
                 a: ({ href, ...props }) => {
-                  const found = writeups.getPageByHref(href ?? "", {
+                  if (!href) {
+                    return <span {...props}>{props.children}</span>;
+                  }
+
+                  const found = writeups.getPageByHref(href, {
                     dir: PathUtils.dirname(page.path),
                   });
 
-                  if (!found) return <Link href={href} {...props} />;
+                  if (!found) {
+                    return <Link href={href} {...props} />;
+                  }
+
+                  const linkHref = found.hash
+                    ? `${found.page.url}#${found.hash}`
+                    : found.page.url;
 
                   return (
                     <HoverCard>
-                      <HoverCardTrigger
-                        href={
-                          found.hash
-                            ? `${found.page.url}#${found.hash}`
-                            : found.page.url
-                        }
-                        {...props}
-                      >
-                        {props.children}
+                      <HoverCardTrigger asChild>
+                        <Link href={linkHref} {...props}>
+                          {props.children}
+                        </Link>
                       </HoverCardTrigger>
+
                       <HoverCardContent className="text-sm">
                         <p className="font-medium">{found.page.data.title}</p>
                         <p className="text-muted-foreground">
