@@ -6,6 +6,41 @@ export const PROJECTS: {
 } = {
   tools: [
     {
+      id: "decompile",
+      title: "Decompile",
+      period: {
+        start: "05.2026",
+      },
+      link: "https://github.com/Admin12121/decompile",
+      skills: [
+        "Reverse Engineering",
+        "Open Source",
+        "CLI Tool",
+        "Python",
+        "Docker",
+        "Ghidra",
+        "JADX",
+        "ILSpy",
+      ],
+      description: `[Open-source](https://github.com/Admin12121/decompile) One line command reverse-engineering tool with AI integration for unpacking, inspecting, and decompiling binaries and app packages.
+- No local Ghidra/JADX/apktool/ILSpy setup; heavy tools run inside Docker
+- Usage:
+  - Run directly: \`uvx decompile ./file\` or \`pipx run decompile ./file\`
+  - Install on Arch: \`paru -S decompile\`
+
+| Input | Tooling | Output |
+| --- | --- | --- |
+| ELF, PE, EXE, DLL, SYS, Mach-O | Ghidra headless, objdump, optional AI cleanup | ASM, pseudocode C, enhanced C, summary |
+| APK, AAB, DEX | JADX, apktool | Java/Kotlin source, resources, summary |
+| JAR, WAR, EAR, \`.class\` | JADX | Java source, summary |
+| .NET EXE/DLL | ilspycmd | C# source, summary |
+| IPA, \`.app\` bundle | IPA/app extraction plus native analysis | Native output and app metadata |
+
+`,
+      isExpanded: true,
+      isBeta: true,
+    },
+    {
       id: "encapsula",
       title: "Encapsula",
       period: {
@@ -21,7 +56,6 @@ export const PROJECTS: {
         "Encryption",
       ],
       description: `Lightweight and powerful steganography cli tool made using TypeScript. Easy access using <br/> \`npx encapsula\``,
-      isExpanded: true,
     },
   ],
   external: [
@@ -78,13 +112,7 @@ export const PROJECTS: {
         start: "2.2026",
       },
       link: "https://alphasuits.com.np/",
-      skills: [
-        "Next.js 16",
-        "TypeScript",
-        "Django",
-        "Python",
-        "Custom CRM",
-      ],
+      skills: ["Next.js 16", "TypeScript", "Django", "Python", "Custom CRM"],
       description: `Full-stack e-commerce platform demonstrating modern web and backend architecture.
 - Next.js 16 frontend with complex state management for cart, measurements, and orders
 - Django REST API backend with custom CRM logic for artisan workflow management

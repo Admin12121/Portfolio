@@ -22,4 +22,6 @@ export type Project = {
   logo?: string;
   /** Whether the project card is expanded by default in the UI. */
   isExpanded?: boolean;
+  /** Whether to show a beta indicator beside the project title. */
+  isBeta?: boolean;
 };
