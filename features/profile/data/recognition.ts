@@ -3,8 +3,8 @@ import type { RecognitionEntry } from "../types/recognition";
 const AWARDS: RecognitionEntry[] = [
   {
     kind: "award",
-    key: "nepal-cyber-shield-2026-top-10",
-    date: "2026-10-05",
+    key: "pentesternepals13thanniversaryctf",
+    date: "Aug 2026",
     award: {
       title: "Pentester Nepal's 13th Anniversary CTF",
       organizer: "CVEPlayground",
@@ -17,8 +17,8 @@ const AWARDS: RecognitionEntry[] = [
   },
   {
     kind: "award",
-    key: "nepal-cyber-shield-2026-top-10",
-    date: "2026-10-05",
+    key: "kavachctf2026",
+    date: "Jul 2026",
     award: {
       title: "KAVACH CTF 2026",
       organizer: "Yeti Cyber Operations",
@@ -33,7 +33,7 @@ const AWARDS: RecognitionEntry[] = [
   {
     kind: "award",
     key: "nepal-cyber-shield-2026-top-10",
-    date: "2026-10-05",
+    date: "May 2026",
     award: {
       title: "Hackअस्त्र 2026 National CTF",
       organizer: "Ethical HCK",
@@ -48,7 +48,7 @@ const AWARDS: RecognitionEntry[] = [
   {
     kind: "award",
     key: "nepal-cyber-shield-2026-top-10",
-    date: "2026-10-05",
+    date: "April 2026",
     award: {
       title: "Netanix CTF 2026",
       organizer: "Softwarica College of IT and E-commerce",
@@ -63,7 +63,7 @@ const AWARDS: RecognitionEntry[] = [
   {
     kind: "award",
     key: "nepal-cyber-shield-2026-top-10",
-    date: "2026-10-05",
+    date: "Feb 2026",
     award: {
       title: "Navya Dhristi Hackathon 2026",
       organizer: "Cosmos College",
@@ -75,7 +75,7 @@ const AWARDS: RecognitionEntry[] = [
   {
     kind: "award",
     key: "nepal-cyber-shield-2026-top-10",
-    date: "jan 2026",
+    date: "Jan 2026",
     award: {
       title: "त्रि 𝐊𝐨𝐝𝐞 Hackathon 2026",
       organizerLogoURL: "/images/trikode.png",

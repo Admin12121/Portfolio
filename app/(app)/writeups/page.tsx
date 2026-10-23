@@ -31,7 +31,7 @@ export default function Page() {
           <PanelHeader>
             <PanelTitle>Writeups</PanelTitle>
           </PanelHeader>
-          <div className=" border-b p-2">
+          <div data-draft-edges="bottom" className=" border-b p-2">
             <Suspense
               fallback={
                 <div className="flex h-9 w-full rounded-lg border border-input shadow-xs dark:bg-input/30" />

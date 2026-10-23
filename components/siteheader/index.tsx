@@ -74,11 +74,11 @@ const Navbar = () => {
           data-header-container data-draft-frame=""
         >
           <Link href="/" className="flex gap-2">
-            <Image src="/logo.webp" alt="logo" width={50} height={50} />
+            <Image src="/logo.webp" alt="logo" width={50} height={50} loading="eager"/>
           </Link>
 
           <div className="md:col-span-10 flex items-center justify-end pr-0 relative">
-            <ul className="flex items-center divide-x w-max shrink-0">
+            <ul data-draft-divided="" className="flex items-center divide-x w-max shrink-0">
               {navMenu.map((menu) => (
                 <NavLink
                   key={menu.name}
@@ -110,7 +110,7 @@ const Navbar = () => {
                   ></path>
                 </svg>
               </NavLink>
-              <li className={"relative group h-full border-r flex"}>
+              <li data-draft-edges="right" className={"relative group h-full border-r flex"}>
                 <ModeSwitcher className="px-5 py-4 w-full cursor-pointer opacity-50 hover:opacity-100 duration-200 transition-all ease-in-out" />
               </li>
             </ul>
@@ -159,7 +159,7 @@ export const NavLink = ({
     : currentPath === href;
 
   return (
-    <li className={clsx("relative group h-full", className)}>
+    <li data-draft-edges={className?.includes("border-r") ? "right" : undefined} className={clsx("relative group h-full", className)}>
       <Link
         href={href}
         className={clsx(

@@ -17,7 +17,7 @@ export function InlineTOC({
     <aside className={cn(className)}>
       <p>On this page</p>
       <ul className="flex flex-col px-4 pb-2 text-sm text-muted-foreground">
-        <div className="absolute left-1 h-[calc(100%-50px)] w-px dark:bg-zinc-800  bg-zinc-200" />
+        <div data-draft-stroke="" className="absolute left-1 h-[calc(100%-50px)] w-px dark:bg-zinc-800  bg-zinc-200" />
         {items.map((item) => (
           <li
             key={item.url}

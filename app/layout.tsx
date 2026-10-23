@@ -125,7 +125,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="layout-fixed drafting-site" suppressHydrationWarning>
+    <html lang="en" className="layout-fixed drafting-site" suppressHydrationWarning data-scroll-behavior="smooth">
       <body
         className={`${FiraCodeNerd.variable} ${geistSansLight.variable} ${geistSansRegular.variable} ${geistSansMedium.variable} ${geistSansSemibold.variable} ${geistSansBold.variable} relative`}
       >

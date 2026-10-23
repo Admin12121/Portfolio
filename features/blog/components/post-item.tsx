@@ -56,7 +56,7 @@ export function PostItem({
         </div>
       )}
 
-      <div className="flex-1 space-y-1 border-l border-dashed border-edge p-4 pr-2">
+      <div data-draft-edges="left" className="flex-1 space-y-1 border-l border-dashed border-edge p-4 pr-2">
         <h3 data-blueprint-part="title" className="leading-snug font-medium text-balance underline-offset-4 group-hover/blog:underline">
           {post.metadata.title}
         </h3>

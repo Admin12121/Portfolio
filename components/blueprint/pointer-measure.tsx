@@ -50,8 +50,8 @@ export function PointerMeasure({
       if(width<4 || height<4 || left>innerWidth || top>innerHeight || left+width<0 || top+height<0)return;
       const inkColor=ink();
       const base={ink:inkColor,opacity:alpha*.85,width:DRAFTING.fineWeight};
-      // All four sides use the same seeded pencil variation as the preloader.
-      // Sub-pixel waviness affects ink only; endpoints are exactly DOM-based.
+      // The pointer guide follows exact DOM edges with the same worn-ink
+      // density grammar as the fine graphite filter on structural frames.
       drawDraftLine(ctx,left,top,left+width,top,{...base,seed:1});
       drawDraftLine(ctx,left+width,top,left+width,top+height,{...base,seed:2});
       drawDraftLine(ctx,left+width,top+height,left,top+height,{...base,seed:3});

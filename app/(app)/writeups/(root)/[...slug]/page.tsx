@@ -73,7 +73,7 @@ export default async function Page(props: PageProps<"/writeups/[...slug]">) {
 
   return (
     <main className="mx-auto md:max-w-6xl ">
-      <div className="flex items-center justify-between p-2 pl-4 border-x">
+      <div data-draft-edges="left right" className="flex items-center justify-between p-2 pl-4 border-x">
         <Button
           className="h-7 gap-2 rounded-lg px-0 font-mono text-muted-foreground"
           variant="link"
@@ -137,7 +137,7 @@ export default async function Page(props: PageProps<"/writeups/[...slug]">) {
       </div>
       <SeparatorUI />
       <article className="relative max-w-6xl mx-auto ">
-        <header className="relative border-x">
+        <header data-draft-edges="left right" className="relative border-x">
           <div className="p-6 isolate overflow-clip">
             <h1 className="text-4xl font-bold mb-4">
               {titleRight ? (
@@ -189,7 +189,7 @@ export default async function Page(props: PageProps<"/writeups/[...slug]">) {
           </div>
         </header>
         <SeparatorUI />
-        <div className="flex gap-10 p-6 max-w-none border-x">
+        <div data-draft-edges="left right" className="flex gap-10 p-6 max-w-none border-x">
           <div className="prose prose-invert max-w-[720px]!">
             <Mdx
               components={{

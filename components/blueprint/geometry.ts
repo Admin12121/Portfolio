@@ -1,5 +1,5 @@
 /** Geometry-driven blueprint discovery. Every coordinate is measured from the host page. */
-export type PlotKind = "nav" | "title" | "copy" | "control" | "plate" | "frame" | "graphic" | "avatar" | "data" | "item" | "meta";
+export type PlotKind = "nav" | "title" | "copy" | "control" | "plate" | "frame" | "graphic" | "avatar" | "data" | "item" | "meta" | "outline";
 export type PlotRect = { x: number; y: number; width: number; height: number };
 export interface PlotBlock {
   id: string;
@@ -12,6 +12,8 @@ export interface PlotBlock {
   measurement?: "none" | "width" | "full";
   /** A semantic row groups its icon, title and metadata without duplicating content. */
   group?: string;
+  /** Visible original edges only: never draw invented borders at the viewport crop. */
+  edges?: {top:boolean;right:boolean;bottom:boolean;left:boolean};
   /** Source-measured miniature cells for charts such as the GitHub calendar. */
   cells?: Array<{x:number;y:number;width:number;height:number;level:number}>;
   lettering?: {
@@ -67,7 +69,7 @@ function visible(el: Element, vw: number, depth: number): boolean {
 }
 function classify(el: HTMLElement, nav?: Element | null): PlotKind {
   const k = el.dataset.blueprintKind;
-  if (k && ["nav","title","copy","control","plate","frame","graphic","avatar","data","item","meta"].includes(k)) return k as PlotKind;
+  if (k && ["nav","title","copy","control","plate","frame","graphic","avatar","data","item","meta","outline"].includes(k)) return k as PlotKind;
   if (el.matches("img,svg,canvas,video,figure")) return "graphic";
   if (el.matches("h1,h2,h3,[role='heading']")) return "title";
   if (el.matches("a,button,[role='button']")) return nav?.contains(el) ? "nav" : "control";
@@ -95,7 +97,8 @@ function copyText(el: HTMLElement): PlotBlock["lettering"] | undefined {
   if (!isTextLeaf(el)) return;
   const target=el.matches("[data-blueprint-role]") ? activeRoleParagraph(el) || el : el;
   const str=target.innerText?.trim().replace(/\s+/g," ") || target.textContent?.trim().replace(/\s+/g," ") || "";
-  const limit=el.matches("[data-blueprint-part=description]") ? 1200 : 420;
+  // About paragraphs commonly exceed 420 characters; do not silently drop them.
+  const limit=1800;
   if (!str || str.length > limit) return;
   const s=getComputedStyle(target);
   return {source:el,host:toRect(el.getBoundingClientRect()),text:str,
@@ -130,7 +133,7 @@ function textInkRect(el: HTMLElement): PlotRect | null {
 
 function isDecorativeText(el: HTMLElement) {
   const str=(el.innerText || el.textContent || "").trim();
-  return !str || str.length > 420 || el.matches(".sr-only,[class*='sr-only']");
+  return !str || str.length > 1800 || el.matches(".sr-only,[class*='sr-only']");
 }
 
 /** Only preloader geometry: gray neutral squares, NOT activity values. */
@@ -155,12 +158,13 @@ function makeNeutralActivityCells(panel: PlotRect): NonNullable<PlotBlock["cells
 export function measureBlueprint(options: BlueprintMeasureOptions={}): BlueprintLayout | null {
   const root=document.querySelector<HTMLElement>(options.rootSelector || "[data-blueprint-root]");
   if (!root) return null;
+  const frameRoot=root.querySelector<HTMLElement>("[data-blueprint-frame-root]") || (root.firstElementChild as HTMLElement | null) || root;
   const vw=window.innerWidth, vh=window.innerHeight;
-  const depth=Math.max(vh,Math.min(vh*2.25, options.captureDepth ?? vh));
-  const main=root.getBoundingClientRect();
+  const depth=Math.max(vh*1.15,Math.min(vh*2.25, options.captureDepth ?? vh*1.15));
+  const main=(frameRoot || root).getBoundingClientRect();
   const nav=document.querySelector<HTMLElement>(options.navigationSelector || "[data-header-container],nav");
   const cover=root.querySelector<HTMLElement>(options.coverSelector || "[data-blueprint-cover]");
-  const max=Math.min(90,Math.max(8,options.maxBlocks ?? 48));
+  const max=Math.min(110,Math.max(8,options.maxBlocks ?? 48));
   const collected: Array<{node:HTMLElement;kind?:PlotKind;label?:string;priority:number;group?:string}> = [];
   const seen=new Set<Element>();
 
@@ -169,7 +173,7 @@ export function measureBlueprint(options: BlueprintMeasureOptions={}): Blueprint
     const el=node as HTMLElement;
     // Do not add huge generic panels. Only explicitly marked FRAME objects may be large.
     const r=el.getBoundingClientRect();
-    if (r.height > vh*.68 && !["frame","data","item"].includes(kind || "")) return;
+    if (r.height > vh*.68 && !["frame","data","item","outline"].includes(kind || "")) return;
     seen.add(node);collected.push({node:el,priority,kind,label,group});
   };
 
@@ -209,10 +213,26 @@ export function measureBlueprint(options: BlueprintMeasureOptions={}): Blueprint
     if (art) offer(art,97,"graphic","CREST");
   }
 
-  // Avatar and name stay independent and retain their real positions/sizes.
+  // Real panel borders and header rules are separate transparent outlines.
+  // This makes the preloader reflect the architecture, not just text and icons.
+  // A long panel may extend below the viewport; only its visible portion paints.
+  const panels=root.querySelectorAll<HTMLElement>('[data-slot="panel"]');
+  let panelIndex=0;
+  for (const panel of panels) {
+    panelIndex++;
+    // ACTIVITY is already a real data block; don't shadow it with an outline
+    // (offer() deduplicates nodes by identity).
+    if (panel.dataset.blueprintKind !== "data")
+      offer(panel,74,"outline",`PANEL ${String(panelIndex).padStart(2,"0")}`);
+    const panelHeader=panel.querySelector<HTMLElement>('[data-slot="panel-header"]');
+    if (panelHeader) offer(panelHeader,73,"outline",`HEADER ${String(panelIndex).padStart(2,"0")}`);
+  }
+
+  // Avatar and profile frame stay independent and retain their real positions/sizes.
   const avatar=root.querySelector("[data-blueprint-avatar],img[alt*='avatar' i]");
   offer(avatar,95,"avatar","AVATAR");
   const header=root.querySelector("[data-blueprint-profile]") || root;
+  if (header instanceof HTMLElement) offer(header,92,"outline","PROFILE FRAME");
   offer(header.querySelector("h1"),94,"title","NAME");
   offer(header.querySelector("[data-blueprint-role]"),91,"copy","ROLE");
 
@@ -272,7 +292,7 @@ export function measureBlueprint(options: BlueprintMeasureOptions={}): Blueprint
     chosen.sort((a,b)=>a.node.getBoundingClientRect().top-b.node.getBoundingClientRect().top || a.node.getBoundingClientRect().left-b.node.getBoundingClientRect().left);
   }
 
-  const counts: Record<PlotKind,number>={nav:0,title:0,copy:0,control:0,plate:0,frame:0,graphic:0,avatar:0,data:0,item:0,meta:0};
+  const counts: Record<PlotKind,number>={nav:0,title:0,copy:0,control:0,plate:0,frame:0,graphic:0,avatar:0,data:0,item:0,meta:0,outline:0};
   const blocks:PlotBlock[]=chosen.map(({node,kind:explicitKind,label:explicitLabel,group},i)=>{
     const kind=explicitKind||classify(node,nav);
     counts[kind]++;
@@ -280,7 +300,26 @@ export function measureBlueprint(options: BlueprintMeasureOptions={}): Blueprint
     const r=measuredText || toRect(node.getBoundingClientRect());
     // Coordinates are *not* shifted left/up to fit; that would break matching
     // geometry. Clip visually at the viewport instead.
-    const rect:PlotRect={x:r.x,y:r.y,width:r.width,height:r.height};
+    const gutter=2;
+    const outsideContent=nav?.contains(node) === true;
+    const leftBound=outsideContent ? gutter : Math.max(main.left, gutter);
+    const rightBound=outsideContent ? vw-gutter : Math.min(main.right-1, vw-gutter);
+    const maxWidth=Math.max(0,rightBound-Math.max(r.x,leftBound));
+    const isStructural=kind==="outline" || kind==="frame";
+    const visibleY=isStructural ? Math.max(0,r.y) : r.y;
+    const visibleBottom=isStructural ? Math.min(vh,r.y+r.height) : r.y+r.height;
+    const rect:PlotRect={
+      x:Math.max(r.x,leftBound),
+      y:visibleY,
+      width:Math.max(0,Math.min(r.width,maxWidth)),
+      height:Math.max(0,visibleBottom-visibleY),
+    };
+    const edges=isStructural ? {
+      top:r.y >= 0,
+      bottom:r.y+r.height <= vh,
+      left:r.x >= leftBound,
+      right:r.x+r.width <= rightBound+1,
+    } : undefined;
     const source = (["graphic","avatar"].includes(kind) || (["nav","control"].includes(kind) && !!node.querySelector("img,svg"))) ? node : undefined;
     // Draw activity cells even if React Suspense has not mounted the remote
     // GitHub result or the fallback when the preloader takes its snapshot.
@@ -303,8 +342,8 @@ export function measureBlueprint(options: BlueprintMeasureOptions={}): Blueprint
       : node.dataset.blueprintMeasure === "none" || group ? "none"
       : kind==="title" && rect.width>=100 ? "width"
       : kind==="copy" && rect.width>=150 && counts.copy<=2 ? "full" : "none";
-    return {id:`draft-${i}`,kind,group,measurement,label:explicitLabel||node.dataset.blueprintLabel||`${({nav:"NAV",title:"TITLE",copy:"COPY",control:"CONTROL",plate:"PLATE",frame:"FRAME",graphic:"ICON",avatar:"AVATAR",data:"DATA",item:"ROW",meta:"META"} as Record<PlotKind,string>)[kind]} ${String(counts[kind]).padStart(2,"0")}`,
-      rect,source,cells,lettering:["nav","title","copy","control","meta"].includes(kind)?copyText(node):undefined};
+    return {id:`draft-${i}`,kind,group,measurement,label:explicitLabel||node.dataset.blueprintLabel||`${({nav:"NAV",title:"TITLE",copy:"COPY",control:"CONTROL",plate:"PLATE",frame:"FRAME",graphic:"ICON",avatar:"AVATAR",data:"DATA",item:"ROW",meta:"META",outline:"BORDER"} as Record<PlotKind,string>)[kind]} ${String(counts[kind]).padStart(2,"0")}`,
+      rect,edges,source,cells,lettering:["nav","title","copy","control","meta"].includes(kind)?copyText(node):undefined};
   }).filter(x=>x.rect.width>=6 && x.rect.height>=6);
 
   return {blocks,columnX:main.left,columnRight:main.right,viewportWidth:vw,viewportHeight:vh,

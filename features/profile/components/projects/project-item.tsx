@@ -39,7 +39,7 @@ export function ProjectItem({
               className="flex min-w-0 flex-1 items-stretch text-left select-none outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
               aria-label={`Expand or collapse ${project.title}`}
             >
-              <span className="flex w-14 shrink-0 items-center justify-center border-r border-dashed border-edge">
+              <span data-draft-edges="right" className="flex w-14 shrink-0 items-center justify-center border-r border-dashed border-edge">
                 {project.logo ? (
                   <Image
                     data-blueprint-part="icon"
@@ -111,7 +111,7 @@ export function ProjectItem({
         </div>
 
         <CollapsibleContent className="group overflow-hidden duration-300 data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-          <div className="border-t border-dashed border-edge">
+          <div data-draft-edges="top" className="border-t border-dashed border-edge">
             <div className="space-y-4 p-4 duration-300 group-data-[state=closed]:animate-fade-out group-data-[state=open]:animate-fade-in">
               {project.description && (
                 <Prose data-blueprint-part="description">

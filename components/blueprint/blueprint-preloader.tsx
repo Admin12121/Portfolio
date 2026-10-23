@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { measureBlueprint, type BlueprintLayout, type PlotBlock, type BlueprintMeasureOptions } from "./geometry";
 import { createBlueprintTextSnapshot } from "./lettering";
+import { captureBlueprintViewport, matchesBlueprintViewport, settleBlueprintViewport, type BlueprintViewportAnchor } from "./viewport-sync";
 
 type Phase = "preparing" | "drawing" | "lettering" | "wiping" | "done";
 export interface BlueprintPreloaderProps extends BlueprintMeasureOptions {
@@ -109,13 +110,46 @@ function BlueprintLettering({block,index,letteringStart}:{block:PlotBlock;index:
     top:host.y-block.rect.y,
     width:host.width,
     minHeight:host.height,
-    "--bp-text-delay":`${letteringStart+index*35}ms`,
+    // Wait until the hatched skeleton has faded before showing copied text.
+    "--bp-text-delay":`${letteringStart+index*35+220}ms`,
   } as CSSProperties}><span ref={holder} className="bp-lettering-mount" /></span>;
 }
 
-function PlotShape({block,index,letteringStart,viewportWidth}:{block:PlotBlock;index:number;letteringStart:number;viewportWidth:number}) {
+/**
+ * Source-measured border with tiny deterministic drafting irregularities.
+ * A single path traces the real element bounds: no invented frame, no filled
+ * rectangle, and no perfectly straight stroke appearing before the animation.
+ */
+function outlinePath(width: number, height: number, _seed: number,
+  edges: {top:boolean;right:boolean;bottom:boolean;left:boolean}): string {
+  // Keep corners perfectly on the measured DOM rectangle. The *same*
+  // draft-graphite-fine SVG filter used by the live hero supplies the ink wear;
+  // independent coordinate jitter used to make the blueprint look unrelated.
+  const w=Math.max(1,width-1);
+  const h=Math.max(1,height-1);
+  const paths:string[]=[];
+  if(edges.top)paths.push(`M .5 .5 L ${w} .5`);
+  if(edges.right)paths.push(`M ${w} .5 L ${w} ${h}`);
+  if(edges.bottom)paths.push(`M ${w} ${h} L .5 ${h}`);
+  if(edges.left)paths.push(`M .5 ${h} L .5 .5`);
+  return paths.join(" ");
+}
+
+function DraftedOutline({width,height,seed,edges}:{width:number;height:number;seed:number;edges?:PlotBlock["edges"]}) {
+  const visible=edges ?? {top:true,right:true,bottom:true,left:true};
+  return <svg className="bp-traced-outline" width="100%" height="100%"
+    viewBox={`0 0 ${Math.max(1,width)} ${Math.max(1,height)}`}
+    preserveAspectRatio="none" aria-hidden="true">
+    <path d={outlinePath(width,height,seed,visible)} pathLength={1} fill="none" />
+  </svg>;
+}
+
+function PlotShape({block,index,letteringStart,viewportWidth,columnRight}:{block:PlotBlock;index:number;letteringStart:number;viewportWidth:number;columnRight:number}) {
   const {rect,kind}=block;
-  const overshoot=Math.min(rect.width*1.28,Math.max(rect.width,viewportWidth-rect.x-16));
+  // The old overshoot used the entire viewport and crossed the content rail.
+  // The measured box may never stretch past the actual right edge.
+  const safeRight=Math.min(columnRight-1,viewportWidth-2);
+  const overshoot=Math.max(rect.width,Math.min(rect.width*1.06,Math.max(0,safeRight-rect.x)));
   const delay=300+index*69;
   const style={
     left:rect.x,top:rect.y,width:rect.width,height:rect.height,
@@ -129,10 +163,8 @@ function PlotShape({block,index,letteringStart,viewportWidth}:{block:PlotBlock;i
     <div className={`bp-piece bp-piece-${kind}`} style={style} data-plot-piece={index}>
       <span className="bp-piece-label">{block.label}</span>
       <span className="bp-piece-box" data-plot-box={index} />
-      {measured&&<>
-        <span className="bp-piece-dimension" data-plot-dimension={index} data-v={Math.round(rect.width)} />
-        {block.measurement==="full"&&<span className="bp-piece-slack" data-plot-slack={index} data-v="" />}
-      </>}
+      {(["outline", "frame", "item", "data"].includes(kind)) && <DraftedOutline width={rect.width} height={rect.height} seed={index+1} edges={block.edges} />}
+      {measured && <span className="bp-piece-dimension" data-plot-dimension={index} data-v={Math.round(rect.width)} />}
       {block.source && <BlueprintGraphic source={block.source}/>}
       {kind==="data" && block.cells && block.cells.length>0 && (
         <span className="bp-heatmap-cells">{block.cells.map((cell,i)=>(
@@ -177,15 +209,7 @@ export function BlueprintPreloader({
         if(!box)return;
         const actual=box.getBoundingClientRect();
         const dim=container.querySelector<HTMLElement>(`[data-plot-dimension="${i}"]`);
-        const slack=container.querySelector<HTMLElement>(`[data-plot-slack="${i}"]`);
         if(dim){dim.style.width=`${actual.width}px`;dim.dataset.v=String(Math.round(actual.width));}
-        if(slack){
-          const remaining=Math.max(0,layout.columnRight-actual.right);
-          slack.style.left=`${actual.right-block.rect.x}px`;
-          slack.style.width=`${remaining}px`;
-          slack.dataset.v=String(Math.round(remaining));
-          slack.style.opacity=remaining>=22?"1":"0";
-        }
       });
       raf=requestAnimationFrame(update);
     };
@@ -200,13 +224,18 @@ export function BlueprintPreloader({
     let wiping=false;
     let frame=0;
     let ticker:number|undefined;
+    let capturedViewport: BlueprintViewportAnchor | null = null;
     const timers:number[]=[];
     const html=document.documentElement;
     const oldOverflow=html.style.overflow;
     const started=performance.now();
     html.style.overflow="hidden";
-    window.scrollTo({top:0,left:0,behavior:"instant"});
     const onEscape=(e:KeyboardEvent)=>{if(e.key==="Escape")finish();};
+    // A browser can restore a saved scroll offset even when overflow is hidden.
+    // Never reveal a fixed snapshot over a page that has since scrolled.
+    const onViewportChange=()=>{
+      if(capturedViewport && !matchesBlueprintViewport(capturedViewport,rootSelector))finish();
+    };
     const onPointer=(e:PointerEvent)=>{
       if(!progress.current)return;
       progress.current.hidden=false;
@@ -219,11 +248,15 @@ export function BlueprintPreloader({
       if(ticker!==undefined)clearInterval(ticker);
       document.removeEventListener("keydown",onEscape);
       window.removeEventListener("pointermove",onPointer);
+      window.removeEventListener("scroll",onViewportChange);
+      window.removeEventListener("resize",onViewportChange);
       html.style.overflow=oldOverflow;
     };
     function finish(){if(stopped)return;stopped=true;cleanup();setPhase("done");complete.current?.();}
     document.addEventListener("keydown",onEscape);
     window.addEventListener("pointermove",onPointer,{passive:true});
+    window.addEventListener("scroll",onViewportChange,{passive:true});
+    window.addEventListener("resize",onViewportChange,{passive:true});
     timeout(finish,12000);
 
     async function begin(){
@@ -232,19 +265,33 @@ export function BlueprintPreloader({
       if(stopped)return;
       await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
       if(stopped)return;
+      // Scroll restoration often runs after React mounts. Sampling the first
+      // frame and freezing it caused the About skeleton to overlap Projects.
+      if(!await settleBlueprintViewport(()=>stopped))return;
+      if(stopped)return;
       const measured=measureBlueprint({rootSelector,blockSelector,maxBlocks,navigationSelector,coverSelector,captureDepth});
-      if(!measured || !measured.blocks.length){finish();return;}
+      const anchor=captureBlueprintViewport(rootSelector);
+      if(!measured || !measured.blocks.length || !anchor){finish();return;}
+      capturedViewport=anchor;
       setLayout(measured);setPhase("drawing");
       const letteringAt=800+measured.blocks.length*70+220;
       setLetteringStart(letteringAt);
       timeout(()=>{if(!stopped)setPhase("lettering");},letteringAt);
       timeout(()=>{if(!stopped)startWipe();},letteringAt+620);
       function startWipe(){
+        if(!capturedViewport || !matchesBlueprintViewport(capturedViewport,rootSelector)){
+          finish();
+          return;
+        }
         wiping=true;setPhase("wiping");
         const begun=performance.now();
         const length=innerHeight+3;
         const animate=(now:number)=>{
           if(stopped)return;
+          if(!capturedViewport || !matchesBlueprintViewport(capturedViewport,rootSelector)){
+            finish();
+            return;
+          }
           const t=clamp((now-begun)/1200);
           canvas.current?.style.setProperty("--bp-wipe-y",`${smooth(t)*length}px`);
           updateProgress(.72+.28*t);
@@ -256,6 +303,10 @@ export function BlueprintPreloader({
     }
     void begin();
     ticker=window.setInterval(()=>{
+      if(!stopped && capturedViewport && !matchesBlueprintViewport(capturedViewport,rootSelector)){
+        finish();
+        return;
+      }
       if(!stopped && !wiping)updateProgress(.7*clamp((performance.now()-started)/4000));
     },80);
     return()=>{stopped=true;cleanup();};
@@ -274,12 +325,12 @@ export function BlueprintPreloader({
     <div className="bp-column" style={{left:left}} />
     {layout&&<>
       <div className="bp-column bp-column-right" style={{left:layout.columnRight}} />
-      <div className="bp-header-datum" style={{top:layout.headerY}}><span className="bp-cross bp-cross-left" style={{left:layout.columnX}}/><span className="bp-cross bp-cross-right" style={{left:layout.columnRight}}/></div>
+      <div className="bp-header-datum" style={{top:layout.headerY,left:layout.columnX,width:Math.max(0,layout.columnRight-layout.columnX)}}><span className="bp-cross bp-cross-left" style={{left:0}}/><span className="bp-cross bp-cross-right" style={{left:"100%"}}/></div>
     </>}
     <span className="bp-note bp-note-left" style={{left:Math.max(22,left-220)}}>{sheetLabel}</span>
     <span className="bp-note bp-note-right">{sideNote}</span>
     <div className="bp-plot-area">
-      {blocks.map((block,i)=><PlotShape key={block.id} block={block} index={i} viewportWidth={layout?.viewportWidth??1440} letteringStart={letteringStart}/>)}
+      {blocks.map((block,i)=><PlotShape key={block.id} block={block} index={i} viewportWidth={layout?.viewportWidth??1440} columnRight={layout?.columnRight??1440} letteringStart={letteringStart}/>)}
       {blocks.slice(1).map((block,i)=>{
         const before=blocks[i];
         if(block.group || before.group || !["title","copy"].includes(block.kind) || !["title","copy"].includes(before.kind))return null;

@@ -103,7 +103,7 @@ function AwardRow({
             )}
           </div>
 
-          <div className="min-w-0 flex-1 border-l border-dashed border-edge p-4 pr-2">
+          <div data-draft-edges="left" className="min-w-0 flex-1 border-l border-dashed border-edge p-4 pr-2">
             <h3 data-blueprint-part="title" className="mb-1 leading-snug font-medium text-balance">
               {award.title}
             </h3>
@@ -190,7 +190,7 @@ function AwardRow({
         </div>
         {canExpand && (
           <CollapsibleContent>
-            <div className="border-t border-edge px-4 py-3 text-sm leading-6 text-muted-foreground md:pl-[4.5rem]">
+            <div data-draft-edges="top" className="border-t border-edge px-4 py-3 text-sm leading-6 text-muted-foreground md:pl-[4.5rem]">
               {award.description}
             </div>
           </CollapsibleContent>
@@ -240,7 +240,7 @@ function CredentialRow({
           {getIcon(credential.issuerIconName) ?? <Icons.certificate />}
         </div>
       )}
-      <div className="min-w-0 flex-1 space-y-1 border-l border-dashed border-edge p-4 pr-2">
+      <div data-draft-edges="left" className="min-w-0 flex-1 space-y-1 border-l border-dashed border-edge p-4 pr-2">
         <h3 data-blueprint-part="title" className="leading-snug font-medium text-balance underline-offset-4 group-hover/recognition:underline">
           {credential.title}
         </h3>

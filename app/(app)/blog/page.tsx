@@ -42,7 +42,7 @@ export default function page() {
             priority
           />
 
-          <div className="border-t border-b p-2">
+          <div data-draft-edges="top bottom" className="border-t border-b p-2">
             <Suspense
               fallback={
                 <div className="flex h-9 w-full rounded-lg border border-input shadow-xs dark:bg-input/30" />

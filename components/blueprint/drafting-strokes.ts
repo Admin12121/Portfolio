@@ -7,7 +7,7 @@ export const DRAFTING = {
   blue: "#2e6fff",
   lightInk: "#3774f6",
   darkInk: "#93baff",
-  maxWobble: 0.38,
+  maxWobble: 0,
   step: 7,
   fineWeight: 0.98,
 } as const;
@@ -40,9 +40,10 @@ export function drawDraftLine(
   let previousX=x1,previousY=y1;
   for(let i=1;i<=segments;i++){
     const at=i*step;
-    const jitter=i===segments?0:(hash(seed+i*1.73)-.5)*2*DRAFTING.maxWobble;
-    const xx=x1+unitX*at-unitY*jitter;
-    const yy=y1+unitY*at+unitX*jitter;
+    // Geometry stays on the same straight measured edge. The graphite
+    // variation is solely in ink density, mirroring the site border filter.
+    const xx=x1+unitX*at;
+    const yy=y1+unitY*at;
     ctx.globalAlpha=opacity*(.74+.26*hash(seed+i*2.19));
     ctx.beginPath();ctx.moveTo(previousX,previousY);ctx.lineTo(xx,yy);ctx.stroke();
     previousX=xx;previousY=yy;

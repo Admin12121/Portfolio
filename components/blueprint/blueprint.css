@@ -4,18 +4,18 @@
 .bp-overlay *{box-sizing:border-box}
 .bp-filters{position:absolute;pointer-events:none}
 .bp-grid{position:absolute;inset:0;opacity:.92;background-image:linear-gradient(to right,#fff1 1px,transparent 1px),linear-gradient(to bottom,#fff1 1px,transparent 1px),linear-gradient(to right,#fff2 1px,transparent 1px),linear-gradient(to bottom,#fff2 1px,transparent 1px);background-size:16px 16px,16px 16px,96px 96px,96px 96px}
-.bp-overlay::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.34;background:repeating-linear-gradient(90deg,transparent 0 8px,rgba(255,255,255,.12) 8px 8.4px,transparent 8.4px 16px)}
+.bp-overlay::before{display:none}
 .bp-axis{position:absolute;z-index:2;opacity:.79;filter:url(#draft-graphite-fine)}
-.bp-axis-x{height:20px;top:0;left:0;right:0;border-block:1.25px solid #fffb;background:repeating-linear-gradient(90deg,#fff5 0 1px,transparent 1px 16px),repeating-linear-gradient(-45deg,#fff5 0 1px,transparent 1px 6px);background-size:100% 9px,100% 100%;background-repeat:repeat-x;animation:bp-enter .3s both}
+.bp-axis-x{height:19px;top:0;left:0;right:0;border-block:1px solid #fff9;background:repeating-linear-gradient(135deg,rgba(255,255,255,.37) 0 1px,transparent 1px 6px);animation:bp-enter .3s both}
 .bp-axis-x>span{position:absolute;left:50%;top:1px;transform:translateX(-50%);background:var(--bp-blue);padding:0 3px;font:600 9px/12px ui-monospace,monospace}
-.bp-axis-y{width:18px;inset:0 auto 0 0;border-inline:1.25px solid #fff9;background:repeating-linear-gradient(180deg,#fff5 0 1px,transparent 1px 16px),repeating-linear-gradient(-45deg,#fff5 0 1px,transparent 1px 6px);background-size:9px 100%,100% 100%;background-repeat:repeat-y}
-.bp-axis-right{width:5px;top:0;bottom:0;right:0;border-left:1.25px solid #fff8;background:repeating-linear-gradient(-45deg,#fff4 0 1px,transparent 1px 6px)}
+.bp-axis-y{width:18px;inset:0 auto 0 0;border-right:1px solid #fff9;background:repeating-linear-gradient(135deg,rgba(255,255,255,.37) 0 1px,transparent 1px 6px)}
+.bp-axis-right{width:5px;top:0;bottom:0;right:0;border-left:1px solid #fff7;background:repeating-linear-gradient(135deg,rgba(255,255,255,.26) 0 1px,transparent 1px 6px)}
 .bp-column{position:absolute;z-index:2;top:21px;bottom:0;width:1px;border-left:1.25px dashed #fffa;opacity:.75;filter:url(#draft-graphite-fine);animation:bp-rule .8s .22s both}
 .bp-note{position:absolute;top:29px;color:#fffe;font-family:cursive;font-size:11px;white-space:nowrap;letter-spacing:.04em;z-index:4;animation:bp-enter .5s .2s both}
 .bp-note-right{right:6%;}
 .bp-plot-area{position:absolute;inset:0;z-index:3}
 .bp-piece{position:absolute;z-index:2;max-width:calc(100vw - 18px);border:0;pointer-events:none}
-.bp-piece-box{position:absolute;inset:0 auto auto 0;height:100%;width:var(--bp-final-w);border:1.25px solid #fffe;background:linear-gradient(112deg,transparent 20%,#fff5 40%,transparent 60%) 110% 0/240% 100%,repeating-linear-gradient(135deg,#fffc 0 1px,transparent 1px 4px),#fff1;animation:bp-draw .38s ease-out var(--bp-delay) both,bp-width .84s cubic-bezier(.17,.8,.24,1) calc(var(--bp-delay) + 320ms) both,bp-shimmer 1.4s linear var(--bp-delay) infinite,bp-unblock .25s ease var(--bp-unblock) forwards}
+.bp-piece-box{position:absolute;inset:0 auto auto 0;height:100%;width:var(--bp-final-w);max-width:100%;border:1.25px solid #fffe;background:linear-gradient(112deg,transparent 20%,#fff5 40%,transparent 60%) 110% 0/240% 100%,repeating-linear-gradient(135deg,#fffc 0 1px,transparent 1px 4px),#fff1;animation:bp-draw .38s ease-out var(--bp-delay) both,bp-width .84s cubic-bezier(.17,.8,.24,1) calc(var(--bp-delay) + 320ms) both,bp-shimmer 1.4s linear var(--bp-delay) infinite,bp-unblock .25s ease var(--bp-unblock) forwards}
 .bp-piece-plate .bp-piece-box{background:linear-gradient(to top right,transparent calc(50% - .6px),#fff6 50%,transparent calc(50% + .6px)),linear-gradient(to top left,transparent calc(50% - .6px),#fff6 50%,transparent calc(50% + .6px)),#fff2;animation:bp-draw .45s ease-out var(--bp-delay) both,bp-unblock .25s ease var(--bp-unblock) forwards}
 .bp-piece-nav .bp-piece-box,.bp-piece-control .bp-piece-box{border-style:dashed;background:repeating-linear-gradient(135deg,#fffa 0 1px,transparent 1px 4px),#fff1}
 .bp-piece-label{position:absolute;top:-13px;left:0;z-index:2;background:#fff;color:var(--bp-blue);padding:0 3px;font:700 8px/12px ui-monospace,monospace;white-space:nowrap;letter-spacing:.05em;animation:bp-enter .2s calc(var(--bp-delay) + 150ms) both,bp-unblock .2s var(--bp-unblock) forwards}
@@ -43,14 +43,14 @@
 .bp-overlay{--bp-line:rgba(255,255,255,.56)}
 .bp-grid{opacity:.78;filter:url(#draft-graphite-fine)}
 .bp-axis,.bp-column,.bp-header-datum{filter:url(#draft-graphite-fine)}
-.bp-axis-x{height:19px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.52) 0 1px,transparent 1px 16px),repeating-linear-gradient(-45deg,rgba(255,255,255,.35) 0 1px,transparent 1px 6px);background-size:100% 8px,100% 100%;background-repeat:repeat-x}
-.bp-column{border-left:1.25px dashed rgba(255,255,255,.62);z-index:2;opacity:.6;top:18px}
+.bp-axis-x{height:19px;background:repeating-linear-gradient(135deg,rgba(255,255,255,.38) 0 1px,transparent 1px 6px);background-size:auto;background-repeat:repeat}
+.bp-column{border-left:1px dashed rgba(255,255,255,.53);z-index:2;opacity:.55;top:18px}
 .bp-column-right{opacity:.4}
-.bp-header-datum{position:absolute;left:0;right:0;border-top:1.25px dashed rgba(255,255,255,.68);height:0;z-index:2;animation:bp-enter .45s .25s both}
+.bp-header-datum{position:absolute;border-top:1px dashed rgba(255,255,255,.53);height:0;z-index:2;animation:bp-rule .85s .25s both}
 .bp-cross{position:absolute;top:-6px;display:block;width:12px;height:12px;transform:translateX(-50%)}
 .bp-cross:before,.bp-cross:after{content:"";position:absolute;background:#fffa;left:50%;top:0;transform:translateX(-50%);width:1px;height:12px}
 .bp-cross:after{transform:translateY(-50%);top:50%;left:0;width:12px;height:1px}
-.bp-piece-box,.bp-piece-dimension,.bp-piece-slack,.bp-gap{filter:url(#draft-graphite-strong)}
+.bp-piece-box,.bp-piece-dimension,.bp-piece-slack,.bp-gap{filter:url(#draft-graphite-fine)}
 .bp-piece{overflow:visible}
 .bp-piece-frame .bp-piece-box{border:1.25px dashed rgba(255,255,255,.6);background:repeating-linear-gradient(0deg,transparent 0 74px,rgba(255,255,255,.14) 74px 75px),repeating-linear-gradient(90deg,transparent 0 74px,rgba(255,255,255,.14) 74px 75px),rgba(255,255,255,.015);animation:bp-draw .75s ease-out var(--bp-delay) both,bp-unblock .33s ease var(--bp-unblock) forwards}
 .bp-piece-frame:after{content:"";position:absolute;inset:8px;border:1px dotted rgba(255,255,255,.17);pointer-events:none;animation:bp-enter .4s var(--bp-delay) both,bp-unblock .33s var(--bp-unblock) forwards}
@@ -86,7 +86,7 @@
 .bp-piece-nav .bp-piece-lettering,.bp-piece-control .bp-piece-lettering{display:block}
 /* Same reusable graphite filter used by site rails and pointer measurements. */
 .bp-grid,.bp-axis,.bp-column,.bp-header-datum{filter:url(#draft-graphite-fine)}
-.bp-piece-box,.bp-piece-dimension,.bp-piece-slack,.bp-gap{filter:url(#draft-graphite-strong)}
+.bp-piece-box,.bp-piece-dimension,.bp-piece-slack,.bp-gap{filter:url(#draft-graphite-fine)}
 
 /* V4 semantic rows: outline the whole entry, then measure real icon/title/meta
    independently. Child pieces do not launch page-spanning dimension rays. */
@@ -103,3 +103,64 @@
 .bp-graphic-real{isolation:isolate}
 .bp-piece-graphic .bp-graphic-real img,
 .bp-piece-avatar .bp-graphic-real img{max-width:100%;max-height:100%;object-fit:contain}
+
+
+/* V15: blueprint boundaries are penned along measured real DOM rectangles.
+   The underlying block's geometry is intact, but not painted twice as a
+   hard CSS rectangle or a second overlapping hatched rail. */
+.bp-piece-outline .bp-piece-box,
+.bp-piece-frame .bp-piece-box,
+.bp-piece-outline::after,
+.bp-piece-frame::after { display:none !important; }
+.bp-traced-outline {
+  position:absolute;inset:0;z-index:2;overflow:visible;pointer-events:none;
+  opacity:0;
+  /* Structural ink survives text reveal. Only the full-page wipe removes it. */
+  animation:bp-outline-appear .25s ease var(--bp-delay) both;
+}
+.bp-traced-outline path {
+  stroke:rgba(255,255,255,.73);
+  stroke-width:1.05px;
+  vector-effect:non-scaling-stroke;
+  stroke-linecap:round;stroke-linejoin:round;
+  filter:url(#draft-graphite-fine);
+  stroke-dasharray:1;stroke-dashoffset:1;
+  animation:bp-pen-stroke .95s ease-out var(--bp-delay) both;
+}
+.bp-piece-frame .bp-traced-outline path {stroke:rgba(255,255,255,.58);stroke-dasharray:1;}
+@keyframes bp-outline-appear{from{opacity:0}to{opacity:1}}
+@keyframes bp-pen-stroke{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+/* The already-clamped data/title/ink block cannot extend beyond its actual
+   source width. Keep the original draw/wipe instead of geometric overshoot. */
+.bp-piece-title .bp-piece-box,
+.bp-piece-copy .bp-piece-box,
+.bp-piece-meta .bp-piece-box,
+.bp-piece-data .bp-piece-box {max-width:100%;}
+/* Exactly one soft, diagonal rail pattern; the graphite filter supplies
+   the original hand-worn finish. No orthogonal tick/stripe overlays. */
+.bp-axis-x,.bp-axis-y,.bp-axis-right {
+  background:repeating-linear-gradient(135deg,rgba(255,255,255,.37) 0 1px,transparent 1px 6px);
+  background-size:auto;
+  background-repeat:repeat;
+  filter:url(#draft-graphite-fine);
+}
+.bp-axis-x{height:17px;}
+.bp-axis-y{width:14px;}
+.bp-axis-right{width:4px;opacity:.5;}
+.bp-header-datum{filter:url(#draft-graphite-fine)}
+
+
+/* V17 — separate permanent blueprint construction from temporary ink fills.
+   Item rows, graph panels, content frames and real panel outlines retain their
+   traced outlines after temporary text skeletons have dissolved. */
+.bp-piece-item .bp-traced-outline path {stroke:rgba(255,255,255,.62);}
+.bp-piece-data .bp-traced-outline path {stroke:rgba(255,255,255,.74);}
+.bp-piece-outline .bp-traced-outline,
+.bp-piece-frame .bp-traced-outline,
+.bp-piece-item .bp-traced-outline,
+.bp-piece-data .bp-traced-outline {animation:bp-outline-appear .25s ease var(--bp-delay) both;}
+.bp-piece-avatar::after {
+  content:""; position:absolute; inset:0; z-index:2; border-radius:inherit;
+  border:1px solid rgba(255,255,255,.78); pointer-events:none;
+  animation:bp-outline-appear .25s ease var(--bp-delay) both;
+}

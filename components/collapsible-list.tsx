@@ -29,6 +29,7 @@ export function CollapsibleList<T>({
         <Slot
           key={typeof keyExtractor === "function" ? keyExtractor(award) : index}
           className="border-b border-edge"
+          data-draft-edges="bottom"
         >
           {renderItem(award)}
         </Slot>
@@ -43,6 +44,7 @@ export function CollapsibleList<T>({
                 : max + index
             }
             className="border-b border-edge"
+          data-draft-edges="bottom"
           >
             {renderItem(award)}
           </Slot>
