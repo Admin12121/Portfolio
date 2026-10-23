@@ -132,8 +132,6 @@ export const PROJECTS: {
         "WebGL",
         "Three.js",
         "PostgreSQL",
-        "Real-time APIs",
-        "Performance Optimization",
       ],
       description: `High-performance 3D medical imaging platform combining frontend and backend expertise.
   - Built full-stack with Next.js (frontend) and Rust (backend services)

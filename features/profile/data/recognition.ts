@@ -65,6 +65,7 @@ const AWARDS: RecognitionEntry[] = [
       organizer: "Cosmos College of Management and Technology",
       organizerURL: "https://cosmoscollege.edu.np",
       prize: "Second Runner-Up",
+      grade: "Team Doberman",
       referenceLink: "https://www.devpulse.info/news-and-articles/navya-drishti-hackathon-2026-empowering-innovation-and-creativity"
     },
   },
@@ -77,6 +78,7 @@ const AWARDS: RecognitionEntry[] = [
       organizer: "Softwarica College of IT and E-commerce",
       organizerURL: "https://softwarica.edu.np",
       prize: "First Runner-up",
+      grade: "Team Doberman",
       referenceLink: "https://lnkd.in/p/gdtsxeK8"
     },
   },

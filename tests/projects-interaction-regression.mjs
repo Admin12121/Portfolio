@@ -18,6 +18,12 @@ try {
     assert.ok(complexity.nodes < 3000, `The initial page must avoid excessive DOM: ${complexity.nodes} nodes`);
     assert.ok(complexity.coverPaths < 100, "Decorative SVG artwork must not create thousands of DOM nodes");
     const projects = page.locator("#projects");
+    const dynamicStroke = await projects.evaluate(panel => {
+      const style = getComputedStyle(panel, "::before");
+      return { filter: style.filter, mask: style.maskImage };
+    });
+    assert.equal(dynamicStroke.filter, "none", "Resizing panels must not rerasterize a full-size SVG filter");
+    assert.match(dynamicStroke.mask, /graphite-grain/, "Panels must keep their graphite texture through a cached image");
     const showMore = projects.getByRole("button", { name: "Show More" });
     await showMore.click();
     const rows = projects.locator('[data-blueprint-item="PROJECT"]');
