@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation";
 // import { SiteConfig } from "./siteconfig";
 import { Button } from "../ui/button";
 import Image from "next/image";
+import { useIsClient } from "@/hooks/use-is-client";
 
 function getRegistrableBase(hostname: string): string {
   if (hostname === "localhost" || hostname.endsWith(".localhost")) {
@@ -57,14 +58,11 @@ function buildMainHref(path: string, origins: { mainOrigin: string }): string {
 }
 
 const Navbar = () => {
-  const [origins, setOrigins] = React.useState({
+  const isClient = useIsClient();
+  const origins = isClient ? getOrigins() : {
     mainOrigin: "",
     docsOrigin: "",
-  });
-
-  React.useEffect(() => {
-    setOrigins(getOrigins());
-  }, []);
+  };
 
   return (
     <header className="sticky top-0 z-100 shrink-0 border-edge overflow-x-hidden px-2 outer-section-node-offset">

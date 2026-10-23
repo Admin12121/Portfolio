@@ -21,6 +21,7 @@ import {
   RegistryItem,
 } from "@/lib/registry";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
+import { useIsClient } from "@/hooks/use-is-client";
 import { getIconForLanguageExtension } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -103,38 +104,40 @@ function BlockViewerProvider({
   const tree = selectedProject?.tree ?? null;
   const item = selectedProject?.item ?? null;
 
+  const files = item?.files;
+  const readme =
+    files?.find(
+      (f) =>
+        f.type === "registry:page" &&
+        typeof f.target === "string" &&
+        f.target.toLowerCase().endsWith(".md"),
+    ) ??
+    files?.find(
+      (f) =>
+        typeof f.target === "string" &&
+        f.target.toLowerCase() === "readme.md",
+    );
+
+  const defaultTarget =
+    readme?.target ?? highlightedFiles?.[0]?.target ?? null;
+
   const [view, setView] = React.useState<BlockViewerContext["view"]>("preview");
   const [activeFile, setActiveFile] =
-    React.useState<BlockViewerContext["activeFile"]>(null);
+    React.useState<BlockViewerContext["activeFile"]>(defaultTarget);
   const [iframeKey, setIframeKey] = React.useState(0);
+  const [previousSelection, setPreviousSelection] = React.useState({
+    selectedProject,
+    highlightedFiles,
+  });
 
-  React.useEffect(() => {
-    if (!selectedProject || !selectedProject.item?.files) {
-      setActiveFile(null);
-      return;
-    }
-
-    const files = selectedProject.item.files;
-
-    const readme =
-      files.find(
-        (f) =>
-          f.type === "registry:page" &&
-          typeof f.target === "string" &&
-          f.target.toLowerCase().endsWith(".md"),
-      ) ??
-      files.find(
-        (f) =>
-          typeof f.target === "string" &&
-          f.target.toLowerCase() === "readme.md",
-      );
-
-    const defaultTarget =
-      readme?.target ?? highlightedFiles?.[0]?.target ?? null;
-
-    setActiveFile(defaultTarget ?? null);
-    setView("preview");
-  }, [selectedProjectName, highlightedFiles, selectedProject]);
+  if (
+    previousSelection.selectedProject !== selectedProject ||
+    previousSelection.highlightedFiles !== highlightedFiles
+  ) {
+    setPreviousSelection({ selectedProject, highlightedFiles });
+    setActiveFile(defaultTarget);
+    if (files) setView("preview");
+  }
 
   return (
     <BlockViewerContext.Provider
@@ -322,9 +325,7 @@ function BlockViewerEmptyState() {
 export function BlockViewerFileTree() {
   const { tree, projectTree, selectedProject, setSelectedProjectName } =
     useBlockViewer();
-  const [isClient, setIsClient] = React.useState(false);
-
-  React.useEffect(() => setIsClient(true), []);
+  const isClient = useIsClient();
 
   const filteredTree = React.useMemo(() => {
     const filterNode = (node: FileTree | ProjectTreeNode | null): any => {

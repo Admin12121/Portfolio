@@ -11,8 +11,8 @@ export const PROJECTS: {
         start: "7.2026",
       },
       link: "https://rooms24.app/",
-      skills: ["Next.js 16", "TypeScript", "Rust", "PostgreSQL"],
-      description: `Co-founded Rooms24, an all-in-one hospitality SaaS platform designed to help hotels, restaurants, hostels, cafés, bars, and lodges manage their operations from a single system.
+      skills: ["Next.js", "TypeScript", "Rust", "PostgreSQL"],
+      description: `Co-founded Rooms24, an all-in-one hospitality SaaS platform designed to help Owners to manage their operations from a single system.
 - Centralized property management with reservations, restaurant POS, and dedicated business websites
 - Unified communication hub integrating WhatsApp, Facebook, Instagram, email, and other messaging channels
 - Booking channel integrations including Booking.com, Airbnb, and Google Hotels
@@ -83,7 +83,7 @@ export const PROJECTS: {
       },
       link: "https://bhumirajestates.com.np/",
       skills: [
-        "Next.js 16",
+        "Next.js",
         "TypeScript",
         "NestJS",
         "PostgreSQL",
@@ -104,7 +104,7 @@ export const PROJECTS: {
       },
       link: "https://nepanova.com/",
       skills: [
-        "Next.js 16",
+        "Next.js",
         "TypeScript",
         "Django",
         "Python",
@@ -126,7 +126,7 @@ export const PROJECTS: {
       },
       link: "https://thevoxelanatomy.com/",
       skills: [
-        "Next.js 15",
+        "Next.js",
         "TypeScript",
         "Rust",
         "WebGL",
@@ -136,7 +136,7 @@ export const PROJECTS: {
         "Performance Optimization",
       ],
       description: `High-performance 3D medical imaging platform combining frontend and backend expertise.
-  - Built full-stack with Next.js 15 (frontend) and Rust (backend services)
+  - Built full-stack with Next.js (frontend) and Rust (backend services)
   - Implemented WebGL-based volumetric rendering for real-time 3D slice navigation
   - PostgreSQL database architecture for efficient imaging metadata management
   `,
@@ -151,7 +151,7 @@ export const PROJECTS: {
       },
       link: "https://paayonepal.com/",
       skills: [
-        "Next.js 16",
+        "Next.js",
         "TypeScript",
         "Rust",
         "Geolocation APIs",

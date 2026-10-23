@@ -19,6 +19,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { GITHUB_USERNAME } from "@/config/site";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { GitHubContributionPlaceholder } from "./graph-placeholder";
 
 const GITHUB_CONTRIBUTIONS_STORAGE_KEY = "github-contributions";
@@ -36,38 +37,23 @@ function GitHubContributionEmptyState() {
   return <GitHubContributionPlaceholder state="unavailable" />;
 }
 
-function readStoredContributions() {
-  try {
-    const cached = localStorage.getItem(GITHUB_CONTRIBUTIONS_STORAGE_KEY);
-    if (!cached) return [];
-    const parsed = JSON.parse(cached) as Activity[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    // Restricted browser storage must never crash the contribution graph.
-    return [];
-  }
-}
-
 export function GitHubContributionGraph({
   contributions,
 }: {
   contributions: Promise<Activity[]>;
 }) {
   const initialData = use(contributions);
-  const [data, setData] = useState(initialData);
+  const [refetchedData, setData] = useState<Activity[]>([]);
+  const [cachedData, setCachedData] = useLocalStorage<Activity[]>(GITHUB_CONTRIBUTIONS_STORAGE_KEY);
+  const data = initialData.length > 0 ? initialData
+    : refetchedData.length > 0 ? refetchedData
+    : Array.isArray(cachedData) ? cachedData : [];
   const [isRetrying, setIsRetrying] = useState(initialData.length === 0);
 
   useEffect(() => {
     if (initialData.length > 0) {
-      try {
-        localStorage.setItem(GITHUB_CONTRIBUTIONS_STORAGE_KEY, JSON.stringify(initialData));
-      } catch { /* Browser storage can be disabled. */ }
+      setCachedData(initialData);
       return;
-    }
-
-    const cachedData = readStoredContributions();
-    if (cachedData.length > 0) {
-      setData(cachedData);
     }
 
     const controller = new AbortController();
@@ -89,9 +75,7 @@ export function GitHubContributionGraph({
           : [];
 
         if (nextData.length > 0) {
-          try {
-            localStorage.setItem(GITHUB_CONTRIBUTIONS_STORAGE_KEY, JSON.stringify(nextData));
-          } catch { /* Graph still works without storage. */ }
+          setCachedData(nextData);
           setData(nextData);
         }
       } catch (error) {
@@ -111,7 +95,7 @@ export function GitHubContributionGraph({
       controller.abort();
       window.clearTimeout(timeout);
     };
-  }, [initialData]);
+  }, [initialData, setCachedData]);
 
   if (!data || data.length === 0) {
     if (isRetrying) {

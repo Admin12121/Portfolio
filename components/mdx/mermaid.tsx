@@ -2,13 +2,12 @@
 
 import React, {
   use,
-  useEffect,
   useId,
-  useState,
   Children,
   ReactNode,
 } from 'react';
 import { useTheme } from 'next-themes';
+import { useIsClient } from '@/hooks/use-is-client';
 
 type MermaidProps = {
   chart?: string;
@@ -16,7 +15,7 @@ type MermaidProps = {
 };
 
 export function Mermaid({ chart, children }: MermaidProps) {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useIsClient();
 
   const effectiveChart =
     chart ??
@@ -25,10 +24,6 @@ export function Mermaid({ chart, children }: MermaidProps) {
       .join('')
       .replace(/\r/g, '')
       .trim();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   if (!mounted) return null;
   if (!effectiveChart) return null;

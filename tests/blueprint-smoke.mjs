@@ -60,12 +60,18 @@ try {
   await page.waitForSelector("[data-blueprint-overlay]",{state:"detached",timeout:16000});
   if(await page.locator("[data-blueprint-root]").count()!==1)throw new Error("Missing content root");
   if(await page.locator(".blueprint-pointer-canvas").count()!==1)throw new Error("Pointer overlay missing");
-  const drafting=await page.evaluate(()=>({
-    filters:!!document.querySelector('#draft-graphite-fine')&&!!document.querySelector('#draft-graphite-strong'),
-    panelInk:getComputedStyle(document.querySelector('[data-slot="panel"]'),'::before').filter,
-    rails:document.querySelectorAll('[data-draft-stroke]').length,
-  }));
-  if(!drafting.filters || !drafting.panelInk.includes('draft-graphite') || !drafting.rails)
+  const drafting=await page.evaluate(()=>{
+    const edge=document.querySelector('[data-draft-edges]');
+    const edgeStyle=edge?getComputedStyle(edge,'::after'):null;
+    return {
+      filters:!!document.querySelector('#draft-graphite-fine')&&!!document.querySelector('#draft-graphite-strong'),
+      panelInk:getComputedStyle(document.querySelector('[data-slot="panel"]'),'::before').filter,
+      rails:document.querySelectorAll('[data-draft-edges]').length,
+      edgeInk:edgeStyle?.filter??'',
+      hasEdge:edgeStyle&&['borderTopWidth','borderRightWidth','borderBottomWidth','borderLeftWidth'].some(side=>parseFloat(edgeStyle[side])>0),
+    };
+  });
+  if(!drafting.filters || !drafting.panelInk.includes('draft-graphite') || !drafting.rails || !drafting.edgeInk.includes('draft-graphite') || !drafting.hasEdge)
     throw new Error(`Shared drafting treatment is not active: ${JSON.stringify(drafting)}`);
 
   if(await page.evaluate(()=>document.documentElement.style.overflow)==="hidden")throw new Error("Preloader left scroll locked");

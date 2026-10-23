@@ -81,7 +81,8 @@ export function FramedImage({
 }: React.ComponentProps<"img"> & {
   canZoom?: boolean;
 }) {
-  // eslint-disable-next-line jsx-a11y/alt-text
+  // Native images support arbitrary MDX URLs and caller-provided sizing for zoom.
+  // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
   const image = <img {...props} />;
 
   return (

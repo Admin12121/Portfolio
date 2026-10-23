@@ -15,6 +15,7 @@ import type {
 } from 'react-force-graph-2d';
 import { forceCollide, forceLink, forceManyBody } from 'd3-force';
 import { useRouter } from 'fumadocs-core/framework';
+import { useIsClient } from '@/hooks/use-is-client';
 
 export interface Graph {
   links: Link[];
@@ -42,10 +43,7 @@ const ForceGraph2D = lazy(
 
 export function GraphView(props: GraphViewProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const [mount, setMount] = useState(false);
-  useEffect(() => {
-    setMount(true);
-  }, []);
+  const mount = useIsClient();
 
   return (
     <div

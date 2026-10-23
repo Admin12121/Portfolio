@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { measureBlueprint, type BlueprintLayout, type PlotBlock, type BlueprintMeasureOptions } from "./geometry";
 import { createBlueprintTextSnapshot } from "./lettering";
 import { captureBlueprintViewport, matchesBlueprintViewport, settleBlueprintViewport, type BlueprintViewportAnchor } from "./viewport-sync";
@@ -190,6 +191,7 @@ export function BlueprintPreloader({
   sideNote="ISSUE 01 · SOURCE-MEASURED DRAWING",
   onComplete,
 }:BlueprintPreloaderProps) {
+  const reducedMotion=useMediaQuery("(prefers-reduced-motion: reduce)");
   const [phase,setPhase]=useState<Phase>(enabled?"preparing":"done");
   const [layout,setLayout]=useState<BlueprintLayout|null>(null);
   const [letteringStart,setLetteringStart]=useState(2600);
@@ -218,12 +220,11 @@ export function BlueprintPreloader({
   },[layout,phase]);
 
   useEffect(()=>{
-    if(!enabled){setPhase("done");return;}
-    if(matchMedia("(prefers-reduced-motion: reduce)").matches){setPhase("done");complete.current?.();return;}
+    if(!enabled)return;
+    if(reducedMotion){complete.current?.();return;}
     let stopped=false;
     let wiping=false;
     let frame=0;
-    let ticker:number|undefined;
     let capturedViewport: BlueprintViewportAnchor | null = null;
     const timers:number[]=[];
     const html=document.documentElement;
@@ -245,7 +246,7 @@ export function BlueprintPreloader({
     const updateProgress=(value:number)=>{if(progress.current)progress.current.textContent=`${Math.round(clamp(value)*100)}%`;};
     const cleanup=()=>{
       timers.forEach(clearTimeout);cancelAnimationFrame(frame);
-      if(ticker!==undefined)clearInterval(ticker);
+      clearInterval(ticker);
       document.removeEventListener("keydown",onEscape);
       window.removeEventListener("pointermove",onPointer);
       window.removeEventListener("scroll",onViewportChange);
@@ -302,7 +303,7 @@ export function BlueprintPreloader({
       }
     }
     void begin();
-    ticker=window.setInterval(()=>{
+    const ticker=window.setInterval(()=>{
       if(!stopped && capturedViewport && !matchesBlueprintViewport(capturedViewport,rootSelector)){
         finish();
         return;
@@ -310,11 +311,9 @@ export function BlueprintPreloader({
       if(!stopped && !wiping)updateProgress(.7*clamp((performance.now()-started)/4000));
     },80);
     return()=>{stopped=true;cleanup();};
-  // Deliberately run the lifecycle only once per mount.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[enabled,rootSelector,blockSelector,maxBlocks,navigationSelector,coverSelector,captureDepth]);
+  },[enabled,reducedMotion,rootSelector,blockSelector,maxBlocks,navigationSelector,coverSelector,captureDepth]);
 
-  if(phase==="done")return null;
+  if(!enabled||reducedMotion||phase==="done")return null;
   const blocks=layout?.blocks||[];
   const left=layout?.columnX||0;
   return <div ref={canvas} data-blueprint-overlay="" className={`bp-overlay bp-${phase}`} style={{"--bp-blue":color} as CSSProperties} aria-hidden="true">

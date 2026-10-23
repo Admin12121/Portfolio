@@ -6,7 +6,7 @@ import AwardRow from "./recognition-item";
 
 const rows = RECOGNITION.map((entry, index) => ({
   entry,
-  rowKey: `${entry.kind}:${entry.key}:${index}`,
+  rowKey: `${entry.key}:${index}`,
 }));
 
 export function Recognition() {

@@ -2,7 +2,8 @@
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "fumadocs-ui/components/ui/button";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
-import { type SyntheticEvent, useEffect, useState, useTransition } from "react";
+import { type SyntheticEvent, useState, useTransition } from "react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import {
   Collapsible,
   CollapsibleContent,
@@ -42,24 +43,10 @@ export function Feedback({
   onRateAction: (url: string, feedback: Feedback) => Promise<ActionResponse>;
 }) {
   const url = usePathname();
-  const [previous, setPrevious] = useState<Result | null>(null);
+  const [previous, setPrevious] = useLocalStorage<Result>(`docs-feedback-${url}`);
   const [opinion, setOpinion] = useState<"good" | "bad" | null>(null);
   const [message, setMessage] = useState("");
   const [isPending, startTransition] = useTransition();
-
-  useEffect(() => {
-    const item = localStorage.getItem(`docs-feedback-${url}`);
-
-    if (item === null) return;
-    setPrevious(JSON.parse(item) as Result);
-  }, [url]);
-
-  useEffect(() => {
-    const key = `docs-feedback-${url}`;
-
-    if (previous) localStorage.setItem(key, JSON.stringify(previous));
-    else localStorage.removeItem(key);
-  }, [previous, url]);
 
   function submit(e?: SyntheticEvent) {
     if (opinion == null) return;

@@ -48,7 +48,6 @@ export function FlipSentences({
       }
       abortController.abort();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sentences]);
 
   return (

@@ -1,14 +1,21 @@
 "use client"
 
-import { ElementType, useEffect, useRef, useState, useMemo, HTMLAttributes, ReactNode } from "react"
+import { ElementType, forwardRef, useEffect, useRef, HTMLAttributes, ReactNode } from "react"
 import cn from "clsx"
 import {
   motion,
   useAnimationControls,
+  type HTMLMotionProps,
   type ValueAnimationTransition,
 } from "motion/react"
 
-interface ComesInGoesOutUnderlineProps extends HTMLAttributes<HTMLElement> {
+const MotionContainer = motion.create(forwardRef<HTMLElement, HTMLAttributes<HTMLElement> & { as?: ElementType }>(
+  function UnderlineContainer({ as: Component = "span", ...props }, ref) {
+    return <Component ref={ref} {...props} />
+  }
+))
+
+interface ComesInGoesOutUnderlineProps extends Omit<HTMLMotionProps<"span">, "children"> {
   /**
    * The content to be displayed and animated
    */
@@ -66,7 +73,6 @@ const ComesInGoesOutUnderline = ({
 }: ComesInGoesOutUnderlineProps) => {
   const controls = useAnimationControls()
   const textRef = useRef<HTMLSpanElement>(null)
-  const MotionComponent = useMemo(() => motion.create(as ?? "span"), [as])
 
   useEffect(() => {
     const updateUnderlineStyles = () => {
@@ -115,7 +121,8 @@ const ComesInGoesOutUnderline = ({
   }
 
   return (
-    <MotionComponent
+    <MotionContainer
+      as={as}
       className={cn("relative inline-block cursor-pointer", className)}
       onHoverStart={enter}
       onHoverEnd={leave}
@@ -136,7 +143,7 @@ const ComesInGoesOutUnderline = ({
         animate={controls}
         aria-hidden="true"
       />
-    </MotionComponent>
+    </MotionContainer>
   )
 }
 
