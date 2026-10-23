@@ -1,7 +1,4 @@
-import type { Certification } from "./certifications";
-
-export type RecognitionAward = {
-  kind: "award";
+export type RecognitionEntry = {
   key: string;
   date: string;
   award: {
@@ -19,13 +16,3 @@ export type RecognitionAward = {
     referenceLink?: string;
   };
 };
-
-export type RecognitionCredential = {
-  kind: "certificate";
-  key: string;
-  date: string;
-  credential: Certification;
-};
-
-export type RecognitionEntry = RecognitionAward | RecognitionCredential;
-export type RecognitionKind = RecognitionEntry["kind"];

@@ -2,12 +2,12 @@ import type { RecognitionEntry } from "../types/recognition";
 
 const AWARDS: RecognitionEntry[] = [
   {
-    kind: "award",
     key: "pentesternepals13thanniversaryctf",
     date: "Aug 2026",
     award: {
       title: "Pentester Nepal's 13th Anniversary CTF",
       organizer: "CVEPlayground",
+      organizerURL: "https://cveplayground.com/",
       organizerLogoURL: "https://pentesternepal.com/_next/image?url=%2Flogo.png&w=384&q=75",
       prize: "Second Runner-Up",
       grade: "Team Sudo_Siblings",
@@ -16,7 +16,6 @@ const AWARDS: RecognitionEntry[] = [
     },
   },
   {
-    kind: "award",
     key: "kavachctf2026",
     date: "Jul 2026",
     award: {
@@ -31,7 +30,6 @@ const AWARDS: RecognitionEntry[] = [
     },
   },
   {
-    kind: "award",
     key: "nepal-cyber-shield-2026-top-10",
     date: "May 2026",
     award: {
@@ -46,7 +44,6 @@ const AWARDS: RecognitionEntry[] = [
     },
   },
   {
-    kind: "award",
     key: "nepal-cyber-shield-2026-top-10",
     date: "April 2026",
     award: {
@@ -61,19 +58,17 @@ const AWARDS: RecognitionEntry[] = [
     },
   },
   {
-    kind: "award",
     key: "nepal-cyber-shield-2026-top-10",
     date: "Feb 2026",
     award: {
       title: "Navya Dhristi Hackathon 2026",
-      organizer: "Cosmos College",
+      organizer: "Cosmos College of Management and Technology",
       organizerURL: "https://cosmoscollege.edu.np",
       prize: "Second Runner-Up",
       referenceLink: "https://www.devpulse.info/news-and-articles/navya-drishti-hackathon-2026-empowering-innovation-and-creativity"
     },
   },
   {
-    kind: "award",
     key: "nepal-cyber-shield-2026-top-10",
     date: "Jan 2026",
     award: {
