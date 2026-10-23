@@ -3,7 +3,7 @@ import type { RecognitionEntry } from "../types/recognition";
 const AWARDS: RecognitionEntry[] = [
   {
     key: "pentesternepals13thanniversaryctf",
-    date: "Aug 2026",
+    date: "2026-08",
     award: {
       title: "Pentester Nepal's 13th Anniversary CTF",
       organizer: "CVEPlayground",
@@ -17,7 +17,7 @@ const AWARDS: RecognitionEntry[] = [
   },
   {
     key: "kavachctf2026",
-    date: "Jul 2026",
+    date: "2026-07",
     award: {
       title: "KAVACH CTF 2026",
       organizer: "Yeti Cyber Operations",
@@ -31,7 +31,7 @@ const AWARDS: RecognitionEntry[] = [
   },
   {
     key: "nepal-cyber-shield-2026-top-10",
-    date: "May 2026",
+    date: "2026-05",
     award: {
       title: "Hackअस्त्र 2026 National CTF",
       organizer: "Ethical HCK",
@@ -45,7 +45,7 @@ const AWARDS: RecognitionEntry[] = [
   },
   {
     key: "nepal-cyber-shield-2026-top-10",
-    date: "April 2026",
+    date: "2026-04",
     award: {
       title: "Netanix CTF 2026",
       organizer: "Softwarica College of IT and E-commerce",
@@ -59,7 +59,7 @@ const AWARDS: RecognitionEntry[] = [
   },
   {
     key: "nepal-cyber-shield-2026-top-10",
-    date: "Feb 2026",
+    date: "2026-02",
     award: {
       title: "Navya Dhristi Hackathon 2026",
       organizer: "Cosmos College of Management and Technology",
@@ -70,7 +70,7 @@ const AWARDS: RecognitionEntry[] = [
   },
   {
     key: "nepal-cyber-shield-2026-top-10",
-    date: "Jan 2026",
+    date: "2026-01",
     award: {
       title: "त्रि 𝐊𝐨𝐝𝐞 Hackathon 2026",
       organizerLogoURL: "/images/trikode.png",
@@ -83,5 +83,5 @@ const AWARDS: RecognitionEntry[] = [
 ];
 
 export const RECOGNITION: RecognitionEntry[] = AWARDS.sort(
-  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  (a, b) => b.date.localeCompare(a.date)
 );

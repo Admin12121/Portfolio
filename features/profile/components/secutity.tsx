@@ -1,6 +1,6 @@
-"use client";
-
 import securityPaths from "../data/security-paths.json";
+
+const [shieldPath, backgroundPath] = securityPaths.map((paths) => paths.join(" "));
 
 // Fill the enclosed cavity that formed the cloned Zed mark inside the shield.
 const shieldFillRanges = [
@@ -109,12 +109,10 @@ export default function Security() {
           viewBox="0 0 760 706"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="size-full text-blue-400/50  dark:text-blue-300/20"
+          className="size-full text-red-400/50  dark:text-red-600/20"
         >
           <g clipPath="url(#clip0_4426_20413)">
-            {securityPaths[0].map((d, index) => (
-              <path key={index} d={d} fill="currentColor" />
-            ))}
+            <path d={shieldPath} fill="currentColor" />
             <path d={shieldFillPath} fill="currentColor" />
           </g>
           <defs>
@@ -128,12 +126,10 @@ export default function Security() {
         viewBox="0 0 760 706"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="mask-b-from-20% mask-b-to-80% [z-index:-1] pointer-events-none select-none absolute -top-40 translate-x-1/2 right-1/2 scale-120 text-blue-100/80 dark:text-blue-900/12 hide lg:block"
+        className="mask-b-from-20% mask-b-to-80% [z-index:-1] pointer-events-none select-none absolute -top-40 translate-x-1/2 right-1/2 scale-120 text-red-100/80 dark:text-red-900/12 hide lg:block"
       >
         <g clipPath="url(#clip0_4426_27020)">
-          {securityPaths[1].map((d, index) => (
-            <path key={index} d={d} fill="currentColor" />
-          ))}
+          <path d={backgroundPath} fill="currentColor" />
         </g>
         <defs>
           <clipPath id="clip0_4426_27020">

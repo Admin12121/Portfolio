@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "node node_modules/@typescript/native/bin/tsc --noEmit",
     "test:client-state": "node --import tsx tests/client-state-regression.mjs",
+    "test:projects": "node tests/projects-interaction-regression.mjs",
     "test:blueprint": "node tests/blueprint-smoke.mjs",
     "test:blueprint:discovery": "node tests/blueprint-discovery.mjs"
   },

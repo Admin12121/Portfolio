@@ -1,14 +1,10 @@
-"use client";
-
 import { CollapsibleList } from "@/components/collapsible-list";
-import { useState } from "react";
 
 import { PROJECTS } from "../../data/projects";
 import { Panel, PanelHeader, PanelTitle } from "../panel";
 import { ProjectItem } from "./project-item";
 
 export function Projects() {
-
   const items = PROJECTS.tools;
 
   return (
@@ -27,6 +23,8 @@ export function Projects() {
       <CollapsibleList
         items={items}
         max={6}
+        animated
+        keyExtractor={(item) => item.id}
         renderItem={(item) => <ProjectItem project={item} />}
       />
     </Panel>

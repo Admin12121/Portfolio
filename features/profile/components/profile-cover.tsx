@@ -1,7 +1,4 @@
-"use client";
-import { FlickeringGrid } from "@/components/global/fliketgrid";
 import { cn } from "@/lib/utils";
-import { AfterNode, BeforeNode, InnerNode } from "./nodes";
 import Security from "./secutity";
 
 export function ProfileCover() {

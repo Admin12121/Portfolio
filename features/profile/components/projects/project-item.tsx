@@ -5,7 +5,7 @@ import { Icons } from "@/components/icons";
 import { Markdown } from "@/components/markdown";
 import {
   CollapsibleChevronsIcon,
-  CollapsibleContent,
+  CollapsibleAnimatedContent,
   CollapsibleTrigger,
   CollapsibleWithContext,
 } from "@/components/ui/collapsible";
@@ -110,9 +110,9 @@ export function ProjectItem({
           </SimpleTooltip>
         </div>
 
-        <CollapsibleContent className="group overflow-hidden duration-300 data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
+        <CollapsibleAnimatedContent>
           <div data-draft-edges="top" className="border-t border-dashed border-edge">
-            <div className="space-y-4 p-4 duration-300 group-data-[state=closed]:animate-fade-out group-data-[state=open]:animate-fade-in">
+            <div className="space-y-4 p-4">
               {project.description && (
                 <Prose data-blueprint-part="description">
                   <Markdown>{project.description}</Markdown>
@@ -130,7 +130,7 @@ export function ProjectItem({
               )}
             </div>
           </div>
-        </CollapsibleContent>
+        </CollapsibleAnimatedContent>
       </div>
     </CollapsibleWithContext>
   );

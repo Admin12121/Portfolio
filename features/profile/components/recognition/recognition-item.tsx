@@ -112,7 +112,7 @@ function AwardRow({
               )}
               <MetaSeparator />
               <MetaText label="Award date">
-                <time dateTime={entry.date}>{dayjs(entry.date).format("DD.MM.YYYY")}</time>
+                <time dateTime={entry.date}>{dayjs(entry.date).format("MM.YYYY")}</time>
               </MetaText>
               {teamName && (
                 <>

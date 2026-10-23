@@ -5,26 +5,33 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
+  CollapsibleAnimatedContent,
   CollapsibleContent,
   CollapsibleTrigger,
+  CollapsibleWithContext,
 } from "@/components/ui/collapsible";
 
 
 export function CollapsibleList<T>({
   items,
   max = 3,
+  animated = false,
 
   keyExtractor,
   renderItem,
 }: {
   items: T[];
   max?: number;
+  animated?: boolean;
 
   keyExtractor?: (item: T) => string;
   renderItem: (item: T) => React.ReactNode;
 }) {
+  const Root = animated ? CollapsibleWithContext : Collapsible;
+  const Content = animated ? CollapsibleAnimatedContent : CollapsibleContent;
+
   return (
-    <Collapsible>
+    <Root>
       {items.slice(0, max).map((award, index) => (
         <Slot
           key={typeof keyExtractor === "function" ? keyExtractor(award) : index}
@@ -35,7 +42,7 @@ export function CollapsibleList<T>({
         </Slot>
       ))}
 
-      <CollapsibleContent>
+      <Content>
         {items.slice(max).map((award, index) => (
           <Slot
             key={
@@ -49,7 +56,7 @@ export function CollapsibleList<T>({
             {renderItem(award)}
           </Slot>
         ))}
-      </CollapsibleContent>
+      </Content>
 
       {items.length > max && (
         <div className="flex h-12 items-center justify-center pb-px">
@@ -74,6 +81,6 @@ export function CollapsibleList<T>({
           </CollapsibleTrigger>
         </div>
       )}
-    </Collapsible>
+    </Root>
   );
 }
