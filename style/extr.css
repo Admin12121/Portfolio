@@ -131,8 +131,8 @@
     --accent: oklch(0.967 0.001 286.375);
     --accent2: color-mix(in oklab, var(--accent) 50%, transparent);
     --accent-foreground: oklch(0.21 0.006 285.885);
-    --border: oklch(0.92 0.004 286.32);
-    --edge: color-mix(in oklab, var(--border) 64%, var(--background));
+    --border: oklch(0.87 0.004 286.32);
+    --edge: color-mix(in oklab, lab(100 0 0) 15%, var(--border));
     --input: oklch(0.92 0.004 286.32);
     --ring: oklch(0.705 0.015 286.067);
     --info: oklch(0.67 0.17 244.98);
@@ -178,7 +178,7 @@
     --accent2: color-mix(in oklab, var(--accent) 20%, transparent);
     --accent-foreground: oklch(0.985 0 0);
     --border: oklch(0.274 0.006 286.033);
-    /* --edge: color-mix(in oklab, var(--border) 64%, var(--background)); */
+    --edge: color-mix(in oklab, lab(53 0 -0.01) 18%, var(--border));
     --input: oklch(0.274 0.006 286.033);
     --ring: oklch(0.552 0.016 285.938);
     --success: oklch(0.723 0.219 149.579);
@@ -427,4 +427,30 @@
     .container-max-w {
         min-width: 1120px;
     }
+}
+
+
+/* Blog-only viewport fill: the panel reaches the footer on short pages and
+   grows naturally with additional posts. No guessed header/footer offsets. */
+body:has(main[data-blog-page]) {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+main[data-blog-page] {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+main[data-blog-page] > .blog-page-frame {
+    width: 100%;
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+main[data-blog-page] .blog-page-panel {
+    flex: 1 0 auto;
 }

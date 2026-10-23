@@ -1,4 +1,7 @@
 import "@/style/globals.css";
+import "@/components/blueprint/blueprint.css";
+import "@/components/blueprint/drafting-surface.css";
+import "@/style/optional-fonts.css";
 
 import type { Metadata, Viewport } from "next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -10,6 +13,9 @@ import { USER } from "@/features/profile/data/user";
 
 import Navbar from "@/components/siteheader";
 import Footer from "@/components/footer";
+import { PointerMeasure } from "@/components/blueprint/pointer-measure";
+import { DraftingFilters } from "@/components/blueprint/drafting-filters";
+
 
 const geistSansLight = localFont({
   src: "./fonts/AtAero-Light.woff2",
@@ -119,7 +125,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="layout-fixed" suppressHydrationWarning>
+    <html lang="en" className="layout-fixed drafting-site" suppressHydrationWarning>
       <body
         className={`${FiraCodeNerd.variable} ${geistSansLight.variable} ${geistSansRegular.variable} ${geistSansMedium.variable} ${geistSansSemibold.variable} ${geistSansBold.variable} relative`}
       >
@@ -127,11 +133,13 @@ export default function RootLayout({
           style={{ backgroundImage: "url(/noise.webp)" }}
           className="pointer-events-none absolute inset-0 z-[-1] bg-size-[180px] bg-repeat opacity-[0.035] dark:opacity-[0.012]"
         ></div>
+        <DraftingFilters />
         <RootProvider>
           <NuqsAdapter>
             <Navbar />
             {children}
             <Footer />
+            <PointerMeasure />
           </NuqsAdapter>
         </RootProvider>
       </body>

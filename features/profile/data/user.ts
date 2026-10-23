@@ -8,10 +8,10 @@ export const USER: User = {
   gender: "male",
   pronouns: "he/him",
   bio: "Hacker &amp; Developer",
-  flipSentences: ["Developer", "Hacker", "Code Crafter"],
+  flipSentences: ["404: Social Skills Not Found", "Proud lesbian rights activist and a Sapiophile", "Fluent in Sarcasm & Segfaults"],
   address: "Nepal",
   phoneNumber: "",
-  email: "",
+  email: "vickytaj6459@gmail.com",
   website: "https://admin12121.com",
   jobTitle: "Red Team Operator & Developer ",
   jobs: [
@@ -22,11 +22,11 @@ export const USER: User = {
     // },
   ],
   about: `
-Hello, World! I’m known here as Admin12121 — a Hacker and Developer passionate about ethical hacking, and building innovative solutions.
+Hello, World! I'm **Admin12121** — a Cybersecurity Researcher and Software Developer focused on **Red Teaming, Reverse Engineering, and Offensive Security**.
 
-Currently studying at [Softwarica College](https://softwarica.edu.np/), I specialize in Rust, Python, & TypeScript. I thrive on exploring security vulnerabilities, developing secure applications, and turning complex problems into elegant solutions.
+Currently studying at [Softwarica College](https://softwarica.edu.np/), my interests span **penetration testing, vulnerability research, malware analysis, and binary exploitation**. I'm also a founding member of **[Sudo_Siblings](https://ctftime.org/team/437642)**, a competitive CTF team where I put my security skills to the test. Alongside security research, I develop **software applications, security tools, and developer utilities** using **Rust, Python, and TypeScript**, combining offensive security with practical software engineering.
 
-Let's connect and collaborate on something awesome!
+**Have a challenging security problem, research idea, or software project?** Let's [connect](mailto:vickytaj6459@gmail.com), collaborate, and build something meaningful.
   `,
   avatar: "https://avatars.githubusercontent.com/u/131951081?v=4",
   ogImage: "/images/og.webp",

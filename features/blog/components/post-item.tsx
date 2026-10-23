@@ -19,11 +19,13 @@ export function PostItem({
 }) {
   return (
     <Link
+      data-blueprint-item="BLOG"
       href={`/blog/${post.slug}`}
       className={cn("group/cert flex items-center pr-2", className)}
     >
       {post.metadata.image ? (
         <Image
+          data-blueprint-part="icon"
           src={post.metadata.image}
           alt={post.metadata.title}
           width={64}
@@ -35,6 +37,7 @@ export function PostItem({
         />
       ) : (
         <div
+          data-blueprint-part="icon"
           className={cn(
             "mx-4 flex size-6 shrink-0 items-center justify-center rounded-lg select-none",
             "border border-muted-foreground/15 ring-1 ring-edge ring-offset-1 ring-offset-background",
@@ -54,10 +57,10 @@ export function PostItem({
       )}
 
       <div className="flex-1 space-y-1 border-l border-dashed border-edge p-4 pr-2">
-        <h3 className="leading-snug font-medium text-balance underline-offset-4 group-hover/blog:underline">
+        <h3 data-blueprint-part="title" className="leading-snug font-medium text-balance underline-offset-4 group-hover/blog:underline">
           {post.metadata.title}
         </h3>
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+        <div data-blueprint-part="meta" className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
           <dl>
             <dt className="sr-only">Issued by</dt>
             <dd>

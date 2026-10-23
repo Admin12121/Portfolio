@@ -2,12 +2,27 @@ import type { Project } from "../types/projects";
 
 export const PROJECTS: {
   tools: Project[];
-  external: Project[];
 } = {
   tools: [
     {
+      id: "rooms24",
+      title: "Rooms24",
+      period: {
+        start: "7.2026",
+      },
+      link: "https://rooms24.app/",
+      skills: ["Next.js 16", "TypeScript", "Rust", "PostgreSQL"],
+      description: `Co-founded Rooms24, an all-in-one hospitality SaaS platform designed to help hotels, restaurants, hostels, cafés, bars, and lodges manage their operations from a single system.
+- Centralized property management with reservations, restaurant POS, and dedicated business websites
+- Unified communication hub integrating WhatsApp, Facebook, Instagram, email, and other messaging channels
+- Booking channel integrations including Booking.com, Airbnb, and Google Hotels
+- Built with Next.js, Rust, and PostgreSQL using a multi-tenant SaaS architecture`,
+      logo: "/images/rooms24.webp",
+      isExpanded: true,
+    },
+    {
       id: "decompile",
-      title: "Decompile",
+      title: "Decompile ⫻ { Reverse Engineering Tool }",
       period: {
         start: "05.2026",
       },
@@ -37,33 +52,77 @@ export const PROJECTS: {
 | IPA, \`.app\` bundle | IPA/app extraction plus native analysis | Native output and app metadata |
 
 `,
-      isExpanded: true,
       isBeta: true,
     },
     {
-      id: "encapsula",
-      title: "Encapsula",
+      id: "venom",
+      title: "Venom ⫻ { C2 Framework }",
       period: {
-        start: "10.2025",
+        start: "10.2026",
       },
-      link: "https://www.npmjs.com/package/encapsula",
+      link: "https://github.com/Admin12121/venom",
       skills: [
         "Open Source",
-        "Node.js",
-        "TypeScript",
-        "CLI Tool",
-        "Steganography",
-        "Encryption",
+        "Rust",
+        "C2 Framework",
+        "Command and Control",
+        "Red Teaming",
       ],
-      description: `Lightweight and powerful steganography cli tool made using TypeScript. Easy access using <br/> \`npx encapsula\``,
+      description: `Rust-based experimental Command and Control (C2) framework developed to study adversary communication techniques and remote command execution in controlled research environments.
+- Explores the use of Discord and GitHub as alternative C2 communication channels
+- Demonstrates how remote commands are delivered, executed, and their results communicated
+- Investigates how legitimate public platforms can be repurposed as command infrastructure during adversary operations
+- Built for cybersecurity research, red teaming education, and understanding C2 behavior`,
     },
-  ],
-  external: [
+    {
+      id: "bhumirajestates",
+      title: "BhumiRaj Estates",
+      period: {
+        start: "9.2026",
+        end: "10.2026",
+      },
+      link: "https://bhumirajestates.com.np/",
+      skills: [
+        "Next.js 16",
+        "TypeScript",
+        "NestJS",
+        "PostgreSQL",
+        "Custom CRM",
+      ],
+      description: `Full-service real estate platform connecting property buyers, sellers, renters, and owners through a unified digital experience.
+- Property discovery and listing management for buying, selling, and renting real estate
+- Built with Next.js and TypeScript for the frontend, backed by NestJS and PostgreSQL
+- Custom CRM architecture supporting property management, customer inquiries, and real estate workflows`,
+      logo: "/images/bhumirajestate.webp",
+    },
+    {
+      id: "nepanova",
+      title: "NepaNova",
+      period: {
+        start: "5.2026",
+        end: "6.2026",
+      },
+      link: "https://nepanova.com/",
+      skills: [
+        "Next.js 16",
+        "TypeScript",
+        "Django",
+        "Python",
+        "PostgreSQL",
+        "E-commerce",
+      ],
+      description: `Full-stack e-commerce platform developed for NepaNova, a premium Nepali tea brand, to connect with domestic and international customers in collaboration with the National Innovation Center.
+- Online storefront showcasing premium Nepali tea products for national and international markets
+- Next.js and TypeScript frontend with Django-powered backend services
+- PostgreSQL-based architecture supporting product catalogs, customer management, and e-commerce operations`,
+      logo: "https://nepanova.com/logo.png",
+    },
     {
       id: "thevoxelanatomy",
       title: "Voxel Anatomy",
       period: {
         start: "4.2026",
+        end: "9.2026",
       },
       link: "https://thevoxelanatomy.com/",
       skills: [
@@ -77,18 +136,18 @@ export const PROJECTS: {
         "Performance Optimization",
       ],
       description: `High-performance 3D medical imaging platform combining frontend and backend expertise.
-- Built full-stack with Next.js 15 (frontend) and Rust (backend services)
-- Implemented WebGL-based volumetric rendering for real-time 3D slice navigation
-- PostgreSQL database architecture for efficient imaging metadata management
-`,
+  - Built full-stack with Next.js 15 (frontend) and Rust (backend services)
+  - Implemented WebGL-based volumetric rendering for real-time 3D slice navigation
+  - PostgreSQL database architecture for efficient imaging metadata management
+  `,
       logo: "https://thevoxelanatomy.com/_next/image?url=%2Flogo.webp&w=48&q=75",
-      isExpanded: true,
     },
     {
       id: "paayonepal",
       title: "Paayo Nepal",
       period: {
         start: "3.2026",
+        end: "5.2026",
       },
       link: "https://paayonepal.com/",
       skills: [
@@ -100,24 +159,28 @@ export const PROJECTS: {
         "Content Management",
       ],
       description: `Content-heavy platform with advanced geolocation and data aggregation capabilities.
-- Rust backend for high-performance geographical queries and distance calculations
-- Custom content management system for blog posts, guides, and tourism data
-`,
+  - Rust backend for high-performance geographical queries and distance calculations
+  - Custom content management system for blog posts, guides, and tourism data
+  `,
       logo: "https://paayonepal.com/logo.webp",
     },
     {
-      id: "alphasuits",
-      title: "Alpha Suits",
+      id: "encapsula",
+      title: "Encapsula ⫻ { Steganography CLI Tool }",
       period: {
-        start: "2.2026",
+        start: "10.2025",
+        end: "10.2025",
       },
-      link: "https://alphasuits.com.np/",
-      skills: ["Next.js 16", "TypeScript", "Django", "Python", "Custom CRM"],
-      description: `Full-stack e-commerce platform demonstrating modern web and backend architecture.
-- Next.js 16 frontend with complex state management for cart, measurements, and orders
-- Django REST API backend with custom CRM logic for artisan workflow management
-`,
-      logo: "https://alphasuits.com.np/logo.png",
+      link: "https://www.npmjs.com/package/encapsula",
+      skills: [
+        "Open Source",
+        "Node.js",
+        "TypeScript",
+        "CLI Tool",
+        "Steganography",
+        "Encryption",
+      ],
+      description: `Lightweight and powerful steganography cli tool made using TypeScript. Easy access using <br/> \`npx encapsula\``,
     },
   ],
 };

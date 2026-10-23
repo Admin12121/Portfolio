@@ -103,6 +103,7 @@ export default function Security() {
         style={{ opacity: "1" }}
       >
         <svg
+          data-blueprint-emblem=""
           viewBox="0 0 760 706"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"

@@ -1,0 +1,105 @@
+/* Entirely prefixed: no global layout resets, no changes to portfolio styles. */
+.blueprint-pointer-canvas{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:500;display:block}
+.bp-overlay{--bp-blue:#2e6fff;--bp-ink:rgba(255,255,255,.67);position:fixed;inset:0;width:100vw;height:100dvh;background:var(--bp-blue);z-index:400;pointer-events:auto;cursor:progress;color:white;overflow:hidden;isolation:isolate;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;clip-path:inset(var(--bp-wipe-y,0px) 0 0 0)}
+.bp-overlay *{box-sizing:border-box}
+.bp-filters{position:absolute;pointer-events:none}
+.bp-grid{position:absolute;inset:0;opacity:.92;background-image:linear-gradient(to right,#fff1 1px,transparent 1px),linear-gradient(to bottom,#fff1 1px,transparent 1px),linear-gradient(to right,#fff2 1px,transparent 1px),linear-gradient(to bottom,#fff2 1px,transparent 1px);background-size:16px 16px,16px 16px,96px 96px,96px 96px}
+.bp-overlay::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.34;background:repeating-linear-gradient(90deg,transparent 0 8px,rgba(255,255,255,.12) 8px 8.4px,transparent 8.4px 16px)}
+.bp-axis{position:absolute;z-index:2;opacity:.79;filter:url(#draft-graphite-fine)}
+.bp-axis-x{height:20px;top:0;left:0;right:0;border-block:1.25px solid #fffb;background:repeating-linear-gradient(90deg,#fff5 0 1px,transparent 1px 16px),repeating-linear-gradient(-45deg,#fff5 0 1px,transparent 1px 6px);background-size:100% 9px,100% 100%;background-repeat:repeat-x;animation:bp-enter .3s both}
+.bp-axis-x>span{position:absolute;left:50%;top:1px;transform:translateX(-50%);background:var(--bp-blue);padding:0 3px;font:600 9px/12px ui-monospace,monospace}
+.bp-axis-y{width:18px;inset:0 auto 0 0;border-inline:1.25px solid #fff9;background:repeating-linear-gradient(180deg,#fff5 0 1px,transparent 1px 16px),repeating-linear-gradient(-45deg,#fff5 0 1px,transparent 1px 6px);background-size:9px 100%,100% 100%;background-repeat:repeat-y}
+.bp-axis-right{width:5px;top:0;bottom:0;right:0;border-left:1.25px solid #fff8;background:repeating-linear-gradient(-45deg,#fff4 0 1px,transparent 1px 6px)}
+.bp-column{position:absolute;z-index:2;top:21px;bottom:0;width:1px;border-left:1.25px dashed #fffa;opacity:.75;filter:url(#draft-graphite-fine);animation:bp-rule .8s .22s both}
+.bp-note{position:absolute;top:29px;color:#fffe;font-family:cursive;font-size:11px;white-space:nowrap;letter-spacing:.04em;z-index:4;animation:bp-enter .5s .2s both}
+.bp-note-right{right:6%;}
+.bp-plot-area{position:absolute;inset:0;z-index:3}
+.bp-piece{position:absolute;z-index:2;max-width:calc(100vw - 18px);border:0;pointer-events:none}
+.bp-piece-box{position:absolute;inset:0 auto auto 0;height:100%;width:var(--bp-final-w);border:1.25px solid #fffe;background:linear-gradient(112deg,transparent 20%,#fff5 40%,transparent 60%) 110% 0/240% 100%,repeating-linear-gradient(135deg,#fffc 0 1px,transparent 1px 4px),#fff1;animation:bp-draw .38s ease-out var(--bp-delay) both,bp-width .84s cubic-bezier(.17,.8,.24,1) calc(var(--bp-delay) + 320ms) both,bp-shimmer 1.4s linear var(--bp-delay) infinite,bp-unblock .25s ease var(--bp-unblock) forwards}
+.bp-piece-plate .bp-piece-box{background:linear-gradient(to top right,transparent calc(50% - .6px),#fff6 50%,transparent calc(50% + .6px)),linear-gradient(to top left,transparent calc(50% - .6px),#fff6 50%,transparent calc(50% + .6px)),#fff2;animation:bp-draw .45s ease-out var(--bp-delay) both,bp-unblock .25s ease var(--bp-unblock) forwards}
+.bp-piece-nav .bp-piece-box,.bp-piece-control .bp-piece-box{border-style:dashed;background:repeating-linear-gradient(135deg,#fffa 0 1px,transparent 1px 4px),#fff1}
+.bp-piece-label{position:absolute;top:-13px;left:0;z-index:2;background:#fff;color:var(--bp-blue);padding:0 3px;font:700 8px/12px ui-monospace,monospace;white-space:nowrap;letter-spacing:.05em;animation:bp-enter .2s calc(var(--bp-delay) + 150ms) both,bp-unblock .2s var(--bp-unblock) forwards}
+.bp-piece-dimension{position:absolute;top:calc(100% + 7px);left:0;width:100%;height:7px;border-left:1.25px solid white;border-right:1.25px solid white;opacity:0;background:linear-gradient(white,white) center/100% 1px no-repeat;animation:bp-enter .32s calc(var(--bp-delay) + 380ms) forwards,bp-unblock .2s var(--bp-unblock) forwards}
+.bp-piece-dimension::after{content:attr(data-v);position:absolute;left:50%;top:-4px;transform:translateX(-50%);background:#fff;color:var(--bp-blue);font:600 8px/11px ui-monospace,monospace;padding:0 3px}
+.bp-piece-slack{position:absolute;top:calc(50% - 3px);height:7px;min-width:0;left:100%;border-left:1.25px solid #fff9;border-right:1.25px solid #fff9;background:repeating-linear-gradient(90deg,#fffa 0 3px,transparent 3px 6px) center/100% 1px no-repeat;opacity:0;animation:bp-enter .2s calc(var(--bp-delay) + 680ms) both,bp-unblock .2s var(--bp-unblock) forwards}
+.bp-piece-slack::after{content:attr(data-v);position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:#fff;color:var(--bp-blue);font:600 8px/11px ui-monospace,monospace;padding:0 3px}
+.bp-gap{position:absolute;z-index:5;width:7px;transform:translateX(-4px);opacity:0;border-top:1.25px solid white;border-bottom:1.25px solid white;background:repeating-linear-gradient(180deg,#fffd 0 3px,transparent 3px 6px) 50% 0/1px 100% no-repeat;animation:bp-enter .26s var(--bp-delay) forwards}
+.bp-gap::after{content:attr(data-v);position:absolute;right:10px;top:50%;transform:translateY(-50%);background:#fff;color:var(--bp-blue);font:600 8px/11px ui-monospace,monospace;padding:0 3px}
+.bp-piece-lettering{display:block;position:absolute;inset:0;white-space:normal;overflow:hidden;z-index:4;opacity:0;color:#fff!important;-webkit-text-stroke:.4px #fff;line-height:inherit;animation:bp-enter .36s var(--bp-text-delay) forwards}
+.bp-piece-plate .bp-piece-lettering{display:none}
+.bp-progress-origin output{position:absolute;top:0;left:0;min-width:30px;z-index:10;background:#fff;color:var(--bp-blue);border:1px solid var(--bp-blue);font:600 10px/16px ui-monospace,monospace;padding:0 4px;pointer-events:none}
+.bp-progress-origin output[hidden]{display:none}
+.bp-wiping .bp-plot-area,.bp-wiping .bp-grid,.bp-wiping .bp-axis{opacity:1}
+@keyframes bp-rule{from{clip-path:inset(0 0 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes bp-draw{from{clip-path:inset(-10px 100% -12px 0);opacity:0}to{clip-path:inset(-10px -8px -12px 0);opacity:1}}
+@keyframes bp-width{0%,20%{width:var(--bp-final-w)}50%,69%{width:var(--bp-over-w)}100%{width:var(--bp-final-w)}}
+@keyframes bp-enter{from{opacity:0}to{opacity:1}}
+@keyframes bp-shimmer{from{background-position:120% 0,0 0,0 0}to{background-position:-120% 0,0 0,0 0}}
+@keyframes bp-unblock{to{opacity:0}}
+@media(max-width:700px){.bp-note{font-size:8px}.bp-note-right{right:8px}.bp-gap,.bp-piece-slack{display:none}.bp-piece-dimension{font-size:7px}}
+@media(prefers-reduced-motion:reduce){.bp-overlay{display:none}.blueprint-pointer-canvas{display:none}}
+
+/* V2 — precise page-space guides, gently irregular graphite strokes. */
+.bp-overlay{--bp-line:rgba(255,255,255,.56)}
+.bp-grid{opacity:.78;filter:url(#draft-graphite-fine)}
+.bp-axis,.bp-column,.bp-header-datum{filter:url(#draft-graphite-fine)}
+.bp-axis-x{height:19px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.52) 0 1px,transparent 1px 16px),repeating-linear-gradient(-45deg,rgba(255,255,255,.35) 0 1px,transparent 1px 6px);background-size:100% 8px,100% 100%;background-repeat:repeat-x}
+.bp-column{border-left:1.25px dashed rgba(255,255,255,.62);z-index:2;opacity:.6;top:18px}
+.bp-column-right{opacity:.4}
+.bp-header-datum{position:absolute;left:0;right:0;border-top:1.25px dashed rgba(255,255,255,.68);height:0;z-index:2;animation:bp-enter .45s .25s both}
+.bp-cross{position:absolute;top:-6px;display:block;width:12px;height:12px;transform:translateX(-50%)}
+.bp-cross:before,.bp-cross:after{content:"";position:absolute;background:#fffa;left:50%;top:0;transform:translateX(-50%);width:1px;height:12px}
+.bp-cross:after{transform:translateY(-50%);top:50%;left:0;width:12px;height:1px}
+.bp-piece-box,.bp-piece-dimension,.bp-piece-slack,.bp-gap{filter:url(#draft-graphite-strong)}
+.bp-piece{overflow:visible}
+.bp-piece-frame .bp-piece-box{border:1.25px dashed rgba(255,255,255,.6);background:repeating-linear-gradient(0deg,transparent 0 74px,rgba(255,255,255,.14) 74px 75px),repeating-linear-gradient(90deg,transparent 0 74px,rgba(255,255,255,.14) 74px 75px),rgba(255,255,255,.015);animation:bp-draw .75s ease-out var(--bp-delay) both,bp-unblock .33s ease var(--bp-unblock) forwards}
+.bp-piece-frame:after{content:"";position:absolute;inset:8px;border:1px dotted rgba(255,255,255,.17);pointer-events:none;animation:bp-enter .4s var(--bp-delay) both,bp-unblock .33s var(--bp-unblock) forwards}
+.bp-piece-graphic .bp-piece-box,.bp-piece-avatar .bp-piece-box{border:1.25px solid rgba(255,255,255,.82);border-radius:inherit;background:repeating-linear-gradient(135deg,rgba(255,255,255,.16) 0 1px,transparent 1px 5px);animation:bp-draw .36s ease-out var(--bp-delay) both,bp-unblock .32s ease var(--bp-unblock) forwards}
+.bp-piece-avatar{border-radius:50%}
+.bp-piece-avatar .bp-piece-box{border-radius:50%}
+.bp-graphic-real{position:absolute;inset:0;z-index:3;display:block;opacity:0;overflow:hidden;animation:bp-enter .42s var(--bp-unblock) forwards}
+.bp-graphic-real img{filter:grayscale(1) contrast(1.14) brightness(1.12);opacity:.8}
+.bp-graphic-real svg{filter:grayscale(1) brightness(2)}
+.bp-piece-avatar .bp-graphic-real{border-radius:50%}
+.bp-piece-frame .bp-piece-label{left:6px;top:4px}
+.bp-piece-data .bp-piece-box{border:1.25px solid rgba(255,255,255,.78);background:repeating-linear-gradient(90deg,rgba(255,255,255,.3) 0 7px,transparent 7px 10px) 7px 12px/calc(100% - 14px) 9px repeat-x,repeating-linear-gradient(135deg,rgba(255,255,255,.16) 0 1px,transparent 1px 5px),rgba(255,255,255,.07)}
+.bp-piece-nav .bp-piece-lettering,.bp-piece-control .bp-piece-lettering{display:flex;align-items:center;justify-content:center}
+.bp-piece-lettering{line-height:var(--bp-text-line-height,normal);-webkit-text-stroke:.08px #fff;text-shadow:0 0 .2px #fff}
+.bp-piece-dimension{max-width:100%;}
+.bp-piece-slack{max-width:calc(100vw - 15px)}
+@media(max-width:700px){.bp-piece-label{font-size:7px}.bp-graphic-real{animation-duration:.25s}.bp-piece-frame:after{display:none}}
+
+/* The activity calendar remains a visible drafting layer until the entire
+   blueprint overlay is wiped away. Fading it at --bp-unblock made it vanish
+   while the page was still covered by the blue preloader. */
+.bp-heatmap-cells{position:absolute;inset:0;z-index:4;overflow:hidden;pointer-events:none}
+/* Uniform white outlines and translucent fill show *structural* cells, not
+   fictional GitHub activity levels; data is still fetched by the real graph. */
+.bp-heatmap-cell{position:absolute;border:1.25px solid rgba(255,255,255,.98);background:rgba(255,255,255,.5);border-radius:1px;animation:bp-cell-in .25s var(--bp-cell-delay) backwards}
+@keyframes bp-cell-in{from{opacity:0;transform:scale(.5)}to{transform:scale(1)}}
+
+/* V3 — do not clip glyphs inside tight Range-derived skeleton bounds. */
+.bp-piece-lettering{inset:auto;overflow:visible;white-space:normal;pointer-events:none;display:block;max-width:none;-webkit-text-stroke:0;text-shadow:none;z-index:5}
+.bp-lettering-mount{display:block;width:100%;min-height:inherit}
+.bp-text-snapshot{box-sizing:border-box;overflow:visible!important;color:white!important;text-shadow:none!important;-webkit-text-stroke:0!important}
+.bp-text-snapshot *{text-shadow:none!important}
+.bp-piece-nav .bp-piece-lettering,.bp-piece-control .bp-piece-lettering{display:block}
+/* Same reusable graphite filter used by site rails and pointer measurements. */
+.bp-grid,.bp-axis,.bp-column,.bp-header-datum{filter:url(#draft-graphite-fine)}
+.bp-piece-box,.bp-piece-dimension,.bp-piece-slack,.bp-gap{filter:url(#draft-graphite-strong)}
+
+/* V4 semantic rows: outline the whole entry, then measure real icon/title/meta
+   independently. Child pieces do not launch page-spanning dimension rays. */
+.bp-piece-item{z-index:1}
+.bp-piece-item .bp-piece-box{border:1.25px dashed rgba(255,255,255,.7);background:rgba(255,255,255,.025);animation:bp-draw .38s ease-out var(--bp-delay) both,bp-unblock .2s ease var(--bp-unblock) forwards}
+.bp-piece-item .bp-piece-label{font-size:7px;opacity:.83}
+.bp-piece-meta .bp-piece-box{border:1.25px solid rgba(255,255,255,.58);background:repeating-linear-gradient(135deg,rgba(255,255,255,.16) 0 1px,transparent 1px 5px);animation:bp-draw .3s ease-out var(--bp-delay) both,bp-unblock .2s ease var(--bp-unblock) forwards}
+.bp-piece-meta .bp-piece-label{font-size:7px}
+.bp-piece-item~.bp-piece{isolation:isolate}
+
+/* V5 — preserve raster artwork's internal contrast. The old forced inversion
+   converted the dark brand-logo background to a featureless white square.
+   Geometry remains inherited from the original image and SVG bounds. */
+.bp-graphic-real{isolation:isolate}
+.bp-piece-graphic .bp-graphic-real img,
+.bp-piece-avatar .bp-graphic-real img{max-width:100%;max-height:100%;object-fit:contain}

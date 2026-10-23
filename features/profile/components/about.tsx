@@ -7,7 +7,7 @@ export function About() {
   return (
     <Panel id="about">
         <PanelHeader>
-          <PanelTitle>About</PanelTitle>
+          <PanelTitle className="py-1">About</PanelTitle>
         </PanelHeader>
 
         <PanelContent>

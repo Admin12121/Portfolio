@@ -6,18 +6,13 @@ import { PostListWithSearch } from "@/features/blog/components/post-list-with-se
 import { PostSearchInput } from "@/features/blog/components/post-search-input";
 import { getAllPosts } from "@/features/blog/data";
 import { Separator } from "@/components/separator";
-import Image from "next/image";
+import { TerminalSymbolHoverGrid } from "@/components/terminal-symbol-hover-grid";
 
 import {
   Panel,
   PanelHeader,
   PanelTitle,
 } from "@/features/profile/components/panel";
-import {
-  AfterNode,
-  BeforeNode,
-  InnerNode,
-} from "@/features/profile/components/nodes";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -27,11 +22,11 @@ export const metadata: Metadata = {
 export default function page() {
   const allPosts = getAllPosts();
   return (
-    <main className="container-wrapper max-w-screen!">
-      <div className="relative mx-auto px-0! container md:fixed:max-w-6xl">
+    <main data-blog-page="" className="container-wrapper max-w-screen!">
+      <div className="blog-page-frame relative mx-auto px-0! container md:fixed:max-w-6xl">
         <Separator />
 
-        <Panel id="certs" className="min-h-[calc(100dvh-192px)]">
+        <Panel id="blog-list" className="blog-page-panel">
           <PanelHeader>
             <PanelTitle>Blog</PanelTitle>
           </PanelHeader>
@@ -41,15 +36,12 @@ export default function page() {
             </p>
           </div>
 
-          <div className="relative dark aspect-[2.3] p-8 z-2 md:p-12">
-            <Image
-              src="/ghost.webp"
-              alt="Blog Cover"
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
+          <TerminalSymbolHoverGrid
+            src="/ghost.webp"
+            alt="Blog cover artwork"
+            className="dark"
+            priority
+          />
 
           <div className="border-t border-b p-2">
             <Suspense
@@ -65,7 +57,7 @@ export default function page() {
             <PostListWithSearch posts={allPosts} />
           </Suspense>
 
-          <div className="h-4" />
+          <div className="h-4" aria-hidden="true" />
         </Panel>
       </div>
     </main>

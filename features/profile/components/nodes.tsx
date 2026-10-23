@@ -141,6 +141,7 @@ function RailSegments({ segments }: { segments: NodeSegment[] }) {
       {segments.map((segment, index) => (
         <div
           key={`${segment.variant ?? "solid"}-${segment.flex}-${index}`}
+          data-draft-stroke=""
           className={getSegmentClassName(segment.variant)}
           style={{ flex: segment.flex }}
         />

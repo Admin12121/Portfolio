@@ -71,7 +71,7 @@ const Navbar = () => {
       <div className="container-wrapper max-w-screen! px-0">
         <div
           className="bg-[#f5f3f4] dark:bg-[#121316] mx-auto flex h-14 items-center justify-between gap-2 border-l border-b border-edge sm:gap-4 container md:fixed:max-w-6xl px-0!"
-          data-header-container
+          data-header-container data-draft-frame=""
         >
           <Link href="/" className="flex gap-2">
             <Image src="/logo.webp" alt="logo" width={50} height={50} />
@@ -115,8 +115,6 @@ const Navbar = () => {
               </li>
             </ul>
           </div>
-          <div className="absolute z-99 size-1.5 rotate-45 border border-offgray-100 dark:border-offgray-900 bg-white dark:bg-[hsl(219,92%,2%)] bottom-[calc(-1*var(--node-vertical-offset))] -left-0.75"></div>
-          <div className="absolute z-99 size-1.5 rotate-45 border border-offgray-100 dark:border-offgray-900 bg-white dark:bg-[hsl(219,92%,2%)] bottom-[calc(-1*var(--node-vertical-offset))] -right-0.75"></div>
         </div>
       </div>
     </header>

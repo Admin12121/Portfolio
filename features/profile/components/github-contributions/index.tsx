@@ -8,8 +8,8 @@ export function GitHubContributions() {
   const contributions = getGitHubContributions();
 
   return (
-    <Panel>
-      <h2 className="sr-only">GitHub Contributions</h2>
+    <Panel data-blueprint-block="" data-blueprint-kind="data" data-blueprint-label="ACTIVITY">
+      <h2 className="sr-only py-1" >GitHub Contributions</h2>
 
         <Suspense fallback={<GitHubContributionFallback />}>
           <GitHubContributionGraph contributions={contributions} />

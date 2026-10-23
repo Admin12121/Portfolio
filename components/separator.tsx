@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 export function Separator({ className }: { className?: string }) {
   return (
     <div
+      data-draft-divider="" data-draft-hatch=""
       className={cn(
         "relative flex h-3.5 w-full border-edge",
         "before:-left-[100vw] before:-z-1 before:h-3.5 before:w-full",
@@ -16,6 +17,7 @@ export function Separator({ className }: { className?: string }) {
 export function SeparatorH({ className }: { className?: string }) {
   return (
     <div
+      data-draft-hatch=""
       className={cn(
         "absolute inset-y-0 left-0 right-0 pointer-events-none",
         "before:absolute before:inset-y-0 before:-right-8 before:w-8 before:border-r",

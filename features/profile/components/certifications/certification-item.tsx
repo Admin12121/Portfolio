@@ -18,6 +18,7 @@ export function CertificationItem({
 }) {
   return (
     <a
+      data-blueprint-item="CERTIFICATION"
       className={cn("group/cert flex items-center pr-2", className)}
       href={certification.credentialURL}
       target="_blank"
@@ -25,6 +26,7 @@ export function CertificationItem({
     >
       {certification.issuerLogoURL ? (
         <Image
+          data-blueprint-part="icon"
           src={certification.issuerLogoURL}
           alt={certification.issuer}
           width={32}
@@ -36,6 +38,7 @@ export function CertificationItem({
         />
       ) : (
         <div
+          data-blueprint-part="icon"
           className={cn(
             "mx-4 flex size-6 shrink-0 items-center justify-center rounded-lg select-none",
             "border border-muted-foreground/15 ring-1 ring-edge ring-offset-1 ring-offset-background",
@@ -48,11 +51,11 @@ export function CertificationItem({
       )}
 
       <div className="flex-1 space-y-1 border-l border-dashed border-edge p-4 pr-2">
-        <h3 className="leading-snug font-medium text-balance underline-offset-4 group-hover/cert:underline">
+        <h3 data-blueprint-part="title" className="leading-snug font-medium text-balance underline-offset-4 group-hover/cert:underline">
           {certification.title}
         </h3>
 
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+        <div data-blueprint-part="meta" className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
           <dl>
             <dt className="sr-only">Issued by</dt>
             <dd>

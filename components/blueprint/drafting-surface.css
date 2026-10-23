@@ -1,0 +1,43 @@
+/* Shared ink language — only isolated strokes are filtered, never page text,
+   images, controls, or backgrounds. No layout dimensions are changed. */
+.drafting-filter-defs{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+.drafting-site{--draft-border:var(--color-edge);--draft-ink:#3774f6}
+.drafting-site.dark{--draft-ink:#93baff}
+.drafting-site [data-draft-frame]{position:relative;border-color:transparent}
+.drafting-site [data-draft-frame]::after{
+  content:"";position:absolute;inset:-1px;z-index:2;pointer-events:none;
+  border:1px solid var(--draft-border);filter:url(#draft-graphite-fine);opacity:.75
+}
+/* Preserve the original 1px space occupied by the host border. We draw an
+   additional lightly-worn stroke in its place without touching children. */
+.drafting-site [data-slot="panel"]{position:relative;border-color:transparent}
+.drafting-site [data-slot="panel"]::before{
+  content:"";position:absolute;inset:-1px;z-index:1;pointer-events:none;
+  border:1px solid var(--draft-border);filter:url(#draft-graphite-fine);opacity:.85
+}
+.drafting-site [data-slot="panel-header"]{position:relative;border-bottom-color:transparent}
+.drafting-site [data-slot="panel-header"]::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:var(--draft-border);filter:url(#draft-graphite-fine);pointer-events:none
+}
+.drafting-site [data-draft-divider]{position:relative}
+.drafting-site [data-draft-divider]::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:var(--draft-border);filter:url(#draft-graphite-fine);opacity:.56;
+  pointer-events:none
+}
+.drafting-site [data-draft-hatch]::before{filter:url(#draft-graphite-fine)}
+/* Faint registration guides align to the actual content container instead of
+   covering the entire viewport in a competing full-page grid. */
+.drafting-site [data-blueprint-root]{position:relative}
+.drafting-site [data-blueprint-root]::after{
+  content:"";pointer-events:none;position:absolute;inset:0;z-index:0;
+  background-image:linear-gradient(to right,var(--draft-border) 0 1px,transparent 1px),linear-gradient(to left,var(--draft-border) 0 1px,transparent 1px);
+  background-size:100% 100%;opacity:.11;filter:url(#draft-graphite-fine)
+}
+@media(prefers-reduced-motion:reduce){.drafting-site [data-blueprint-root]::after{display:none}}
+
+.drafting-site [data-draft-stroke]{filter:url(#draft-graphite-fine)}
+.drafting-site [data-header-container]::after{border-top:0;border-right:0}
+.drafting-site [data-blueprint-cover]::after{border-top:0}
+.drafting-site [data-blueprint-profile]::after{border-top:0}

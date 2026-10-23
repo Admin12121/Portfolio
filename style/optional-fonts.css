@@ -1,0 +1,46 @@
+/* Optional local font resources. No font binaries are distributed with the project.
+   To restore the original typography, copy your licensed font files from your own
+   Portfolio source into public/fonts/. The fallback stack works without them. */
+@font-face {
+  font-family: "Portfolio AtAero";
+  src: url("/fonts/AtAero-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Portfolio AtAero";
+  src: url("/fonts/AtAero-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Portfolio AtAero";
+  src: url("/fonts/AtAero-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Portfolio AtAero";
+  src: url("/fonts/AtAero-Semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Portfolio AtAero";
+  src: url("/fonts/AtAero-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Portfolio Nerd";
+  src: url("/fonts/FiraCodeNerdFont-Regular.ttf") format("truetype");
+  font-display: swap;
+}
+:root {
+  --font-geist-sans-light: "Portfolio AtAero", Arial, sans-serif;
+  --font-geist-sans-regular: "Portfolio AtAero", Arial, sans-serif;
+  --font-geist-sans-medium: "Portfolio AtAero", Arial, sans-serif;
+  --font-geist-sans-semibold: "Portfolio AtAero", Arial, sans-serif;
+  --font-geist-sans-bold: "Portfolio AtAero", Arial, sans-serif;
+  --font-nerd: "Portfolio Nerd", ui-monospace, monospace;
+}

@@ -12,6 +12,7 @@ const content = `# admin12121.com
 - [About](${SITE_INFO.url}/about.md): A quick intro to me, my tech stack, and how to connect.
 - [Projects](${SITE_INFO.url}/projects.md): Selected projects that show my skills and creativity.
 - [Certifications](${SITE_INFO.url}/certifications.md): Certifications and credentials I've earned.
+- [Recognition](${SITE_INFO.url}/recognition.md): Awards, certifications, and other recognition highlights.
 - [Private Chat](https://chat.admin12121.com): Secure, private chat application (access restricted).
 
 ## Blog

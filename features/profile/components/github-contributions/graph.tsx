@@ -1,7 +1,7 @@
 "use client";
 
 import dayjs from "dayjs";
-import { ActivityIcon, LoaderIcon } from "lucide-react";
+
 import { use, useEffect, useState } from "react";
 
 import type { Activity } from "@/components/ui/contribution-graph";
@@ -19,6 +19,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { GITHUB_USERNAME } from "@/config/site";
+import { GitHubContributionPlaceholder } from "./graph-placeholder";
 
 const GITHUB_CONTRIBUTIONS_STORAGE_KEY = "github-contributions";
 const GITHUB_CONTRIBUTIONS_URL = `https://github-contributions-api.jogruber.de/v4/${GITHUB_USERNAME}?y=last`;
@@ -28,50 +29,21 @@ type GitHubContributionsResponse = {
 };
 
 function GitHubContributionLoadingState() {
-  return (
-    <div className="flex h-[162px] w-full items-center justify-center">
-      <LoaderIcon className="animate-spin text-muted-foreground" />
-    </div>
-  );
+  return <GitHubContributionPlaceholder state="loading" />;
 }
 
 function GitHubContributionEmptyState() {
-  return (
-    <div className="flex min-h-[162px] w-full flex-col items-center justify-center gap-2 px-4 py-6 text-center">
-      <ActivityIcon className="size-4 text-muted-foreground" />
-      <div className="space-y-1">
-        <p className="font-mono text-sm text-foreground">
-          GitHub contributions are unavailable right now.
-        </p>
-        <p className="text-xs text-muted-foreground">
-          This can happen in production when the remote GitHub activity service
-          is slow, rate-limited, or temporarily unreachable.
-        </p>
-      </div>
-      <a
-        className="font-mono text-xs underline underline-offset-4 text-muted-foreground hover:text-foreground"
-        href={`https://github.com/${GITHUB_USERNAME}`}
-        target="_blank"
-        rel="noopener"
-      >
-        View activity on GitHub
-      </a>
-    </div>
-  );
+  return <GitHubContributionPlaceholder state="unavailable" />;
 }
 
 function readStoredContributions() {
-  const cached = localStorage.getItem(GITHUB_CONTRIBUTIONS_STORAGE_KEY);
-
-  if (!cached) {
-    return [];
-  }
-
   try {
+    const cached = localStorage.getItem(GITHUB_CONTRIBUTIONS_STORAGE_KEY);
+    if (!cached) return [];
     const parsed = JSON.parse(cached) as Activity[];
     return Array.isArray(parsed) ? parsed : [];
   } catch {
-    localStorage.removeItem(GITHUB_CONTRIBUTIONS_STORAGE_KEY);
+    // Restricted browser storage must never crash the contribution graph.
     return [];
   }
 }
@@ -87,10 +59,9 @@ export function GitHubContributionGraph({
 
   useEffect(() => {
     if (initialData.length > 0) {
-      localStorage.setItem(
-        GITHUB_CONTRIBUTIONS_STORAGE_KEY,
-        JSON.stringify(initialData)
-      );
+      try {
+        localStorage.setItem(GITHUB_CONTRIBUTIONS_STORAGE_KEY, JSON.stringify(initialData));
+      } catch { /* Browser storage can be disabled. */ }
       return;
     }
 
@@ -118,10 +89,9 @@ export function GitHubContributionGraph({
           : [];
 
         if (nextData.length > 0) {
-          localStorage.setItem(
-            GITHUB_CONTRIBUTIONS_STORAGE_KEY,
-            JSON.stringify(nextData)
-          );
+          try {
+            localStorage.setItem(GITHUB_CONTRIBUTIONS_STORAGE_KEY, JSON.stringify(nextData));
+          } catch { /* Graph still works without storage. */ }
           setData(nextData);
         }
       } catch (error) {

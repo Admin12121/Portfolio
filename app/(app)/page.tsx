@@ -7,10 +7,20 @@ import { Blogs } from "@/features/blog/components";
 import { Separator } from "@/components/separator";
 
 import { Certifications } from "@/features/profile/components/certifications";
+import { Recognition } from "@/features/profile/components/recognition";
+import { BlueprintPreloader } from "@/components/blueprint/blueprint-preloader";
+import { USER } from "@/features/profile/data/user";
 
 export default function page() {
   return (
-    <main className="container-wrapper max-w-screen! overflow-x-hidden p-0">
+    <>
+    <BlueprintPreloader
+      rootSelector="[data-blueprint-root]"
+      maxBlocks={58}
+      sheetLabel={`SHEET 01 · ${USER.displayName.toUpperCase()} / PORTFOLIO`}
+      sideNote="ISSUE 01 · LIVE LAYOUT / BLUEPRINT"
+    />
+    <main data-blueprint-root="" className="container-wrapper max-w-screen! overflow-x-hidden p-0">
       <div className="relative mx-auto px-0! container md:fixed:max-w-6xl">
         <ProfileCover />
         <ProfileHeader />
@@ -20,6 +30,9 @@ export default function page() {
         <Separator />
 
         <GitHubContributions />
+        <Separator />
+
+        <Recognition />
         <Separator />
 
         <Projects />
@@ -32,11 +45,6 @@ export default function page() {
         <Separator />
       </div>
     </main>
+    </>
   );
-}
-{
-  /*<Certifications />*/
-}
-{
-  /*<Separator /> */
 }

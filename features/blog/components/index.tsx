@@ -19,9 +19,9 @@ export function Blogs({
 }) {
   const blogs = getAllPosts();
   return (
-    <Panel id="certs" className={cn(className)}>
+    <Panel id="blog" className={cn(className)}>
         <PanelHeader>
-          <PanelTitle>Blog</PanelTitle>
+          <PanelTitle className="py-1">Blog</PanelTitle>
         </PanelHeader>
         {banner && (
           <div className="relative dark aspect-[3.2] p-8 z-2 md:p-12">
