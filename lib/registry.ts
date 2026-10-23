@@ -1,17 +1,14 @@
 import { promises as fs } from "fs";
 import { tmpdir } from "os";
 import path from "path";
-import { registryItemSchema } from "shadcn/schema";
+import { registryItemSchema, registryItemFileSchema } from "shadcn/schema";
+import type { z } from "zod";
 import { Project, ScriptKind } from "ts-morph";
 import { Index } from "@/registry/__index__";
 
-interface RegistryFile {
-  path: string;
-  type?: string;
-  target?: string;
-  content?: string;
-  [key: string]: any;
-}
+// The registry schema requires a concrete `type` for every file, and a
+// `target` for registry:page/registry:file. Keep this in sync with shadcn.
+type RegistryFile = z.infer<typeof registryItemFileSchema>;
 
 export interface RegistryItem {
   name: string;

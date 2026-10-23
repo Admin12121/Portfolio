@@ -16,7 +16,7 @@ ${USER.about.trim()}
 - Website: ${USER.website}
 `;
 
-const allProjects = [...PROJECTS.tools, ...PROJECTS.external];
+const allProjects = PROJECTS.tools;
 
 const projectsText = `## Projects
 

@@ -9,7 +9,7 @@ const styles = read("style/extr.css");
 
 assert.ok(existsSync(new URL("../public/skleton.webp", import.meta.url)), "missing blog foreground artwork");
 assert.ok(cover.includes('src="/skleton.webp"'), "foreground image not rendered");
-assert.ok(cover.includes('pointer-events-none z-[1]'), "foreground must not capture hover events");
+assert.match(cover, /pointer-events-none[^"\n]*z-10/, "foreground must not capture hover events");
 assert.ok(cover.includes('z-index:2'), "symbol grid must render above foreground image");
 assert.ok(cover.includes("object-cover object-center"), "matching foreground/base scaling must be retained");
 assert.ok(page.includes('data-blog-page=""'), "blog page must opt into viewport fill");

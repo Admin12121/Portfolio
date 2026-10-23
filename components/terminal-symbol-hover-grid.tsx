@@ -238,6 +238,16 @@ export function TerminalSymbolHoverGrid({
         className="pointer-events-none select-none object-cover object-center z-10"
       />
       <style>{`
+        /* Only the interactive symbol tiles change with the site theme.
+           The two illustration layers and hover timings stay unchanged. */
+        [data-cs-hover-grid] {
+          --hover-grid-cell-bg: rgba(250, 250, 252, 0.95);
+          --hover-grid-cell-fg: #1e293b;
+        }
+        :where(.dark) [data-cs-hover-grid] {
+          --hover-grid-cell-bg: var(--background);
+          --hover-grid-cell-fg: var(--foreground);
+        }
         [data-cs-hover-grid] [data-slot="hover-grid-block"] {
           position: absolute;
           display: flex;

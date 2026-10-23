@@ -39,7 +39,6 @@ export default function page() {
           <TerminalSymbolHoverGrid
             src="/ghost.webp"
             alt="Blog cover artwork"
-            className="dark"
             priority
           />
 

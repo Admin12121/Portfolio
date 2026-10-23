@@ -12,7 +12,6 @@ import {
   Maximize2,
   Minimize2,
 } from "lucide-react";
-import { type ImperativePanelHandle } from "react-resizable-panels";
 import { type registryItemFileSchema } from "shadcn/schema";
 import { type z } from "zod";
 
@@ -48,8 +47,6 @@ import { Prose } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 
 type HighlightedRegistryFile = z.infer<typeof registryItemFileSchema> & {
-  target: string;
-  path: string;
   highlightedContent: string;
 };
 
@@ -63,7 +60,6 @@ type BlockViewerContext = {
   setView: (view: "code" | "preview") => void;
   activeFile: string | null;
   setActiveFile: (file: string) => void;
-  resizablePanelRef: React.RefObject<ImperativePanelHandle | null> | null;
   tree: ReturnType<typeof createFileTreeForRegistryItemFiles> | null;
   highlightedFiles: HighlightedRegistryFile[] | null;
   iframeKey?: number;
@@ -110,7 +106,6 @@ function BlockViewerProvider({
   const [view, setView] = React.useState<BlockViewerContext["view"]>("preview");
   const [activeFile, setActiveFile] =
     React.useState<BlockViewerContext["activeFile"]>(null);
-  const resizablePanelRef = React.useRef<ImperativePanelHandle>(null);
   const [iframeKey, setIframeKey] = React.useState(0);
 
   React.useEffect(() => {
@@ -124,7 +119,7 @@ function BlockViewerProvider({
     const readme =
       files.find(
         (f) =>
-          (f.type === "registry:page" || f.type === "registry:doc") &&
+          f.type === "registry:page" &&
           typeof f.target === "string" &&
           f.target.toLowerCase().endsWith(".md"),
       ) ??
@@ -151,7 +146,6 @@ function BlockViewerProvider({
         item,
         view,
         setView,
-        resizablePanelRef,
         activeFile,
         setActiveFile,
         tree,

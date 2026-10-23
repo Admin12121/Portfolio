@@ -1,6 +1,6 @@
 import { PROJECTS } from "@/features/profile/data/projects";
 
-const all = [...PROJECTS.tools, ...PROJECTS.external];
+const all = PROJECTS.tools;
 
 const content = `# Projects
 
