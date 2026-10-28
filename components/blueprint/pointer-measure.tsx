@@ -68,76 +68,73 @@ export function PointerMeasure({
       ctx.save();
       ctx.fillStyle=inkColor;
       ctx.strokeStyle=inkColor;
-      ctx.font="11px ui-monospace, SFMono-Regular, Menlo, monospace";
+      ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";
       ctx.textAlign="center";
       ctx.textBaseline="middle";
 
-      const dimStroke={...base,opacity:alpha*.72};
-      const isBottom=top+height+18<innerHeight;
-      const yLabel=isBottom?top+height+12:top-12;
-      const isRight=left+width+36<innerWidth;
-      const xLabel=isRight?left+width+14:left-14;
+      const dimStroke={...base,opacity:alpha*.68};
+      const yLabel=top+height+14<innerHeight?top+height+12:top-12;
+      const isRight=left+width+28<innerWidth;
+      const xLabel=isRight?left+width+12:left-12;
       const wText=String(width),hText=String(height);
-      const halfW=ctx.measureText(wText).width/2+4;
-      const hTextWidth=ctx.measureText(hText).width;
-      const halfH=7;
+      const halfW=ctx.measureText(wText).width/2+5;
+      const halfH=ctx.measureText(hText).width/2+5;
 
-      // Horizontal dimension (width): extension lines + open triangle arrowheads.
-      const extY1=isBottom?top+height+2:top-2;
-      const extY2=isBottom?yLabel+4:yLabel-4;
-      drawDraftLine(ctx,left,extY1,left,extY2,{...dimStroke,seed:20});
-      drawDraftLine(ctx,left+width,extY1,left+width,extY2,{...dimStroke,seed:21});
+      // Horizontal dimension (width): extension ticks + open triangle arrowheads.
+      drawDraftLine(ctx,left,yLabel-4,left,yLabel+4,{...dimStroke,seed:20});
+      drawDraftLine(ctx,left+width,yLabel-4,left+width,yLabel+4,{...dimStroke,seed:21});
 
-      const hArrowLen=Math.min(8,Math.max(3,Math.floor((width-2)/2)));
+      const hArrowLen=Math.min(8,Math.max(4,Math.floor((width-4)/2)));
       const hArrowHalf=Math.min(3,Math.max(1.5,hArrowLen*0.375));
-      if(width>=10){
-        drawDraftArrow(ctx,left+.5,yLabel,1,0,hArrowLen,hArrowHalf,{...dimStroke,seed:22});
-        drawDraftArrow(ctx,left+width-.5,yLabel,-1,0,hArrowLen,hArrowHalf,{...dimStroke,seed:25});
+      if(width>=12){
+        drawDraftArrow(ctx,left+.5,yLabel,1,0,hArrowLen,hArrowHalf,dimStroke);
+        drawDraftArrow(ctx,left+width-.5,yLabel,-1,0,hArrowLen,hArrowHalf,dimStroke);
       }
-      const hLineStart=left+.5+hArrowLen;
-      const hLineEnd=left+width-.5-hArrowLen;
-      const hInlineFits=hLineEnd-hLineStart>=halfW*2+4;
-      if(hInlineFits){
-        drawDraftLine(ctx,hLineStart,yLabel,left+width/2-halfW,yLabel,{...dimStroke,seed:28});
-        drawDraftLine(ctx,left+width/2+halfW,yLabel,hLineEnd,yLabel,{...dimStroke,seed:29});
-        ctx.globalAlpha=alpha*.88;
+      const hLineStart=width>=12?left+.5+hArrowLen:left;
+      const hLineEnd=width>=12?left+width-.5-hArrowLen:left+width;
+      if(hLineEnd-hLineStart>=halfW*2+4){
+        drawDraftLine(ctx,hLineStart,yLabel,left+width/2-halfW,yLabel,{...dimStroke,seed:22});
+        drawDraftLine(ctx,left+width/2+halfW,yLabel,hLineEnd,yLabel,{...dimStroke,seed:23});
+        ctx.globalAlpha=alpha*.86;
+        ctx.clearRect(left+width/2-halfW,yLabel-5,halfW*2,10);
         ctx.fillText(wText,left+width/2,yLabel);
       } else {
         if(hLineEnd>hLineStart){
-          drawDraftLine(ctx,hLineStart,yLabel,hLineEnd,yLabel,{...dimStroke,seed:28});
+          drawDraftLine(ctx,hLineStart,yLabel,hLineEnd,yLabel,{...dimStroke,seed:22});
         }
-        ctx.globalAlpha=alpha*.88;
+        ctx.globalAlpha=alpha*.86;
         ctx.textAlign="left";
         ctx.fillText(wText,left+width+6,yLabel);
         ctx.textAlign="center";
       }
 
-      // Vertical dimension (height): extension lines + open triangle arrowheads.
-      const extX1=isRight?left+width+2:left-2;
-      const extX2=isRight?xLabel+4:xLabel-4;
-      drawDraftLine(ctx,extX1,top,extX2,top,{...dimStroke,seed:30});
-      drawDraftLine(ctx,extX1,top+height,extX2,top+height,{...dimStroke,seed:31});
+      // Vertical dimension (height): extension ticks + open triangle arrowheads.
+      drawDraftLine(ctx,xLabel-4,top,xLabel+4,top,{...dimStroke,seed:24});
+      drawDraftLine(ctx,xLabel-4,top+height,xLabel+4,top+height,{...dimStroke,seed:25});
 
-      const vArrowLen=Math.min(8,Math.max(3,Math.floor((height-2)/2)));
+      const vArrowLen=Math.min(8,Math.max(4,Math.floor((height-4)/2)));
       const vArrowHalf=Math.min(3,Math.max(1.5,vArrowLen*0.375));
-      if(height>=10){
-        drawDraftArrow(ctx,xLabel,top+.5,0,1,vArrowLen,vArrowHalf,{...dimStroke,seed:32});
-        drawDraftArrow(ctx,xLabel,top+height-.5,0,-1,vArrowLen,vArrowHalf,{...dimStroke,seed:35});
+      if(height>=12){
+        drawDraftArrow(ctx,xLabel,top+.5,0,1,vArrowLen,vArrowHalf,dimStroke);
+        drawDraftArrow(ctx,xLabel,top+height-.5,0,-1,vArrowLen,vArrowHalf,dimStroke);
       }
-      const vLineStart=top+.5+vArrowLen;
-      const vLineEnd=top+height-.5-vArrowLen;
-      const vInlineFits=vLineEnd-vLineStart>=halfH*2+8;
-      if(vInlineFits){
-        drawDraftLine(ctx,xLabel,vLineStart,xLabel,top+height/2-halfH,{...dimStroke,seed:38});
-        drawDraftLine(ctx,xLabel,top+height/2+halfH,xLabel,vLineEnd,{...dimStroke,seed:39});
-        ctx.globalAlpha=alpha*.88;
-        ctx.clearRect(xLabel-hTextWidth/2-2,top+height/2-halfH,hTextWidth+4,halfH*2);
-        ctx.fillText(hText,xLabel,top+height/2);
+      const vLineStart=height>=12?top+.5+vArrowLen:top;
+      const vLineEnd=height>=12?top+height-.5-vArrowLen:top+height;
+      if(vLineEnd-vLineStart>=halfH*2+4){
+        drawDraftLine(ctx,xLabel,vLineStart,xLabel,top+height/2-halfH,{...dimStroke,seed:26});
+        drawDraftLine(ctx,xLabel,top+height/2+halfH,xLabel,vLineEnd,{...dimStroke,seed:27});
+        ctx.globalAlpha=alpha*.86;
+        ctx.save();
+        ctx.translate(xLabel,top+height/2);
+        ctx.rotate(-Math.PI/2);
+        ctx.clearRect(-halfH,-5,halfH*2,10);
+        ctx.fillText(hText,0,0);
+        ctx.restore();
       } else {
         if(vLineEnd>vLineStart){
-          drawDraftLine(ctx,xLabel,vLineStart,xLabel,vLineEnd,{...dimStroke,seed:38});
+          drawDraftLine(ctx,xLabel,vLineStart,xLabel,vLineEnd,{...dimStroke,seed:26});
         }
-        ctx.globalAlpha=alpha*.88;
+        ctx.globalAlpha=alpha*.86;
         ctx.textAlign=isRight?"left":"right";
         ctx.fillText(hText,isRight?xLabel+7:xLabel-7,top+height/2);
       }
@@ -227,13 +224,13 @@ export function PointerMeasure({
     };
     resize();
     window.addEventListener("resize",resize);
-    window.addEventListener("pointerover",onPointer,{passive:true});
+    window.addEventListener("pointermove",onPointer,{passive:true});
     window.addEventListener("scroll",onScroll,{passive:true});
     if(selection)document.addEventListener("selectionchange",onSelection);
     return()=>{
       cancelAnimationFrame(raf);
       window.removeEventListener("resize",resize);
-      window.removeEventListener("pointerover",onPointer);
+      window.removeEventListener("pointermove",onPointer);
       window.removeEventListener("scroll",onScroll);
       if(selection) document.removeEventListener("selectionchange",onSelection);
     };

@@ -8,7 +8,7 @@ export const DRAFTING = {
   lightInk: "#3774f6",
   darkInk: "#93baff",
   maxWobble: 0,
-  step: 24,
+  step: 7,
   fineWeight: 0.98,
 } as const;
 
@@ -32,9 +32,9 @@ export function drawDraftLine(
   const distance = Math.hypot(x2 - x1, y2 - y1);
   if (distance < 0.5) return;
   const unitX = (x2-x1)/distance, unitY=(y2-y1)/distance;
-  const segments = Math.min(14, Math.max(1,Math.ceil(distance/DRAFTING.step)));
+  const segments = Math.max(1,Math.ceil(distance/DRAFTING.step));
   const step = distance/segments;
-  ctx.save(); ctx.strokeStyle=ink;ctx.lineCap="round";ctx.lineJoin="round";
+  ctx.save(); ctx.strokeStyle=ink;ctx.lineCap="butt";ctx.lineJoin="round";
   ctx.lineWidth=width;
   if (dash?.length) ctx.setLineDash([...dash]);
   let previousX=x1,previousY=y1;
@@ -57,8 +57,8 @@ export function drawDraftCorner(ctx:CanvasRenderingContext2D,x:number,y:number,s
 }
 
 /**
- * Draws an open triangle dimension arrowhead matching `components/dimension.tsx`
- * (`M.5 3.5 8.5.5v6Z` for horizontal, `M3.5.5 6.5 8.5h-6Z` for vertical).
+ * Draws a crisp closed open-triangle arrowhead matching `components/dimension.tsx`
+ * (`<path d="M.5 3.5 8.5.5v6Z" stroke-linejoin="round" />`).
  */
 export function drawDraftArrow(
   ctx: CanvasRenderingContext2D,
@@ -68,16 +68,23 @@ export function drawDraftArrow(
   dirY: number,
   length: number,
   halfSpan: number,
-  opts: DraftStrokeOptions,
+  { ink, opacity = 1, width = DRAFTING.fineWeight }: DraftStrokeOptions,
 ) {
   const baseX = tipX + dirX * length;
   const baseY = tipY + dirY * length;
   const perpX = -dirY * halfSpan;
   const perpY = dirX * halfSpan;
-  const p1x = baseX + perpX, p1y = baseY + perpY;
-  const p2x = baseX - perpX, p2y = baseY - perpY;
-  const seed = opts.seed ?? 0;
-  drawDraftLine(ctx, tipX, tipY, p1x, p1y, { ...opts, seed: seed + 1 });
-  drawDraftLine(ctx, p1x, p1y, p2x, p2y, { ...opts, seed: seed + 2 });
-  drawDraftLine(ctx, p2x, p2y, tipX, tipY, { ...opts, seed: seed + 3 });
+  ctx.save();
+  ctx.strokeStyle = ink;
+  ctx.lineWidth = width;
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
+  ctx.globalAlpha = opacity * 0.88;
+  ctx.beginPath();
+  ctx.moveTo(tipX, tipY);
+  ctx.lineTo(baseX + perpX, baseY + perpY);
+  ctx.lineTo(baseX - perpX, baseY - perpY);
+  ctx.closePath();
+  ctx.stroke();
+  ctx.restore();
 }
