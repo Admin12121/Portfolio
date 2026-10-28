@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { DRAFTING, drawDraftLine, drawDraftCorner } from "./drafting-strokes";
+import { DRAFTING, drawDraftArrow, drawDraftCorner, drawDraftLine } from "./drafting-strokes";
 
 export interface PointerMeasureProps {
   /** Hovered elements to measure. Any site can opt in via data-measure. */
@@ -13,7 +13,11 @@ export interface PointerMeasureProps {
   selection?: boolean;
 }
 
-type Mark = { getBounds: () => DOMRect | null; created: number; closed?: number };
+type Mark = {
+  rect: DOMRect | null;
+  created: number;
+  closed?: number;
+};
 const clamp = (n:number) => Math.max(0, Math.min(1,n));
 
 /** Canvas-based graphite measurements: zero React re-renders on pointer moves. */
@@ -33,8 +37,9 @@ export function PointerMeasure({
     let hover: Mark | null = null;
     let highlighted: Mark | null = null;
     let hovered: Element | null = null;
+    let lastRawTarget: EventTarget | null = null;
+    let isCanvasClean = true;
     let raf = 0;
-    let x = -100, y = -100;
     const ink = () => document.documentElement.classList.contains("dark") ? darkInk : lightInk;
     const invalidate = () => { if (!raf) raf = requestAnimationFrame(paint); };
     const resize = () => {
@@ -42,6 +47,7 @@ export function PointerMeasure({
       canvas.width = Math.round(innerWidth * scale);
       canvas.height = Math.round(innerHeight * scale);
       ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      if (hovered && hover) hover.rect = hovered.getBoundingClientRect();
       invalidate();
     };
     const strokes = (r: DOMRect, alpha:number) => {
@@ -56,47 +62,109 @@ export function PointerMeasure({
       drawDraftLine(ctx,left+width,top,left+width,top+height,{...base,seed:2});
       drawDraftLine(ctx,left+width,top+height,left,top+height,{...base,seed:3});
       drawDraftLine(ctx,left,top+height,left,top,{...base,seed:4});
-      ctx.save();ctx.fillStyle=inkColor;ctx.strokeStyle=inkColor;
-      ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";
-      ctx.textAlign="center";ctx.textBaseline="middle";
-      const labelY=top+height+15<innerHeight?top+height+12:top-13;
-      if(width<50 || height<30){
-        ctx.globalAlpha=alpha;
-        ctx.fillText(`${width} × ${height}`,left+width/2,labelY);
-      } else {
-        for(const [i,[cx,cy]] of [[left,top],[left+width,top],[left,top+height],[left+width,top+height]].entries())
-          drawDraftCorner(ctx,cx,cy,5,{...base,seed:i+10});
-        const yLabel=top+height+14<innerHeight?top+height+12:top-12;
-        const xLabel=left+width+18<innerWidth?left+width+12:left-12;
-        const wText=String(width),hText=String(height);
-        const halfW=ctx.measureText(wText).width/2+5,halfH=ctx.measureText(hText).width/2+5;
-        for(const [j,[x1,y1,x2,y2]] of [
-          [left,yLabel-4,left,yLabel+4],
-          [left+width,yLabel-4,left+width,yLabel+4],
-          [left,yLabel,left+width/2-halfW,yLabel],
-          [left+width/2+halfW,yLabel,left+width,yLabel],
-          [xLabel-4,top,xLabel+4,top],
-          [xLabel-4,top+height,xLabel+4,top+height],
-          [xLabel,top,xLabel,top+height/2-halfH],
-          [xLabel,top+height/2+halfH,xLabel,top+height],
-        ].entries()) drawDraftLine(ctx,x1,y1,x2,y2,{...base,opacity:alpha*.68,seed:20+j});
-        ctx.globalAlpha=alpha*.86;
-        // Tiny paper knockouts prevent measurement labels merging into guides.
-        ctx.clearRect(left+width/2-halfW,yLabel-5,halfW*2,10);
+      for(const [i,[cx,cy]] of [[left,top],[left+width,top],[left,top+height],[left+width,top+height]].entries())
+        drawDraftCorner(ctx,cx,cy,5,{...base,seed:i+10});
+
+      ctx.save();
+      ctx.fillStyle=inkColor;
+      ctx.strokeStyle=inkColor;
+      ctx.font="11px ui-monospace, SFMono-Regular, Menlo, monospace";
+      ctx.textAlign="center";
+      ctx.textBaseline="middle";
+
+      const dimStroke={...base,opacity:alpha*.72};
+      const isBottom=top+height+18<innerHeight;
+      const yLabel=isBottom?top+height+12:top-12;
+      const isRight=left+width+36<innerWidth;
+      const xLabel=isRight?left+width+14:left-14;
+      const wText=String(width),hText=String(height);
+      const halfW=ctx.measureText(wText).width/2+4;
+      const hTextWidth=ctx.measureText(hText).width;
+      const halfH=7;
+
+      // Horizontal dimension (width): extension lines + open triangle arrowheads.
+      const extY1=isBottom?top+height+2:top-2;
+      const extY2=isBottom?yLabel+4:yLabel-4;
+      drawDraftLine(ctx,left,extY1,left,extY2,{...dimStroke,seed:20});
+      drawDraftLine(ctx,left+width,extY1,left+width,extY2,{...dimStroke,seed:21});
+
+      const hArrowLen=Math.min(8,Math.max(3,Math.floor((width-2)/2)));
+      const hArrowHalf=Math.min(3,Math.max(1.5,hArrowLen*0.375));
+      if(width>=10){
+        drawDraftArrow(ctx,left+.5,yLabel,1,0,hArrowLen,hArrowHalf,{...dimStroke,seed:22});
+        drawDraftArrow(ctx,left+width-.5,yLabel,-1,0,hArrowLen,hArrowHalf,{...dimStroke,seed:25});
+      }
+      const hLineStart=left+.5+hArrowLen;
+      const hLineEnd=left+width-.5-hArrowLen;
+      const hInlineFits=hLineEnd-hLineStart>=halfW*2+4;
+      if(hInlineFits){
+        drawDraftLine(ctx,hLineStart,yLabel,left+width/2-halfW,yLabel,{...dimStroke,seed:28});
+        drawDraftLine(ctx,left+width/2+halfW,yLabel,hLineEnd,yLabel,{...dimStroke,seed:29});
+        ctx.globalAlpha=alpha*.88;
         ctx.fillText(wText,left+width/2,yLabel);
-        ctx.save();ctx.translate(xLabel,top+height/2);ctx.rotate(-Math.PI/2);
-        ctx.clearRect(-halfH,-5,halfH*2,10);ctx.fillText(hText,0,0);ctx.restore();
+      } else {
+        if(hLineEnd>hLineStart){
+          drawDraftLine(ctx,hLineStart,yLabel,hLineEnd,yLabel,{...dimStroke,seed:28});
+        }
+        ctx.globalAlpha=alpha*.88;
+        ctx.textAlign="left";
+        ctx.fillText(wText,left+width+6,yLabel);
+        ctx.textAlign="center";
+      }
+
+      // Vertical dimension (height): extension lines + open triangle arrowheads.
+      const extX1=isRight?left+width+2:left-2;
+      const extX2=isRight?xLabel+4:xLabel-4;
+      drawDraftLine(ctx,extX1,top,extX2,top,{...dimStroke,seed:30});
+      drawDraftLine(ctx,extX1,top+height,extX2,top+height,{...dimStroke,seed:31});
+
+      const vArrowLen=Math.min(8,Math.max(3,Math.floor((height-2)/2)));
+      const vArrowHalf=Math.min(3,Math.max(1.5,vArrowLen*0.375));
+      if(height>=10){
+        drawDraftArrow(ctx,xLabel,top+.5,0,1,vArrowLen,vArrowHalf,{...dimStroke,seed:32});
+        drawDraftArrow(ctx,xLabel,top+height-.5,0,-1,vArrowLen,vArrowHalf,{...dimStroke,seed:35});
+      }
+      const vLineStart=top+.5+vArrowLen;
+      const vLineEnd=top+height-.5-vArrowLen;
+      const vInlineFits=vLineEnd-vLineStart>=halfH*2+8;
+      if(vInlineFits){
+        drawDraftLine(ctx,xLabel,vLineStart,xLabel,top+height/2-halfH,{...dimStroke,seed:38});
+        drawDraftLine(ctx,xLabel,top+height/2+halfH,xLabel,vLineEnd,{...dimStroke,seed:39});
+        ctx.globalAlpha=alpha*.88;
+        ctx.clearRect(xLabel-hTextWidth/2-2,top+height/2-halfH,hTextWidth+4,halfH*2);
+        ctx.fillText(hText,xLabel,top+height/2);
+      } else {
+        if(vLineEnd>vLineStart){
+          drawDraftLine(ctx,xLabel,vLineStart,xLabel,vLineEnd,{...dimStroke,seed:38});
+        }
+        ctx.globalAlpha=alpha*.88;
+        ctx.textAlign=isRight?"left":"right";
+        ctx.fillText(hText,isRight?xLabel+7:xLabel-7,top+height/2);
       }
       ctx.restore();
     };
     function paint(now:number) {
       raf=0; if (!ctx) return;
+      if(document.querySelector("[data-blueprint-overlay]")) {
+        if (!isCanvasClean) {
+          ctx.clearRect(0,0,innerWidth,innerHeight);
+          isCanvasClean = true;
+        }
+        return;
+      }
+      if (!hover && !highlighted) {
+        if (!isCanvasClean) {
+          ctx.clearRect(0,0,innerWidth,innerHeight);
+          isCanvasClean = true;
+        }
+        return;
+      }
       ctx.clearRect(0,0,innerWidth,innerHeight);
-      if(document.querySelector("[data-blueprint-overlay]")) return;
+      isCanvasClean = false;
       let active=false;
       const render=(mark:Mark|null) => {
         if(!mark) return false;
-        const rect=mark.getBounds();
+        const rect=mark.rect;
         const fadeIn=clamp((now-mark.created)/150);
         const fadeOut=mark.closed === undefined?1:clamp(1-(now-mark.closed)/210);
         if (!rect || fadeOut<=0) return false;
@@ -106,17 +174,11 @@ export function PointerMeasure({
       };
       if(!render(hover)) hover=null;
       if(!render(highlighted)) highlighted=null;
+      if (!hover && !highlighted) {
+        ctx.clearRect(0,0,innerWidth,innerHeight);
+        isCanvasClean = true;
+      }
       if(active) invalidate();
-    }
-    function nearest(clientX:number,clientY:number) {
-      const from=document.elementFromPoint(clientX,clientY);
-      const next=from?.closest(selector) ?? null;
-      const target=next && !next.closest(excludeSelector) ? next : null;
-      if(target===hovered)return;
-      if(hover && hover.closed===undefined) hover.closed=performance.now();
-      hovered=target;
-      if(target) hover={getBounds:()=>target.getBoundingClientRect(),created:performance.now()};
-      invalidate();
     }
     function selectedBounds(): DOMRect | null {
       const selection=document.getSelection();
@@ -127,23 +189,51 @@ export function PointerMeasure({
       const r=Math.max(...rects.map(r=>r.right)),b=Math.max(...rects.map(r=>r.bottom));
       return new DOMRect(l,t,r-l,b-t);
     }
-    const onPointer=(e:PointerEvent)=>{x=e.clientX;y=e.clientY;nearest(x,y);};
-    const onScroll=()=>{nearest(x,y);invalidate();};
+    const onPointer=(e:PointerEvent)=>{
+      if (e.target === lastRawTarget) return;
+      lastRawTarget = e.target;
+      const from = e.target instanceof Element ? e.target : null;
+      const next = from?.closest(selector) ?? null;
+      const target = next && !next.closest(excludeSelector) ? next : null;
+      if (target === hovered) return;
+      if (hover && hover.closed === undefined) hover.closed = performance.now();
+      hovered = target;
+      if (target) {
+        hover = {
+          rect: target.getBoundingClientRect(),
+          created: performance.now(),
+        };
+      }
+      invalidate();
+    };
+    const onScroll=()=>{
+      if (!hover && !highlighted && isCanvasClean) return;
+      hovered = null;
+      lastRawTarget = null;
+      hover = null;
+      highlighted = null;
+      if (!isCanvasClean) {
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        isCanvasClean = true;
+      }
+    };
     const onSelection=()=>{
       const rect=selectedBounds();
-      if(rect){if(!highlighted || highlighted.closed!==undefined)highlighted={getBounds:selectedBounds,created:performance.now()};}
+      if(rect){
+        highlighted={rect,created:performance.now()};
+      }
       else if(highlighted && highlighted.closed===undefined) highlighted.closed=performance.now();
       invalidate();
     };
     resize();
     window.addEventListener("resize",resize);
-    window.addEventListener("pointermove",onPointer,{passive:true});
+    window.addEventListener("pointerover",onPointer,{passive:true});
     window.addEventListener("scroll",onScroll,{passive:true});
     if(selection)document.addEventListener("selectionchange",onSelection);
     return()=>{
       cancelAnimationFrame(raf);
       window.removeEventListener("resize",resize);
-      window.removeEventListener("pointermove",onPointer);
+      window.removeEventListener("pointerover",onPointer);
       window.removeEventListener("scroll",onScroll);
       if(selection) document.removeEventListener("selectionchange",onSelection);
     };

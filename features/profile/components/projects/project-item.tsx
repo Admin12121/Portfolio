@@ -20,8 +20,8 @@ import type { Project } from "../../types/projects";
 export function ProjectItem({
   className,
   project,
-}: {
-  className?: string;
+  ...props
+}: React.ComponentProps<"div"> & {
   project: Project;
 }) {
   const { start, end } = project.period;
@@ -29,7 +29,7 @@ export function ProjectItem({
 
   return (
     <CollapsibleWithContext defaultOpen={project.isExpanded} asChild>
-      <div className={className} data-blueprint-item="PROJECT">
+      <div className={className} data-blueprint-item="PROJECT" {...props}>
         <div className="group/project relative flex items-stretch transition-colors hover:bg-accent2 focus-within:bg-accent2">
           {/* The logo and the entire row expand the project. The external link is
               a separate sibling, not an invalid <a> nested in a <button>. */}

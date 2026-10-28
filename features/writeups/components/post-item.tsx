@@ -13,10 +13,10 @@ export function WriteupItem({
   writeup,
   shouldPreloadImage,
   className,
-}: {
+  ...props
+}: Omit<React.ComponentProps<typeof Link>, "href"> & {
   writeup: Writeup;
   shouldPreloadImage?: boolean;
-  className?: string;
 }) {
   let titleLeft = writeup.metadata.title;
   let titleRight: string | undefined;
@@ -33,7 +33,8 @@ export function WriteupItem({
   return (
     <Link
       href={`/writeups/${writeup.slug}`}
-      className={cn("group/cert flex items-center pr-2", className)}
+      className={cn("group/blog flex items-center pr-2 transition-colors hover:bg-accent2", className)}
+      {...props}
     >
       {writeup.metadata.image ? (
         <Image

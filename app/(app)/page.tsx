@@ -18,8 +18,6 @@ export default function page() {
     <BlueprintPreloader
       rootSelector="[data-blueprint-root]"
       maxBlocks={58}
-      sheetLabel={`SHEET 01 · ${USER.displayName.toUpperCase()} / PORTFOLIO`}
-      sideNote="ISSUE 01 · LIVE LAYOUT / BLUEPRINT"
     />
     <main data-blueprint-root="" className="container-wrapper max-w-screen! overflow-x-hidden p-0">
       <div className="relative mx-auto px-0! container md:fixed:max-w-6xl">

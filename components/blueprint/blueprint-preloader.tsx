@@ -326,8 +326,6 @@ export function BlueprintPreloader({
       <div className="bp-column bp-column-right" style={{left:layout.columnRight}} />
       <div className="bp-header-datum" style={{top:layout.headerY,left:layout.columnX,width:Math.max(0,layout.columnRight-layout.columnX)}}><span className="bp-cross bp-cross-left" style={{left:0}}/><span className="bp-cross bp-cross-right" style={{left:"100%"}}/></div>
     </>}
-    <span className="bp-note bp-note-left" style={{left:Math.max(22,left-220)}}>{sheetLabel}</span>
-    <span className="bp-note bp-note-right">{sideNote}</span>
     <div className="bp-plot-area">
       {blocks.map((block,i)=><PlotShape key={block.id} block={block} index={i} viewportWidth={layout?.viewportWidth??1440} columnRight={layout?.columnRight??1440} letteringStart={letteringStart}/>)}
       {blocks.slice(1).map((block,i)=>{

@@ -13,11 +13,6 @@ import {
   ContributionGraphLegend,
   ContributionGraphTotalCount,
 } from "@/components/ui/contribution-graph";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { GITHUB_USERNAME } from "@/config/site";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { GitHubContributionPlaceholder } from "./graph-placeholder";
@@ -118,24 +113,13 @@ export function GitHubContributionGraph({
         title="GitHub Contributions"
       >
         {({ activity, dayIndex, weekIndex }) => (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <g>
-                <ContributionGraphBlock
-                  activity={activity}
-                  dayIndex={dayIndex}
-                  weekIndex={weekIndex}
-                />
-              </g>
-            </TooltipTrigger>
-
-            <TooltipContent className="font-sans" sideOffset={0}>
-              <p>
-                {activity.count} contribution{activity.count > 1 ? "s" : null}{" "}
-                on {dayjs(activity.date).format("DD.MM.YYYY")}
-              </p>
-            </TooltipContent>
-          </Tooltip>
+          <ContributionGraphBlock
+            activity={activity}
+            dayIndex={dayIndex}
+            weekIndex={weekIndex}
+          >
+            <title>{`${activity.count} contribution${activity.count === 1 ? "" : "s"} on ${dayjs(activity.date).format("DD.MM.YYYY")}`}</title>
+          </ContributionGraphBlock>
         )}
       </ContributionGraphCalendar>
 

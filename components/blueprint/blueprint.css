@@ -82,6 +82,7 @@
 .bp-piece-lettering{inset:auto;overflow:visible;white-space:normal;pointer-events:none;display:block;max-width:none;-webkit-text-stroke:0;text-shadow:none;z-index:5}
 .bp-lettering-mount{display:block;width:100%;min-height:inherit}
 .bp-text-snapshot{box-sizing:border-box;overflow:visible!important;color:white!important;text-shadow:none!important;-webkit-text-stroke:0!important}
+.bp-text-snapshot::before,.bp-text-snapshot::after{content:none!important;display:none!important}
 .bp-text-snapshot *{text-shadow:none!important}
 .bp-piece-nav .bp-piece-lettering,.bp-piece-control .bp-piece-lettering{display:block}
 /* Same reusable graphite filter used by site rails and pointer measurements. */

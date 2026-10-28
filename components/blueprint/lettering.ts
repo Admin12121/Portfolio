@@ -20,12 +20,18 @@ export function createBlueprintTextSnapshot(source: HTMLElement): HTMLElement {
     if(value)clone.style.setProperty(property,value);
   }
   clone.removeAttribute("id");
-  // Do not clone Tailwind border/underline/background classes from structural
-  // wrappers. The role container has `border-t`: reproducing it as lettering
-  // created the long black rule running beneath the username.
+  // Do not clone Tailwind border/underline/background classes or drafting edge
+  // attributes from structural wrappers. The role container has `border-t` and
+  // `data-draft-edges="top"`: reproducing them as lettering created the dark
+  // rule running beneath the username inside the blue preloader.
   clone.className = "bp-text-snapshot";
   clone.removeAttribute("data-blueprint-role");
   clone.removeAttribute("data-blueprint-part");
+  clone.removeAttribute("data-draft-edges");
+  clone.removeAttribute("data-draft-frame");
+  clone.removeAttribute("data-draft-divider");
+  clone.removeAttribute("data-draft-hatch");
+  clone.removeAttribute("data-draft-stroke");
   clone.style.setProperty("border", "0", "important");
   clone.style.setProperty("background", "transparent", "important");
   clone.style.setProperty("box-shadow", "none", "important");
@@ -40,6 +46,11 @@ export function createBlueprintTextSnapshot(source: HTMLElement): HTMLElement {
   clone.style.setProperty("color","white","important");
   for(const descendant of Array.from(clone.querySelectorAll<HTMLElement>("*"))) {
     descendant.removeAttribute("id");
+    descendant.removeAttribute("data-draft-edges");
+    descendant.removeAttribute("data-draft-frame");
+    descendant.removeAttribute("data-draft-divider");
+    descendant.removeAttribute("data-draft-hatch");
+    descendant.removeAttribute("data-draft-stroke");
     descendant.style.setProperty("opacity","1","important");
     descendant.style.setProperty("transform","none","important");
     descendant.style.setProperty("animation","none","important");

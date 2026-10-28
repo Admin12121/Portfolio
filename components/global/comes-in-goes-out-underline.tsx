@@ -131,6 +131,7 @@ const ComesInGoesOutUnderline = ({
     >
       <span>{children}</span>
       <motion.span
+        data-draft-stroke=""
         className={cn("absolute bg-current w-0", {
           "left-0": direction === "left",
           "right-0": direction === "right",

@@ -12,17 +12,18 @@ import type { Certification } from "../../types/certifications";
 export function CertificationItem({
   className,
   certification,
-}: {
-  className?: string;
+  ...props
+}: React.ComponentProps<"a"> & {
   certification: Certification;
 }) {
   return (
     <a
       data-blueprint-item="CERTIFICATION"
-      className={cn("group/cert flex items-center pr-2", className)}
+      className={cn("group/cert flex items-center pr-2 transition-colors hover:bg-accent2", className)}
       href={certification.credentialURL}
       target="_blank"
       rel="noopener"
+      {...props}
     >
       {certification.issuerLogoURL ? (
         <Image

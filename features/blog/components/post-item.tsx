@@ -12,16 +12,17 @@ export function PostItem({
   post,
   shouldPreloadImage,
   className,
-}: {
+  ...props
+}: Omit<React.ComponentProps<typeof Link>, "href"> & {
   post: Post;
   shouldPreloadImage?: boolean;
-  className?: string;
 }) {
   return (
     <Link
       data-blueprint-item="BLOG"
       href={`/blog/${post.slug}`}
-      className={cn("group/cert flex items-center pr-2", className)}
+      className={cn("group/blog flex items-center pr-2 transition-colors hover:bg-accent2", className)}
+      {...props}
     >
       {post.metadata.image ? (
         <Image

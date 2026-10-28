@@ -172,6 +172,7 @@ export const NavLink = ({
         {children}
       </Link>
       <div
+        data-draft-stroke=""
         className={clsx(
           "absolute bottom-0 h-0.5 bg-muted-foreground opacity-0 transition-all duration-500",
           "group-hover:opacity-100 group-hover:w-full",

@@ -22,9 +22,9 @@ const externalRel = "noopener noreferrer";
 function AwardRow({
   entry,
   className,
-}: {
+  ...props
+}: React.ComponentProps<"div"> & {
   entry: RecognitionEntry;
-  className?: string;
 }) {
   const { award } = entry;
   const canExpand = Boolean(award.description);
@@ -41,8 +41,8 @@ function AwardRow({
         : Award;
 
   return (
-    <CollapsibleWithContext>
-      <div data-blueprint-item="RECOGNITION" className={cn("group/recognition", className)}>
+    <CollapsibleWithContext asChild>
+      <div data-blueprint-item="RECOGNITION" className={cn("group/recognition", className)} {...props}>
         <div className="relative flex min-h-19 items-center transition-colors hover:bg-foreground/[0.07] focus-within:bg-foreground/[0.07]">
           {canExpand ? (
             <CollapsibleTrigger asChild>
