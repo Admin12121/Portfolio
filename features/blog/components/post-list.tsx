@@ -13,7 +13,7 @@ export function PostList({ posts }: { posts: Post[] }) {
         />
 
         {posts.length === 0 && (
-          <div className="border-y border-edge p-4">
+          <div data-draft-edges="top bottom" className="border-y border-edge p-4">
             <p className="font-mono text-sm">No posts found.</p>
           </div>
         )}

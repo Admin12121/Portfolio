@@ -1,6 +1,10 @@
 import { cn } from "@/lib/utils";
 
-export function Separator({ className }: { className?: string }) {
+export function Separator({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-draft-divider="" data-draft-hatch=""
@@ -10,7 +14,10 @@ export function Separator({ className }: { className?: string }) {
         "before:bg-[repeating-linear-gradient(315deg,var(--pattern-foreground)_0,var(--pattern-foreground)_1px,transparent_0,transparent_50%)] before:bg-size-[5px_5px] before:[--pattern-foreground:var(--color-edge)]/56",
         className,
       )}
-    />
+      {...props}
+    >
+      {children}
+    </div>
   );
 }
 

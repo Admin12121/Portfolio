@@ -97,9 +97,10 @@
   filter:url(#draft-graphite-fine);
   pointer-events:none;
 }
-/* The TOC guide and one-pixel Radix separators are safe to filter directly:
+/* The TOC guide, dimension extension lines, and one-pixel Radix separators are safe to filter directly:
    these nodes contain no text or interactive content. */
 .drafting-site [data-slot="separator"],
+.drafting-site [data-slot="dimension-extension-line"],
 .drafting-site [data-draft-stroke]{filter:url(#draft-graphite-fine)}
 
 .drafting-site article .prose hr {filter:url(#draft-graphite-fine)}

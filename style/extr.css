@@ -27,6 +27,8 @@
     --color-success: var(--success);
     --color-destructive: var(--destructive);
     --color-link: var(--link);
+    --color-dimension: var(--dimension);
+    --color-dimension-foreground: var(--dimension-foreground);
     --color-code: var(--code);
     --color-code-foreground: var(--code-foreground);
     --color-code-number: var(--code-number);
@@ -139,6 +141,12 @@
     --success: oklch(0.723 0.219 149.579);
     --destructive: oklch(0.577 0.245 27.325);
     --link: oklch(0.488 0.243 264.376);
+    --dimension: color-mix(
+        in oklab,
+        oklch(70.5% 0.015 286.067) 60%,
+        var(--background)
+    );
+    --dimension-foreground: oklch(70.5% 0.015 286.067);
     --code: oklch(0.985 0 0);
     --code-foreground: oklch(0.141 0.005 285.823);
     --code-number: oklch(0.705 0.015 286.067);
@@ -184,6 +192,12 @@
     --success: oklch(0.723 0.219 149.579);
     --destructive: oklch(0.505 0.213 27.518);
     --link: oklch(0.623 0.214 259.815);
+    --dimension: color-mix(
+        in oklab,
+        oklch(37% 0.013 285.805) 80%,
+        var(--background)
+    );
+    --dimension-foreground: oklch(37% 0.013 285.805);
     --code: oklch(0.21 0.006 285.885);
     --code-foreground: oklch(0.985 0 0);
     --code-number: oklch(0.552 0.016 285.938);

@@ -3,6 +3,7 @@ import { About } from "@/features/profile/components/about";
 import { GitHubContributions } from "@/features/profile/components/github-contributions";
 import { Projects } from "@/features/profile/components/projects";
 import { ProfileCover } from "@/features/profile/components/profile-cover";
+import { FrameWidthDimension } from "@/features/profile/components/frame-width-dimension";
 import { Blogs } from "@/features/blog/components";
 import { Separator } from "@/components/separator";
 
@@ -22,6 +23,7 @@ export default function page() {
     />
     <main data-blueprint-root="" className="container-wrapper max-w-screen! overflow-x-hidden p-0">
       <div className="relative mx-auto px-0! container md:fixed:max-w-6xl">
+        <FrameWidthDimension />
         <ProfileCover />
         <ProfileHeader />
         <Separator />
