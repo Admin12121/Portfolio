@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { DRAFTING, drawDraftArrow, drawDraftCorner, drawDraftLine } from "./drafting-strokes";
+import { DRAFTING, drawDraftArrow, drawDraftLine } from "./drafting-strokes";
 
 export interface PointerMeasureProps {
   /** Hovered elements to measure. Any site can opt in via data-measure. */
@@ -19,8 +19,16 @@ type Mark = {
   closed?: number;
 };
 const clamp = (n:number) => Math.max(0, Math.min(1,n));
+const PAD_LEFT = 24;
+const PAD_TOP = 28;
+const PAD_RIGHT = 64;
+const PAD_BOTTOM = 36;
 
-/** Canvas-based graphite measurements: zero React re-renders on pointer moves. */
+/**
+ * Canvas-based graphite measurements bounded to the active target box so
+ * `filter: url(#draft-graphite-fine)` renders the exact same line texture as
+ * the page without filtering the entire 100vw × 100vh viewport.
+ */
 export function PointerMeasure({
   selector = "a,button,input,select,textarea,[role='button'],[data-measure]",
   excludeSelector = "[data-no-measure],[data-blueprint-overlay]",
@@ -42,47 +50,59 @@ export function PointerMeasure({
     let raf = 0;
     const ink = () => document.documentElement.classList.contains("dark") ? darkInk : lightInk;
     const invalidate = () => { if (!raf) raf = requestAnimationFrame(paint); };
+
+    const hideCanvas = () => {
+      if (!isCanvasClean) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas.style.opacity = "0";
+        isCanvasClean = true;
+      }
+    };
+
     const resize = () => {
-      const scale = Math.min(devicePixelRatio || 1, 2);
-      canvas.width = Math.round(innerWidth * scale);
-      canvas.height = Math.round(innerHeight * scale);
-      ctx.setTransform(scale, 0, 0, scale, 0, 0);
       if (hovered && hover) hover.rect = hovered.getBoundingClientRect();
       invalidate();
     };
-    const strokes = (r: DOMRect, alpha:number) => {
-      const left=Math.round(r.left)+.5, top=Math.round(r.top)+.5;
+
+    const strokes = (r: DOMRect, alpha:number, offsetX: number, offsetY: number) => {
+      const left=Math.round(r.left - offsetX)+.5;
+      const top=Math.round(r.top - offsetY)+.5;
       const width=Math.round(r.width),height=Math.round(r.height);
-      if(width<4 || height<4 || left>innerWidth || top>innerHeight || left+width<0 || top+height<0)return;
+      if(width<4 || height<4)return;
       const inkColor=ink();
-      const base={ink:inkColor,opacity:alpha*.85,width:DRAFTING.fineWeight};
-      // The pointer guide follows exact DOM edges with the same worn-ink
-      // density grammar as the fine graphite filter on structural frames.
+      const base={ink:inkColor,opacity:alpha*.85,width:1};
+
+      // 1. Target frame outline (same 1px stroke as page panels/frames).
       drawDraftLine(ctx,left,top,left+width,top,{...base,seed:1});
       drawDraftLine(ctx,left+width,top,left+width,top+height,{...base,seed:2});
       drawDraftLine(ctx,left+width,top+height,left,top+height,{...base,seed:3});
       drawDraftLine(ctx,left,top+height,left,top,{...base,seed:4});
-      for(const [i,[cx,cy]] of [[left,top],[left+width,top],[left,top+height],[left+width,top+height]].entries())
-        drawDraftCorner(ctx,cx,cy,5,{...base,seed:i+10});
 
       ctx.save();
       ctx.fillStyle=inkColor;
       ctx.strokeStyle=inkColor;
-      ctx.font="10px ui-monospace, SFMono-Regular, Menlo, monospace";
+      ctx.font="11px ui-monospace, SFMono-Regular, Menlo, monospace";
       ctx.textAlign="center";
       ctx.textBaseline="middle";
 
-      const dimStroke={...base,opacity:alpha*.68};
-      const yLabel=top+height+14<innerHeight?top+height+12:top-12;
-      const isRight=left+width+28<innerWidth;
-      const xLabel=isRight?left+width+12:left-12;
+      const dimStroke={...base,opacity:alpha*.75};
+      const isBottom=r.top+height+24<innerHeight;
+      const yLabel=isBottom?top+height+14:top-14;
+      const isRight=r.left+width+48<innerWidth;
+      const xLabel=isRight?left+width+16:left-16;
       const wText=String(width),hText=String(height);
       const halfW=ctx.measureText(wText).width/2+5;
-      const halfH=ctx.measureText(hText).width/2+5;
+      const hTextW=ctx.measureText(hText).width;
+      const halfH=7;
 
-      // Horizontal dimension (width): extension ticks + open triangle arrowheads.
-      drawDraftLine(ctx,left,yLabel-4,left,yLabel+4,{...dimStroke,seed:20});
-      drawDraftLine(ctx,left+width,yLabel-4,left+width,yLabel+4,{...dimStroke,seed:21});
+      // 2. Horizontal dimension line (matches FrameWidthDimension / DimensionLine):
+      //    - Perpendicular extension lines at left and right edges
+      //    - Open 8x6 triangle arrowheads at both ends
+      //    - 1px line segments on either side of the centered numeric value
+      const hExtTop=isBottom?top+height+2:yLabel-5;
+      const hExtBottom=isBottom?yLabel+5:top-2;
+      drawDraftLine(ctx,left,hExtTop,left,hExtBottom,dimStroke);
+      drawDraftLine(ctx,left+width,hExtTop,left+width,hExtBottom,dimStroke);
 
       const hArrowLen=Math.min(8,Math.max(4,Math.floor((width-4)/2)));
       const hArrowHalf=Math.min(3,Math.max(1.5,hArrowLen*0.375));
@@ -93,24 +113,28 @@ export function PointerMeasure({
       const hLineStart=width>=12?left+.5+hArrowLen:left;
       const hLineEnd=width>=12?left+width-.5-hArrowLen:left+width;
       if(hLineEnd-hLineStart>=halfW*2+4){
-        drawDraftLine(ctx,hLineStart,yLabel,left+width/2-halfW,yLabel,{...dimStroke,seed:22});
-        drawDraftLine(ctx,left+width/2+halfW,yLabel,hLineEnd,yLabel,{...dimStroke,seed:23});
-        ctx.globalAlpha=alpha*.86;
-        ctx.clearRect(left+width/2-halfW,yLabel-5,halfW*2,10);
+        drawDraftLine(ctx,hLineStart,yLabel,left+width/2-halfW,yLabel,dimStroke);
+        drawDraftLine(ctx,left+width/2+halfW,yLabel,hLineEnd,yLabel,dimStroke);
+        ctx.globalAlpha=alpha*.9;
         ctx.fillText(wText,left+width/2,yLabel);
       } else {
         if(hLineEnd>hLineStart){
-          drawDraftLine(ctx,hLineStart,yLabel,hLineEnd,yLabel,{...dimStroke,seed:22});
+          drawDraftLine(ctx,hLineStart,yLabel,hLineEnd,yLabel,dimStroke);
         }
-        ctx.globalAlpha=alpha*.86;
+        ctx.globalAlpha=alpha*.9;
         ctx.textAlign="left";
         ctx.fillText(wText,left+width+6,yLabel);
         ctx.textAlign="center";
       }
 
-      // Vertical dimension (height): extension ticks + open triangle arrowheads.
-      drawDraftLine(ctx,xLabel-4,top,xLabel+4,top,{...dimStroke,seed:24});
-      drawDraftLine(ctx,xLabel-4,top+height,xLabel+4,top+height,{...dimStroke,seed:25});
+      // 3. Vertical dimension line (matches DiameterDimension / SeparatorHeightDimension):
+      //    - Perpendicular extension lines at top and bottom edges
+      //    - Open 6x8 triangle arrowheads at top and bottom
+      //    - Upright numeric value inline when tall enough, or outside when short
+      const vExtLeft=isRight?left+width+2:xLabel-5;
+      const vExtRight=isRight?xLabel+5:left-2;
+      drawDraftLine(ctx,vExtLeft,top,vExtRight,top,dimStroke);
+      drawDraftLine(ctx,vExtLeft,top+height,vExtRight,top+height,dimStroke);
 
       const vArrowLen=Math.min(8,Math.max(4,Math.floor((height-4)/2)));
       const vArrowHalf=Math.min(3,Math.max(1.5,vArrowLen*0.375));
@@ -120,63 +144,71 @@ export function PointerMeasure({
       }
       const vLineStart=height>=12?top+.5+vArrowLen:top;
       const vLineEnd=height>=12?top+height-.5-vArrowLen:top+height;
-      if(vLineEnd-vLineStart>=halfH*2+4){
-        drawDraftLine(ctx,xLabel,vLineStart,xLabel,top+height/2-halfH,{...dimStroke,seed:26});
-        drawDraftLine(ctx,xLabel,top+height/2+halfH,xLabel,vLineEnd,{...dimStroke,seed:27});
-        ctx.globalAlpha=alpha*.86;
-        ctx.save();
-        ctx.translate(xLabel,top+height/2);
-        ctx.rotate(-Math.PI/2);
-        ctx.clearRect(-halfH,-5,halfH*2,10);
-        ctx.fillText(hText,0,0);
-        ctx.restore();
+      if(vLineEnd-vLineStart>=halfH*2+8){
+        drawDraftLine(ctx,xLabel,vLineStart,xLabel,top+height/2-halfH,dimStroke);
+        drawDraftLine(ctx,xLabel,top+height/2+halfH,xLabel,vLineEnd,dimStroke);
+        ctx.globalAlpha=alpha*.9;
+        ctx.clearRect(xLabel-hTextW/2-2,top+height/2-halfH,hTextW+4,halfH*2);
+        ctx.fillText(hText,xLabel,top+height/2);
       } else {
         if(vLineEnd>vLineStart){
-          drawDraftLine(ctx,xLabel,vLineStart,xLabel,vLineEnd,{...dimStroke,seed:26});
+          drawDraftLine(ctx,xLabel,vLineStart,xLabel,vLineEnd,dimStroke);
         }
-        ctx.globalAlpha=alpha*.86;
+        ctx.globalAlpha=alpha*.9;
         ctx.textAlign=isRight?"left":"right";
-        ctx.fillText(hText,isRight?xLabel+7:xLabel-7,top+height/2);
+        ctx.fillText(hText,isRight?xLabel+8:xLabel-8,top+height/2);
       }
       ctx.restore();
     };
+
     function paint(now:number) {
-      raf=0; if (!ctx) return;
+      raf=0; if (!ctx || !canvas) return;
       if(document.querySelector("[data-blueprint-overlay]")) {
-        if (!isCanvasClean) {
-          ctx.clearRect(0,0,innerWidth,innerHeight);
-          isCanvasClean = true;
-        }
+        hideCanvas();
         return;
       }
-      if (!hover && !highlighted) {
-        if (!isCanvasClean) {
-          ctx.clearRect(0,0,innerWidth,innerHeight);
-          isCanvasClean = true;
-        }
+      const activeMark = highlighted ?? hover;
+      if (!activeMark || !activeMark.rect) {
+        hideCanvas();
         return;
       }
-      ctx.clearRect(0,0,innerWidth,innerHeight);
+      const fadeIn=clamp((now-activeMark.created)/150);
+      const fadeOut=activeMark.closed === undefined?1:clamp(1-(now-activeMark.closed)/210);
+      if (fadeOut<=0) {
+        if (activeMark === hover) hover = null;
+        if (activeMark === highlighted) highlighted = null;
+        hideCanvas();
+        return;
+      }
+
+      const r = activeMark.rect;
+      const boxLeft = Math.max(0, Math.floor(r.left - PAD_LEFT));
+      const boxTop = Math.max(0, Math.floor(r.top - PAD_TOP));
+      const boxRight = Math.min(innerWidth, Math.ceil(r.right + PAD_RIGHT));
+      const boxBottom = Math.min(innerHeight, Math.ceil(r.bottom + PAD_BOTTOM));
+      const boxW = Math.max(1, boxRight - boxLeft);
+      const boxH = Math.max(1, boxBottom - boxTop);
+      const scale = Math.min(devicePixelRatio || 1, 2);
+      const targetW = Math.round(boxW * scale);
+      const targetH = Math.round(boxH * scale);
+
+      if (canvas.width !== targetW || canvas.height !== targetH) {
+        canvas.width = targetW;
+        canvas.height = targetH;
+        canvas.style.width = `${boxW}px`;
+        canvas.style.height = `${boxH}px`;
+      }
+      canvas.style.transform = `translate3d(${boxLeft}px, ${boxTop}px, 0)`;
+      canvas.style.opacity = "1";
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      ctx.clearRect(0, 0, boxW, boxH);
       isCanvasClean = false;
-      let active=false;
-      const render=(mark:Mark|null) => {
-        if(!mark) return false;
-        const rect=mark.rect;
-        const fadeIn=clamp((now-mark.created)/150);
-        const fadeOut=mark.closed === undefined?1:clamp(1-(now-mark.closed)/210);
-        if (!rect || fadeOut<=0) return false;
-        strokes(rect,fadeIn*fadeOut*.73);
-        if(fadeIn<1 || mark.closed!==undefined)active=true;
-        return true;
-      };
-      if(!render(hover)) hover=null;
-      if(!render(highlighted)) highlighted=null;
-      if (!hover && !highlighted) {
-        ctx.clearRect(0,0,innerWidth,innerHeight);
-        isCanvasClean = true;
-      }
-      if(active) invalidate();
+
+      strokes(r, fadeIn * fadeOut * 0.85, boxLeft, boxTop);
+
+      if (fadeIn < 1 || activeMark.closed !== undefined) invalidate();
     }
+
     function selectedBounds(): DOMRect | null {
       const selection=document.getSelection();
       if(!selection || selection.isCollapsed || !selection.rangeCount)return null;
@@ -209,10 +241,7 @@ export function PointerMeasure({
       lastRawTarget = null;
       hover = null;
       highlighted = null;
-      if (!isCanvasClean) {
-        ctx.clearRect(0, 0, innerWidth, innerHeight);
-        isCanvasClean = true;
-      }
+      hideCanvas();
     };
     const onSelection=()=>{
       const rect=selectedBounds();
@@ -222,7 +251,6 @@ export function PointerMeasure({
       else if(highlighted && highlighted.closed===undefined) highlighted.closed=performance.now();
       invalidate();
     };
-    resize();
     window.addEventListener("resize",resize);
     window.addEventListener("pointermove",onPointer,{passive:true});
     window.addEventListener("scroll",onScroll,{passive:true});

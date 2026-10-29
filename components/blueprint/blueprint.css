@@ -1,5 +1,5 @@
 /* Entirely prefixed: no global layout resets, no changes to portfolio styles. */
-.blueprint-pointer-canvas{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:500;display:block}
+.blueprint-pointer-canvas{position:fixed;top:0;left:0;width:0;height:0;opacity:0;pointer-events:none;z-index:500;display:block;filter:url(#draft-graphite-fine);will-change:transform,opacity}
 .bp-overlay{--bp-blue:#2e6fff;--bp-ink:rgba(255,255,255,.67);position:fixed;inset:0;width:100vw;height:100dvh;background:var(--bp-blue);z-index:400;pointer-events:auto;cursor:progress;color:white;overflow:hidden;isolation:isolate;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;clip-path:inset(var(--bp-wipe-y,0px) 0 0 0)}
 .bp-overlay *{box-sizing:border-box}
 .bp-filters{position:absolute;pointer-events:none}

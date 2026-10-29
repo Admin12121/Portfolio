@@ -1,7 +1,8 @@
 /**
  * Shared deterministic pencil stroke grammar.
- * Geometry is never displaced: only the ink laid along each straight segment
- * varies slightly. Used by Canvas pointer measurements and the SVG/CSS renderer.
+ * Geometry stays on the exact measured edge so the shared `#draft-graphite-fine`
+ * SVG filter supplies the same worn-ink texture across both DOM borders and
+ * the pointer measurement canvas.
  */
 export const DRAFTING = {
   blue: "#2e6fff",
@@ -9,11 +10,8 @@ export const DRAFTING = {
   darkInk: "#93baff",
   maxWobble: 0,
   step: 7,
-  fineWeight: 0.98,
+  fineWeight: 1,
 } as const;
-
-const fract = (v: number) => v - Math.floor(v);
-const hash = (n: number) => fract(Math.sin(n * 12.9898 + 78.233) * 43758.5453123);
 
 export type DraftStrokeOptions = {
   ink: string;
@@ -23,31 +21,29 @@ export type DraftStrokeOptions = {
   dash?: readonly number[];
 };
 
-/** Draws worn, continuous pencil strokes on an existing Canvas context. */
+/** Draws a continuous 1px stroke filtered by `#draft-graphite-fine`. */
 export function drawDraftLine(
   ctx: CanvasRenderingContext2D,
   x1: number, y1: number, x2: number, y2: number,
-  { ink, opacity = 1, width = DRAFTING.fineWeight, seed = 0, dash }: DraftStrokeOptions,
+  { ink, opacity = 1, width = DRAFTING.fineWeight, dash }: DraftStrokeOptions,
 ) {
   const distance = Math.hypot(x2 - x1, y2 - y1);
   if (distance < 0.5) return;
   const unitX = (x2-x1)/distance, unitY=(y2-y1)/distance;
-  const segments = Math.max(1,Math.ceil(distance/DRAFTING.step));
-  const step = distance/segments;
-  ctx.save(); ctx.strokeStyle=ink;ctx.lineCap="butt";ctx.lineJoin="round";
-  ctx.lineWidth=width;
+  const at = distance;
+  const xx=x1+unitX*at;
+  const yy=y1+unitY*at;
+  ctx.save();
+  ctx.strokeStyle = ink;
+  ctx.lineCap = "butt";
+  ctx.lineJoin = "round";
+  ctx.lineWidth = width;
   if (dash?.length) ctx.setLineDash([...dash]);
-  let previousX=x1,previousY=y1;
-  for(let i=1;i<=segments;i++){
-    const at=i*step;
-    // Geometry stays on the same straight measured edge. The graphite
-    // variation is solely in ink density, mirroring the site border filter.
-    const xx=x1+unitX*at;
-    const yy=y1+unitY*at;
-    ctx.globalAlpha=opacity*(.74+.26*hash(seed+i*2.19));
-    ctx.beginPath();ctx.moveTo(previousX,previousY);ctx.lineTo(xx,yy);ctx.stroke();
-    previousX=xx;previousY=yy;
-  }
+  ctx.globalAlpha = opacity;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(xx, yy);
+  ctx.stroke();
   ctx.restore();
 }
 
@@ -57,8 +53,8 @@ export function drawDraftCorner(ctx:CanvasRenderingContext2D,x:number,y:number,s
 }
 
 /**
- * Draws a crisp closed open-triangle arrowhead matching `components/dimension.tsx`
- * (`<path d="M.5 3.5 8.5.5v6Z" stroke-linejoin="round" />`).
+ * Draws an open triangle arrowhead matching `components/dimension.tsx`
+ * (`<path d="M.5 3.5 8.5.5v6Z" />` for horizontal, `<path d="M3.5.5 6.5 8.5h-6Z" />` for vertical).
  */
 export function drawDraftArrow(
   ctx: CanvasRenderingContext2D,
@@ -79,7 +75,7 @@ export function drawDraftArrow(
   ctx.lineWidth = width;
   ctx.lineJoin = "round";
   ctx.lineCap = "round";
-  ctx.globalAlpha = opacity * 0.88;
+  ctx.globalAlpha = opacity;
   ctx.beginPath();
   ctx.moveTo(tipX, tipY);
   ctx.lineTo(baseX + perpX, baseY + perpY);
